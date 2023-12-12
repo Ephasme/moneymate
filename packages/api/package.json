@@ -1,0 +1,19 @@
+{
+  "name": "@moneymate/api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@moneymate/shared": "workspace:^",
+    "date-fns": "^3.0.0-alpha.2",
+    "lodash": "^4.17.21",
+    "urlcat": "^3.1.0",
+    "zod": "^3.22.4"
+  }
+}
