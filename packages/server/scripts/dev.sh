@@ -5,4 +5,4 @@ node                                             \
     -r dotenv/config                             \
     -r ts-node/register                          \
     --inspect                                    \
-src/index.ts        
+src/index.ts | pino-pretty

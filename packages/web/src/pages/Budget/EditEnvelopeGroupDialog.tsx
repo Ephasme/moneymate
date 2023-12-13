@@ -20,7 +20,7 @@ const useSaveEnvelopeGroup = (props: { onClose: () => void }) => {
       console.error(error);
     },
     onSuccess() {
-      queryClient.invalidateQueries({ queryKey: ["EnvelopeGroups"] });
+      queryClient.invalidateQueries({ queryKey: ["envelope-groups"] });
       props.onClose();
     },
   });

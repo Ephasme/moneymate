@@ -1,16 +1,16 @@
 import { EnvelopeView } from "@moneymate/shared";
-import { Box, Button, IconButton } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
+import { Box, IconButton } from "@mui/material";
 import { useEffect, useState } from "react";
-import { AssignPopup } from "./AssignPopup";
-import { CurrentMonthSelector } from "./CurrentMonthSelector";
-import { EditEnvelopeDialog } from "./EditEnvelopeDialog";
 import { formatCurrency } from "../../helpers/formatCurrency";
-import { AvailableFunds } from "./AvailableFunds";
-import { useEnvelopes } from "../Common/useEnvelopes";
-import { AllocatedField } from "./AllocatedField";
 import { useBudget } from "../Common/useBudget";
 import { useEnvelopeGroups } from "../Common/useEnvelopeGroups";
+import { useEnvelopes } from "../Common/useEnvelopes";
+import { AllocatedField } from "./AllocatedField";
+import { AssignPopup } from "./AssignPopup";
+import { AvailableFunds } from "./AvailableFunds";
+import { CurrentMonthSelector } from "./CurrentMonthSelector";
+import { EditEnvelopeDialog } from "./EditEnvelopeDialog";
 import { EditEnvelopeGroupDialog } from "./EditEnvelopeGroupDialog";
 
 export const EnvelopeList = () => {
@@ -19,6 +19,9 @@ export const EnvelopeList = () => {
   const [envelopeGroupEditionModalOpen, setEnvelopeGroupEditionModalOpen] =
     useState(false);
   const [envelopeId, setEnvelopeId] = useState<string | undefined>(undefined);
+  const [currentGroupId, setCurrentGroupId] = useState<string | undefined>(
+    undefined
+  );
   const [envelopeGroupId, setEnvelopeGroupId] = useState<string | undefined>(
     undefined
   );
@@ -34,6 +37,11 @@ export const EnvelopeList = () => {
 
   if (!envelopes || !defaultEnvelope || !envelopeGroups)
     return <Box>Loading envelopes...</Box>;
+
+  const envelopesById = envelopes.reduce((acc, envelope) => {
+    acc[envelope.id] = envelope;
+    return acc;
+  }, {} as Record<string, EnvelopeView>);
 
   return (
     <Box className="flex-grow">
@@ -72,41 +80,63 @@ export const EnvelopeList = () => {
           <Box>Balance</Box>
         </Box>
         {envelopeGroups?.map((group) => {
-          return <Box>{group.name}</Box>;
-        })}
-        {envelopes
-          .filter((envelope) => !envelope.isDefault)
-          .filter((envelope) => !envelope.isHidden)
-          .map(({ id, name, activity }) => (
-            <Box className="contents" key={id}>
-              <Box className="pl-3 pr-3 pb-2">{name}</Box>
-              <Box className="flex justify-end pl-3 pr-3 pb-2">
-                <AllocatedField envelopeId={id} />
+          return (
+            <>
+              <Box
+                className="flex items-center"
+                key={group.id}
+                sx={{ gridColumn: "1 / span 4" }}
+              >
+                <Box>{group.name}</Box>
+                <IconButton
+                  size="small"
+                  onClick={() => {
+                    setCurrentGroupId(group.id);
+                    setEnvelopeId(undefined);
+                    setEnvelopeEditionModalOpen(true);
+                  }}
+                >
+                  <AddIcon />
+                </IconButton>
               </Box>
-              <Box className="flex justify-end pl-3 pr-3 pb-2 font-number">
-                {formatCurrency(activity)}
-              </Box>
-              <Box className="flex justify-end pl-3 pr-3 pb-2">
-                <AssignPopup envelopeId={id}>
-                  {({ envelope }) => (
-                    <Box
-                      sx={{ fontFamily: "Figtree" }}
-                      className={`inline-block rounded-full pl-3 pr-3 cursor-pointer ${
-                        envelope.balance < 0 ? "bg-[#FAACA5]" : "bg-[#C1EE9F]"
-                      }`}
-                    >
-                      {formatCurrency(envelope.balance)}
+              {group.envelopes.map((id) => {
+                const { name, activity } = envelopesById[id];
+                return (
+                  <Box className="contents" key={id}>
+                    <Box className="pl-3 pr-3 pb-2">{name}</Box>
+                    <Box className="flex justify-end pl-3 pr-3 pb-2">
+                      <AllocatedField envelopeId={id} />
                     </Box>
-                  )}
-                </AssignPopup>
-              </Box>
-            </Box>
-          ))}
+                    <Box className="flex justify-end pl-3 pr-3 pb-2 font-number">
+                      {formatCurrency(activity)}
+                    </Box>
+                    <Box className="flex justify-end pl-3 pr-3 pb-2">
+                      <AssignPopup envelopeId={id}>
+                        {({ envelope }) => (
+                          <Box
+                            sx={{ fontFamily: "Figtree" }}
+                            className={`inline-block rounded-full pl-3 pr-3 cursor-pointer ${
+                              envelope.balance < 0
+                                ? "bg-[#FAACA5]"
+                                : "bg-[#C1EE9F]"
+                            }`}
+                          >
+                            {formatCurrency(envelope.balance)}
+                          </Box>
+                        )}
+                      </AssignPopup>
+                    </Box>
+                  </Box>
+                );
+              })}
+            </>
+          );
+        })}
       </Box>
 
-      <Button variant="outlined">Add group</Button>
       <EditEnvelopeDialog
         envelopeId={envelopeId}
+        groupId={currentGroupId}
         open={envelopeEditionModalOpen}
         onClose={() => {
           setEnvelopeEditionModalOpen(false);

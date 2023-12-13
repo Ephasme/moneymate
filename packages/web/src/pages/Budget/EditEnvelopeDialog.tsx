@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   Dialog,
   DialogActions,
@@ -21,6 +22,7 @@ const useSaveEnvelope = (props: { onClose: () => void }) => {
     },
     onSuccess() {
       queryClient.invalidateQueries({ queryKey: ["envelopes"] });
+      queryClient.invalidateQueries({ queryKey: ["envelope-groups"] });
       props.onClose();
     },
   });
@@ -28,10 +30,12 @@ const useSaveEnvelope = (props: { onClose: () => void }) => {
 
 export const EditEnvelopeDialog = ({
   envelopeId,
+  groupId,
   open,
   onClose,
 }: {
   envelopeId?: string;
+  groupId?: string;
   open: boolean;
   onClose: () => void;
 }) => {
@@ -46,7 +50,12 @@ export const EditEnvelopeDialog = ({
       <Formik
         initialValues={{ name: envelope?.name ?? "" }}
         onSubmit={(values) => {
-          saveEnvelope({ budgetId, id: envelopeId, ...values });
+          saveEnvelope({
+            budgetId,
+            parentId: groupId,
+            id: envelopeId,
+            ...values,
+          });
         }}
       >
         {({ getFieldProps, handleSubmit, handleReset }) => (
@@ -55,6 +64,7 @@ export const EditEnvelopeDialog = ({
               {envelopeId ? "Edit envelope" : "Create envelope"}
             </DialogTitle>
             <DialogContent>
+              <Box>{groupId}</Box>
               <TextField label="Name" {...getFieldProps("name")} />
             </DialogContent>
             <DialogActions>

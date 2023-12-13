@@ -40,7 +40,7 @@ export const SaveEnvelopeGroup = ({
         envelopeGroup.name = name;
         envelopeGroup.budgetId = budget.id;
 
-        await entities.save(Envelope, envelopeGroup);
+        await entities.save(EnvelopeGroup, envelopeGroup);
 
         return { id: envelopeGroup.id };
       }

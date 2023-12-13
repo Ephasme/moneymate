@@ -31,4 +31,13 @@ export class EnvelopeGroup {
 
   @OneToMany(() => Envelope, (group) => group.parent)
   envelopes!: Envelope[];
+
+  @Column({ default: false })
+  isSystem!: boolean;
+
+  @Column({ default: false })
+  isHidden!: boolean;
+
+  @Column({ default: false })
+  isDefault!: boolean;
 }

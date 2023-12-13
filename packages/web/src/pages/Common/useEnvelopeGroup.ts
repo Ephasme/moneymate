@@ -8,10 +8,7 @@ export const useEnvelopeGroup = (envelopeGroupId: string | undefined) => {
   const { data: envelopeGroup } = useQuery({
     queryKey: ["envelope-groups", { budgetId, envelopeGroupId, currentMonth }],
     queryFn: () =>
-      api.getEnvelopeGroup(
-        { envelopeGroupId: envelopeGroupId!, budgetId },
-        { currentMonth }
-      ),
+      api.getEnvelopeGroup({ envelopeGroupId: envelopeGroupId!, budgetId }),
     enabled: !!budgetId && !!envelopeGroupId,
   });
   return envelopeGroup;

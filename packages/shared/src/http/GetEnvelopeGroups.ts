@@ -11,7 +11,6 @@ export type GetEnvelopeGroupsQuery = z.infer<
 
 export const GetEnvelopeGroupsParamsSchema = z.object({
   budgetId: z.string().uuid(),
-  envelopeId: z.string().uuid(),
 });
 export type GetEnvelopeGroupsParams = z.infer<
   typeof GetEnvelopeGroupsParamsSchema

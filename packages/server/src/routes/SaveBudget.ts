@@ -44,6 +44,7 @@ export const SaveBudget = ({
             systemGroup.budgetId = budget.id;
             systemGroup.userId = user.id;
             systemGroup.name = "System";
+            systemGroup.isSystem = true;
             await manager.save(systemGroup);
 
             const mainGroup = new EnvelopeGroup();
@@ -51,6 +52,7 @@ export const SaveBudget = ({
             mainGroup.budgetId = budget.id;
             mainGroup.userId = user.id;
             mainGroup.name = "Default Group";
+            mainGroup.isDefault = true;
             await manager.save(mainGroup);
 
             const mainEnvelope = new Envelope();
