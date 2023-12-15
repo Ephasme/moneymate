@@ -24,6 +24,7 @@ export const SaveTransfer = ({
           amount,
           fromEnvelopeId,
           toEnvelopeId,
+          date,
         } = SaveTransferRequestSchema.parse(request.body);
 
         const budget = await entities.findOneBy(Budget, { id: budgetId });
@@ -33,7 +34,7 @@ export const SaveTransfer = ({
 
         const [transfer] = await getOrNew(entities, user, Transfer, transferId);
 
-        transfer.date = new Date();
+        transfer.date = date;
         transfer.amount = amount.toString();
         transfer.budgetId = budget.id;
         transfer.fromEnvelopeId = fromEnvelopeId;

@@ -29,6 +29,7 @@ import * as mil from "../../helpers/mil";
 
 const AssignPopupInner = ({ envelope }: { envelope: EnvelopeView }) => {
   const budgetId = useStore((state) => state.budgetId);
+  const currentMonth = useStore((state) => state.currentMonth);
   const { data: envelopes } = useEnvelopes();
   const { mutate: saveTransfer } = useSaveTransfer();
 
@@ -44,6 +45,7 @@ const AssignPopupInner = ({ envelope }: { envelope: EnvelopeView }) => {
         onSubmit={async ({ envelopeId, amount }) => {
           if (envelopeId) {
             saveTransfer({
+              date: currentMonth.toISOString(),
               budgetId,
               fromEnvelopeId: envelope.id,
               toEnvelopeId: envelopeId,
@@ -55,7 +57,7 @@ const AssignPopupInner = ({ envelope }: { envelope: EnvelopeView }) => {
         {({ setFieldValue, handleSubmit, values }) => (
           <Box className="flex flex-col gap-2">
             <Box className="flex items-center justify-between">
-              <Box>Move:</Box>
+              <Box className="text-black">Move:</Box>
             </Box>
             <NumericFormat
               customInput={TextField}
@@ -66,12 +68,12 @@ const AssignPopupInner = ({ envelope }: { envelope: EnvelopeView }) => {
               suffix=" €"
               size="small"
               className="border-solid border border-[#e5e7eb] rounded-md p-2 font-number"
-              value={mil.div(values.amount)}
+              value={mil.divStr(values.amount)}
               onValueChange={({ value }) => {
                 setFieldValue("amount", mil.mult(value));
               }}
             />
-            <Box>To:</Box>
+            <Box className="text-black">To:</Box>
             <Autocomplete
               size="small"
               options={envelopes}

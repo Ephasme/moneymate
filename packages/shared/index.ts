@@ -20,6 +20,7 @@ export * from "./src/http/GetTransactions";
 export * from "./src/http/SaveAllocation";
 export * from "./src/http/GetAllocation";
 export * from "./src/http/DeleteAllocation";
+export * from "./src/http/DeleteEnvelope";
 export * from "./src/http/SaveTransfer";
 
 export * from "./src/views/AccountViewSchema";

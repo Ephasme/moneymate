@@ -1,7 +1,22 @@
-import { EnvelopeView } from "@moneymate/shared";
+import {
+  EnvelopeView,
+  MAIN_ENVELOPE_GROUP_ID,
+  SYSTEM_ENVELOPE_GROUP_ID,
+} from "@moneymate/shared";
 import AddIcon from "@mui/icons-material/Add";
-import { Box, IconButton } from "@mui/material";
-import { useEffect, useState } from "react";
+import ArrowDownIcon from "@mui/icons-material/ArrowDropDown";
+import DeleteIcon from "@mui/icons-material/Delete";
+import ArrowRightIcon from "@mui/icons-material/ArrowRight";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import {
+  Box,
+  Button,
+  Checkbox,
+  ClickAwayListener,
+  IconButton,
+  TextField,
+} from "@mui/material";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { formatCurrency } from "../../helpers/formatCurrency";
 import { useBudget } from "../Common/useBudget";
 import { useEnvelopeGroups } from "../Common/useEnvelopeGroups";
@@ -9,39 +24,204 @@ import { useEnvelopes } from "../Common/useEnvelopes";
 import { AllocatedField } from "./AllocatedField";
 import { AssignPopup } from "./AssignPopup";
 import { AvailableFunds } from "./AvailableFunds";
+import { CreateEnvelopeDialog } from "./CreateEnvelopeDialog";
+import { CreateEnvelopeGroupDialog } from "./CreateEnvelopeGroupDialog";
 import { CurrentMonthSelector } from "./CurrentMonthSelector";
-import { EditEnvelopeDialog } from "./EditEnvelopeDialog";
-import { EditEnvelopeGroupDialog } from "./EditEnvelopeGroupDialog";
+import _ from "lodash";
+import { useEnvelope } from "../Common/useEnvelope";
+import {
+  FloatingArrow,
+  useFloating,
+  arrow,
+  offset,
+  FloatingPortal,
+} from "@floating-ui/react";
+import { Formik } from "formik";
+import { useBudgetViewStore } from "./store";
+
+type EnvelopeGroupInfo = {
+  allocated: bigint;
+  activity: bigint;
+  balance: bigint;
+};
+
+export const EnvelopeName = ({ envelopeId }: { envelopeId: string }) => {
+  const envelope = useEnvelope(envelopeId);
+  const [isOpen, setIsOpen] = useState(false);
+  const arrowRef = useRef(null);
+  const { refs, floatingStyles, context } = useFloating({
+    open: isOpen,
+    onOpenChange: setIsOpen,
+    middleware: [
+      offset(10),
+      arrow({
+        element: arrowRef,
+      }),
+    ],
+  });
+
+  if (!envelope) return <Box className="flex-grow">Loading...</Box>;
+
+  return (
+    <>
+      <button
+        onClick={() => {
+          setIsOpen(true);
+        }}
+        ref={refs.setReference}
+        className="hover:underline underline-offset-2"
+      >
+        {envelope.name}
+      </button>
+      {isOpen && (
+        <FloatingPortal>
+          <ClickAwayListener onClickAway={() => setIsOpen(false)}>
+            <Box
+              ref={refs.setFloating}
+              style={floatingStyles}
+              className="flex flex-col gap-2 bg-white p-3 rounded-lg"
+              sx={{
+                boxShadow: "0px 5px 25px 5px rgba(0,0,0,0.2)",
+              }}
+            >
+              <FloatingArrow
+                className="fill-white"
+                ref={arrowRef}
+                context={context}
+              />
+              <Formik
+                initialValues={{ name: envelope.name }}
+                onSubmit={() => {}}
+              >
+                {({ getFieldProps }) => (
+                  <TextField label="Name" {...getFieldProps("name")} />
+                )}
+              </Formik>
+              <Box className="flex gap-2">
+                <Button startIcon={<VisibilityOffIcon />} variant="outlined">
+                  Hide
+                </Button>
+                <Button
+                  startIcon={<DeleteIcon />}
+                  color="error"
+                  variant="outlined"
+                >
+                  Delete
+                </Button>
+                <Box className="pl-4">
+                  <Button variant="contained">Save</Button>
+                </Box>
+              </Box>
+            </Box>
+          </ClickAwayListener>
+        </FloatingPortal>
+      )}
+    </>
+  );
+};
 
 export const EnvelopeList = () => {
-  const [envelopeEditionModalOpen, setEnvelopeEditionModalOpen] =
+  const [currentGroupId, setCurrentGroupId] = useState<string>();
+  const [createEnvelopeModalOpen, setCreateEnvelopeModalOpen] = useState(false);
+  const [createEnvelopeGroupModalOpen, setCreateEnvelopeGroupModalOpen] =
     useState(false);
-  const [envelopeGroupEditionModalOpen, setEnvelopeGroupEditionModalOpen] =
-    useState(false);
-  const [envelopeId, setEnvelopeId] = useState<string | undefined>(undefined);
-  const [currentGroupId, setCurrentGroupId] = useState<string | undefined>(
-    undefined
+  const [envelopeById, setEnvelopeById] = useState<Map<string, EnvelopeView>>(
+    new Map()
   );
-  const [envelopeGroupId, setEnvelopeGroupId] = useState<string | undefined>(
-    undefined
+  const [envelopeGroupInfo, setEnvelopeGroupInfo] = useState<
+    Map<string, EnvelopeGroupInfo>
+  >(new Map());
+
+  const selectedEnvelopes = useBudgetViewStore(
+    (state) => state.selectedEnvelopes
   );
+  const selectEnvelopes = useBudgetViewStore((state) => state.selectEnvelopes);
+  const removeEnvelopes = useBudgetViewStore((state) => state.removeEnvelopes);
+  const setSelectedEnvelopes = useBudgetViewStore(
+    (state) => state.setSelectedEnvelopes
+  );
+
+  const groupStates = useBudgetViewStore((state) => state.groupStates);
+  const setGroupStates = useBudgetViewStore((state) => state.setGroupStates);
+  const toggleGroupState = useBudgetViewStore(
+    (state) => state.toggleGroupState
+  );
+
   const { data: budget } = useBudget();
   const { data: envelopes } = useEnvelopes();
   const { data: envelopeGroups } = useEnvelopeGroups();
 
-  const [defaultEnvelope, setDefaultEnvelope] = useState<EnvelopeView>();
   useEffect(() => {
-    if (!envelopes) return;
-    setDefaultEnvelope(envelopes.find((x) => x.isDefault));
+    if (envelopes) {
+      setEnvelopeById(
+        envelopes.reduce((acc, envelope) => {
+          acc.set(envelope.id, envelope);
+          return acc;
+        }, new Map<string, EnvelopeView>())
+      );
+
+      setEnvelopeGroupInfo(
+        _(envelopes)
+          .groupBy((x) => x.parentId)
+          .mapValues((group) => {
+            return {
+              allocated: group.reduce(
+                (acc, x) => acc + (x.allocated ?? 0n),
+                0n
+              ),
+              activity: group.reduce((acc, x) => acc + (x.activity ?? 0n), 0n),
+              balance: group.reduce((acc, x) => acc + (x.balance ?? 0n), 0n),
+            };
+          })
+          .reduce((acc, value, key) => {
+            acc.set(key, value);
+            return acc;
+          }, new Map<string, EnvelopeGroupInfo>())
+      );
+
+      setDefaultEnvelope(envelopes.find((x) => x.isDefault));
+    }
   }, [envelopes]);
+
+  const [defaultEnvelope, setDefaultEnvelope] = useState<EnvelopeView>();
+
+  const getGlobalStatus = useCallback(() => {
+    if (envelopes) {
+      const checked = _(envelopes).every((x) =>
+        selectedEnvelopes.includes(x.id)
+      );
+      const indeterminate =
+        !checked && _(envelopes).some((x) => selectedEnvelopes.includes(x.id));
+      return { checked, indeterminate };
+    }
+    return { checked: false, indeterminate: false };
+  }, [envelopes, selectedEnvelopes]);
+
+  const getGroupStatus = useCallback(
+    (groupId: string) => {
+      if (envelopeGroups) {
+        const envelopes =
+          envelopeGroups.find((x) => x.id === groupId)?.envelopes ?? [];
+        const checked = _(envelopes).every((x) =>
+          selectedEnvelopes.includes(x)
+        );
+        const indeterminate =
+          !checked && _(envelopes).some((x) => selectedEnvelopes.includes(x));
+        return { checked, indeterminate };
+      }
+      return { checked: false, indeterminate: false };
+    },
+    [envelopes, envelopeGroups, selectedEnvelopes]
+  );
 
   if (!envelopes || !defaultEnvelope || !envelopeGroups)
     return <Box>Loading envelopes...</Box>;
 
-  const envelopesById = envelopes.reduce((acc, envelope) => {
-    acc[envelope.id] = envelope;
-    return acc;
-  }, {} as Record<string, EnvelopeView>);
+  const filteredGroups = envelopeGroups?.filter(
+    (group) =>
+      group.id !== SYSTEM_ENVELOPE_GROUP_ID &&
+      group.id !== MAIN_ENVELOPE_GROUP_ID
+  );
 
   return (
     <Box className="flex-grow">
@@ -55,98 +235,211 @@ export const EnvelopeList = () => {
         <AvailableFunds />
       </Box>
       <Box
-        className="grid p-2"
-        sx={{ gridTemplateColumns: "auto 20% 20% 20%" }}
+        className="grid"
+        sx={{ gridTemplateColumns: "38px 24px auto 20% 20% 20%" }}
       >
-        <Box className="flex items-center gap-2 uppercase bg-slate-200 text-sm text-left p-2 mb-2">
-          <Box>Name</Box>
+        <Box className="flex border-y border-slate-300 items-center">
+          <Checkbox
+            sx={{ "&.MuiCheckbox-root": { p: 0, pl: "0.5rem" } }}
+            disableRipple
+            size="small"
+            checked={getGlobalStatus().checked}
+            indeterminate={getGlobalStatus().indeterminate}
+            onChange={(_, checked) => {
+              if (checked) {
+                setSelectedEnvelopes(envelopes.map((x) => x.id));
+              } else {
+                setSelectedEnvelopes([]);
+              }
+            }}
+          />
+        </Box>
+        <Box className="flex border-y border-slate-300 items-center">
+          <IconButton
+            onClick={() => {
+              const newState = _.some(
+                filteredGroups,
+                (group) => groupStates[group.id] === "open"
+              )
+                ? ("closed" as const)
+                : ("open" as const);
+              setGroupStates(
+                Object.fromEntries(
+                  filteredGroups.map((group) => {
+                    return [group.id, newState];
+                  })
+                )
+              );
+            }}
+            sx={{ "&.MuiButtonBase-root": { p: 0 } }}
+            size="small"
+          >
+            {_.some(
+              filteredGroups,
+              (group) => groupStates[group.id] === "open"
+            ) ? (
+              <ArrowDownIcon />
+            ) : (
+              <ArrowRightIcon />
+            )}
+          </IconButton>
+        </Box>
+        <Box className="flex items-center border-y border-slate-300 gap-2 uppercase text-sm pl-2 text-left">
+          <Box>Envelope</Box>
           <IconButton
             size="small"
             onClick={() => {
-              setEnvelopeGroupId(undefined);
-              setEnvelopeGroupEditionModalOpen(true);
+              setCreateEnvelopeGroupModalOpen(true);
             }}
           >
             <AddIcon fontSize="small" />
           </IconButton>
         </Box>
-        <Box className="flex items-center justify-end uppercase bg-slate-200 text-sm text-right p-2 mb-2 pr-5">
+        <Box className="flex items-center border-y border-slate-300 justify-end uppercase pr-2 py-3 text-sm text-right">
           <Box>Allocated</Box>
         </Box>
-        <Box className="flex items-center justify-end uppercase bg-slate-200 text-sm text-right p-2 mb-2">
+        <Box className="flex items-center border-y border-slate-300 justify-end uppercase pr-2 py-3 text-sm text-right">
           <Box>Activity</Box>
         </Box>
-        <Box className="flex items-center justify-end uppercase bg-slate-200 text-sm text-right p-2 mb-2">
+        <Box className="flex items-center border-y border-slate-300 justify-end uppercase pr-4 py-3 text-sm text-right">
           <Box>Balance</Box>
         </Box>
-        {envelopeGroups?.map((group) => {
+        {filteredGroups.map((group) => {
           return (
-            <>
+            <Box key={group.id} className="contents">
+              <Box className="flex items-center border-b border-slate-300 bg-[#EDF1F5]">
+                <Checkbox
+                  checked={getGroupStatus(group.id).checked}
+                  indeterminate={getGroupStatus(group.id).indeterminate}
+                  onChange={(_, checked) => {
+                    if (checked) {
+                      selectEnvelopes(
+                        envelopeGroups?.find((x) => x.id === group.id)
+                          ?.envelopes ?? []
+                      );
+                    } else {
+                      removeEnvelopes(
+                        selectedEnvelopes.filter((x) =>
+                          envelopeGroups
+                            ?.find((x) => x.id === group.id)
+                            ?.envelopes.includes(x)
+                        )
+                      );
+                    }
+                  }}
+                  sx={{ "&.MuiCheckbox-root": { p: 0, pl: "0.5rem" } }}
+                  disableRipple
+                  size="small"
+                />
+              </Box>
+              <Box className="flex border-b border-slate-300 bg-[#EDF1F5] items-center">
+                <IconButton
+                  sx={{ "&.MuiButtonBase-root": { p: 0 } }}
+                  size="small"
+                  onClick={() => toggleGroupState(group.id)}
+                >
+                  {groupStates[group.id] === "open" ? (
+                    <ArrowDownIcon />
+                  ) : (
+                    <ArrowRightIcon />
+                  )}
+                </IconButton>
+              </Box>
               <Box
-                className="flex items-center"
+                className="flex items-center border-b border-slate-300 gap-2 pl-2 bg-[#EDF1F5]"
                 key={group.id}
-                sx={{ gridColumn: "1 / span 4" }}
               >
                 <Box>{group.name}</Box>
                 <IconButton
                   size="small"
                   onClick={() => {
                     setCurrentGroupId(group.id);
-                    setEnvelopeId(undefined);
-                    setEnvelopeEditionModalOpen(true);
+                    setCreateEnvelopeModalOpen(true);
                   }}
                 >
-                  <AddIcon />
+                  <AddIcon fontSize="small" />
                 </IconButton>
               </Box>
-              {group.envelopes.map((id) => {
-                const { name, activity } = envelopesById[id];
-                return (
-                  <Box className="contents" key={id}>
-                    <Box className="pl-3 pr-3 pb-2">{name}</Box>
-                    <Box className="flex justify-end pl-3 pr-3 pb-2">
-                      <AllocatedField envelopeId={id} />
+              <Box className="flex bg-[#EDF1F5] pr-2 py-2 border-b border-slate-300 flex-grow items-center justify-end font-number">
+                {formatCurrency(
+                  envelopeGroupInfo.get(group.id)?.allocated ?? 0n
+                )}
+              </Box>
+              <Box className="flex bg-[#EDF1F5] pr-2 py-2 border-b border-slate-300 flex-grow items-center justify-end font-number">
+                {formatCurrency(
+                  envelopeGroupInfo.get(group.id)?.activity ?? 0n
+                )}
+              </Box>
+              <Box className="flex bg-[#EDF1F5] pr-4 py-2 border-b border-slate-300 flex-grow items-center justify-end font-number">
+                {formatCurrency(envelopeGroupInfo.get(group.id)?.balance ?? 0n)}
+              </Box>
+
+              {groupStates[group.id] === "open" &&
+                group.envelopes.map((id) => {
+                  const { activity } = envelopeById.get(id) ?? {};
+                  return (
+                    <Box className="contents" key={id}>
+                      <Box className="flex items-center border-b border-slate-300 justify-start">
+                        <Checkbox
+                          checked={selectedEnvelopes.includes(id)}
+                          onChange={(_, checked) => {
+                            if (checked) {
+                              selectEnvelopes([id]);
+                            } else {
+                              removeEnvelopes([id]);
+                            }
+                          }}
+                          sx={{
+                            "&.MuiCheckbox-root": { p: 0, pl: "0.5rem" },
+                          }}
+                          disableRipple
+                          size="small"
+                        />
+                      </Box>
+                      <Box className="border-b border-slate-300"></Box>
+                      <Box className="flex items-center py-2 pl-2 border-b border-slate-300 justify-start">
+                        <EnvelopeName envelopeId={id} />
+                      </Box>
+                      <Box className="flex items-center py-2 border-b border-slate-300 justify-end">
+                        <AllocatedField envelopeId={id} />
+                      </Box>
+                      <Box className="flex items-center py-2 border-b border-slate-300 justify-end pr-2 font-number">
+                        {formatCurrency(activity ?? 0n)}
+                      </Box>
+                      <Box className="flex items-center py-2 border-b border-slate-300 justify-end pr-2">
+                        <AssignPopup envelopeId={id}>
+                          {({ envelope }) => (
+                            <Box
+                              sx={{ fontFamily: "Figtree" }}
+                              className={`inline-block rounded-full cursor-pointer px-2 ${
+                                envelope.balance < 0
+                                  ? "bg-[#FAACA5]"
+                                  : "bg-[#C1EE9F]"
+                              }`}
+                            >
+                              {formatCurrency(envelope.balance)}
+                            </Box>
+                          )}
+                        </AssignPopup>
+                      </Box>
                     </Box>
-                    <Box className="flex justify-end pl-3 pr-3 pb-2 font-number">
-                      {formatCurrency(activity)}
-                    </Box>
-                    <Box className="flex justify-end pl-3 pr-3 pb-2">
-                      <AssignPopup envelopeId={id}>
-                        {({ envelope }) => (
-                          <Box
-                            sx={{ fontFamily: "Figtree" }}
-                            className={`inline-block rounded-full pl-3 pr-3 cursor-pointer ${
-                              envelope.balance < 0
-                                ? "bg-[#FAACA5]"
-                                : "bg-[#C1EE9F]"
-                            }`}
-                          >
-                            {formatCurrency(envelope.balance)}
-                          </Box>
-                        )}
-                      </AssignPopup>
-                    </Box>
-                  </Box>
-                );
-              })}
-            </>
+                  );
+                })}
+            </Box>
           );
         })}
       </Box>
-
-      <EditEnvelopeDialog
-        envelopeId={envelopeId}
+      <CreateEnvelopeDialog
         groupId={currentGroupId}
-        open={envelopeEditionModalOpen}
+        open={createEnvelopeModalOpen}
         onClose={() => {
-          setEnvelopeEditionModalOpen(false);
+          setCreateEnvelopeModalOpen(false);
         }}
       />
-      <EditEnvelopeGroupDialog
-        envelopeGroupId={envelopeGroupId}
-        open={envelopeGroupEditionModalOpen}
+      <CreateEnvelopeGroupDialog
+        open={createEnvelopeGroupModalOpen}
         onClose={() => {
-          setEnvelopeGroupEditionModalOpen(false);
+          setCreateEnvelopeGroupModalOpen(false);
         }}
       />
     </Box>

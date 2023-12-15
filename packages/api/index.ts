@@ -33,7 +33,6 @@ import {
   GetAllocationResponse,
   DeleteAllocationResponse,
   SaveTransferResponse,
-  SaveTransferResponseSchema,
   SaveTransactionRequestInput,
   SaveTransferRequestInput,
   SaveEnvelopeRequestInput,
@@ -48,9 +47,11 @@ import {
   GetEnvelopeGroupsResponseSchema,
   GetEnvelopeGroupResponseSchema,
 } from "@moneymate/shared";
+import { saveTransfer } from "./Transfer";
+import urlcat from "urlcat";
 
 import { z } from "zod";
-import urlcat from "urlcat";
+import { TokenProvider } from "./types";
 import * as dateFns from "date-fns";
 
 const AllocationPropsSchema = z.object({
@@ -135,7 +136,8 @@ export interface Api {
   }): Promise<SignUpResponse>;
 }
 
-export const makeApi = (getToken: () => Promise<string | null>): Api => ({
+export const makeApi = (getToken: TokenProvider): Api => ({
+  saveTransfer: saveTransfer(getToken),
   async deleteAllocation({ allocationId }) {
     try {
       const reply = await fetch(
@@ -157,28 +159,6 @@ export const makeApi = (getToken: () => Promise<string | null>): Api => ({
       }
     } catch (error) {
       console.error("Failed to delete Allocation", { error });
-      throw error;
-    }
-  },
-  async saveTransfer(props) {
-    try {
-      const reply = await fetch(`http://localhost:3000/api/transfer`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${await getToken()}`,
-        },
-        body: JSON.stringify(props),
-      });
-      if (!reply.ok) {
-        console.error(await reply.text());
-        throw new Error("Failed to save transfer");
-      } else {
-        const result = await reply.json();
-        return SaveTransferResponseSchema.parse(result);
-      }
-    } catch (error) {
-      console.error("Failed to save transfer", { error });
       throw error;
     }
   },

@@ -10,52 +10,49 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Formik } from "formik";
 import { api } from "../../api";
 import { useStore } from "../../store";
-import { useEnvelopeGroup } from "../Common/useEnvelopeGroup";
 
-const useSaveEnvelopeGroup = (props: { onClose: () => void }) => {
+const useSaveEnvelope = (props: { onClose: () => void }) => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: api.saveEnvelopeGroup,
+    mutationFn: api.saveEnvelope,
     onError(error) {
       console.error(error);
     },
     onSuccess() {
+      queryClient.invalidateQueries({ queryKey: ["envelopes"] });
       queryClient.invalidateQueries({ queryKey: ["envelope-groups"] });
       props.onClose();
     },
   });
 };
 
-export const EditEnvelopeGroupDialog = ({
-  envelopeGroupId,
+export const CreateEnvelopeDialog = ({
+  groupId,
   open,
   onClose,
 }: {
-  envelopeGroupId?: string;
+  groupId?: string;
   open: boolean;
   onClose: () => void;
 }) => {
   const budgetId = useStore((state) => state.budgetId);
-  const envelopeGroup = useEnvelopeGroup(envelopeGroupId);
-  const { mutate: saveEnvelopeGroup } = useSaveEnvelopeGroup({ onClose });
-
-  if (envelopeGroupId && !envelopeGroup) return null;
+  const { mutate: saveEnvelope } = useSaveEnvelope({ onClose });
 
   return (
-    <Dialog open={open}>
+    <Dialog open={open} hideBackdrop>
       <Formik
-        initialValues={{ name: envelopeGroup?.name ?? "" }}
+        initialValues={{ name: "" }}
         onSubmit={(values) => {
-          saveEnvelopeGroup({ budgetId, id: envelopeGroupId, ...values });
+          saveEnvelope({
+            budgetId,
+            parentId: groupId,
+            ...values,
+          });
         }}
       >
         {({ getFieldProps, handleSubmit, handleReset }) => (
           <>
-            <DialogTitle>
-              {envelopeGroupId
-                ? "Edit Envelope Group"
-                : "Create Envelope Group"}
-            </DialogTitle>
+            <DialogTitle>Create envelope</DialogTitle>
             <DialogContent>
               <TextField label="Name" {...getFieldProps("name")} />
             </DialogContent>

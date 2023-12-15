@@ -110,6 +110,7 @@ export const TransactionEditRow = ({
           if (allocation.status === "active") {
             return {
               ...allocation,
+              date: allocation.date?.toISOString(),
               amount: allocation.amount.toString(),
             };
           }
@@ -223,7 +224,7 @@ export const TransactionEditRow = ({
             className="text-right"
             customInput={TextField}
             size="small"
-            value={mil.div(formik.values.negativeAmount)}
+            value={mil.divStr(formik.values.negativeAmount)}
             decimalScale={2}
             decimalSeparator=","
             thousandSeparator=" "
@@ -250,7 +251,7 @@ export const TransactionEditRow = ({
             className="text-right"
             customInput={TextField}
             size="small"
-            value={mil.div(formik.values.positiveAmount)}
+            value={mil.divStr(formik.values.positiveAmount)}
             decimalScale={2}
             decimalSeparator=","
             thousandSeparator=" "

@@ -2,6 +2,10 @@ import { z } from "zod";
 
 export const SaveTransferRequestSchema = z.object({
   id: z.string().uuid().optional(),
+  date: z
+    .string()
+    .datetime()
+    .transform((date) => new Date(date)),
   budgetId: z.string().uuid(),
   fromEnvelopeId: z.string().uuid(),
   toEnvelopeId: z.string().uuid(),

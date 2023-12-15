@@ -11,6 +11,7 @@ import * as mil from "../../helpers/mil";
 export const AllocatedField = ({ envelopeId }: { envelopeId: string }) => {
   const envelope = useEnvelope(envelopeId);
   const budgetId = useStore((state) => state.budgetId);
+  const currentMonth = useStore((state) => state.currentMonth);
   const [mode, setMode] = useState<"edit" | "view">("view");
   const [newValue, setNewValue] = useState<bigint>(0n);
   const { mutate: saveTransfer } = useSaveTransfer();
@@ -33,7 +34,7 @@ export const AllocatedField = ({ envelopeId }: { envelopeId: string }) => {
         <Box>
           <NumericFormat
             autoFocus
-            value={mil.div(newValue)}
+            value={mil.divStr(newValue)}
             onValueChange={(ev) => {
               if (ev.value) {
                 setNewValue(mil.mult(ev.value));
@@ -43,6 +44,7 @@ export const AllocatedField = ({ envelopeId }: { envelopeId: string }) => {
               if (e.key === "Enter") {
                 saveTransfer({
                   budgetId,
+                  date: currentMonth.toISOString(),
                   fromEnvelopeId: MAIN_ENVELOPE_ID,
                   toEnvelopeId: envelope.id,
                   amount: (newValue - envelope.allocated).toString(),

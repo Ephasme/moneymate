@@ -6,6 +6,7 @@ import { Protected } from "./helpers";
 import { Account } from "./pages/Account";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 const queryClient = new QueryClient();
 const router = createBrowserRouter([
@@ -32,6 +33,7 @@ function App() {
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <QueryClientProvider client={queryClient}>
+        <ReactQueryDevtools initialIsOpen={false} />
         <ThemeProvider theme={theme}>
           <CssBaseline>
             <RouterProvider router={router} />

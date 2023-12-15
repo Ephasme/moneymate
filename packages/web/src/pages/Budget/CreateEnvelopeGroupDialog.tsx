@@ -1,5 +1,4 @@
 import {
-  Box,
   Button,
   Dialog,
   DialogActions,
@@ -11,60 +10,44 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Formik } from "formik";
 import { api } from "../../api";
 import { useStore } from "../../store";
-import { useEnvelope } from "../Common/useEnvelope";
 
-const useSaveEnvelope = (props: { onClose: () => void }) => {
+const useSaveEnvelopeGroup = (props: { onClose: () => void }) => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: api.saveEnvelope,
+    mutationFn: api.saveEnvelopeGroup,
     onError(error) {
       console.error(error);
     },
     onSuccess() {
-      queryClient.invalidateQueries({ queryKey: ["envelopes"] });
       queryClient.invalidateQueries({ queryKey: ["envelope-groups"] });
       props.onClose();
     },
   });
 };
 
-export const EditEnvelopeDialog = ({
-  envelopeId,
-  groupId,
+export const CreateEnvelopeGroupDialog = ({
   open,
   onClose,
 }: {
-  envelopeId?: string;
-  groupId?: string;
+  envelopeGroupId?: string;
   open: boolean;
   onClose: () => void;
 }) => {
   const budgetId = useStore((state) => state.budgetId);
-  const envelope = useEnvelope(envelopeId);
-  const { mutate: saveEnvelope } = useSaveEnvelope({ onClose });
-
-  if (envelopeId && !envelope) return null;
+  const { mutate: saveEnvelopeGroup } = useSaveEnvelopeGroup({ onClose });
 
   return (
     <Dialog open={open}>
       <Formik
-        initialValues={{ name: envelope?.name ?? "" }}
+        initialValues={{ name: "" }}
         onSubmit={(values) => {
-          saveEnvelope({
-            budgetId,
-            parentId: groupId,
-            id: envelopeId,
-            ...values,
-          });
+          saveEnvelopeGroup({ budgetId, ...values });
         }}
       >
         {({ getFieldProps, handleSubmit, handleReset }) => (
           <>
-            <DialogTitle>
-              {envelopeId ? "Edit envelope" : "Create envelope"}
-            </DialogTitle>
+            <DialogTitle>Create Envelope Group</DialogTitle>
             <DialogContent>
-              <Box>{groupId}</Box>
               <TextField label="Name" {...getFieldProps("name")} />
             </DialogContent>
             <DialogActions>

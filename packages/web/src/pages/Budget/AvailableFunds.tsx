@@ -44,20 +44,18 @@ export const AvailableFunds = () => {
           )}
         </Box>
 
-        {envelope.balance > 0n && (
-          <Box
-            className={`ml-8 text-white rounded-md`}
-            sx={{ backgroundColor: colors.button }}
-          >
-            <AssignPopup envelopeId={envelope.id}>
-              {() => (
-                <ButtonBase>
-                  <Box className={`pt-1 pb-1 pl-4 pr-4 `}>Assign</Box>
-                </ButtonBase>
-              )}
-            </AssignPopup>
-          </Box>
-        )}
+        <Box
+          className={`ml-8 text-white rounded-md`}
+          sx={{ backgroundColor: colors.button }}
+        >
+          <AssignPopup envelopeId={envelope.id}>
+            {() => (
+              <ButtonBase>
+                <Box className={`pt-1 pb-1 pl-4 pr-4 `}>Assign</Box>
+              </ButtonBase>
+            )}
+          </AssignPopup>
+        </Box>
       </Box>
     </Box>
   );

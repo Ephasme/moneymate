@@ -9,17 +9,11 @@ import _ from "lodash";
 import { EntityManager } from "typeorm";
 import { Envelope } from "../entities";
 import { envelopeView } from "../helpers/envelopeView";
-import { AllocationRepository } from "../services/AllocationRepository";
-import { TransferRepository } from "../services/TransferRepository";
 
 export const GetEnvelopes = ({
   entities,
-  allocationRepository,
-  transferRepository,
 }: {
   entities: EntityManager;
-  allocationRepository: AllocationRepository;
-  transferRepository: TransferRepository;
 }): FastifyPluginCallback => {
   return (server, _ignored, done) => {
     server.get(
