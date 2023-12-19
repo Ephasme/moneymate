@@ -1,8 +1,14 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { Transaction } from "./Transaction";
-import { Envelope } from "./Envelope";
-import { User } from "./User";
-import { Budget } from "./Budget";
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  type Relation,
+} from "typeorm";
+import { Transaction } from "./Transaction.js";
+import { Envelope } from "./Envelope.js";
+import { User } from "./User.js";
+import { Budget } from "./Budget.js";
 
 @Entity()
 export class Allocation {
@@ -10,32 +16,32 @@ export class Allocation {
   id!: string;
 
   @ManyToOne(() => Envelope, (x) => x.allocations)
-  envelope!: Envelope;
+  envelope!: Relation<Envelope>;
 
-  @Column()
+  @Column({ type: "varchar" })
   envelopeId!: string;
 
   @ManyToOne(() => Budget, (x) => x.allocations)
-  budget!: Budget;
+  budget!: Relation<Budget>;
 
-  @Column()
+  @Column({ type: "varchar" })
   budgetId!: string;
 
   @ManyToOne(() => Transaction, (x) => x.allocations)
-  transaction!: Transaction;
+  transaction!: Relation<Transaction>;
 
-  @Column()
+  @Column({ type: "varchar" })
   transactionId!: string;
 
   @ManyToOne(() => User, (x) => x.allocations)
-  user!: User;
+  user!: Relation<User>;
 
-  @Column()
+  @Column({ type: "varchar" })
   userId!: string;
 
   @Column({ type: "bigint" })
   amount!: string;
 
-  @Column()
+  @Column({ type: "datetime" })
   date!: Date;
 }

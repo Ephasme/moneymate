@@ -1,5 +1,5 @@
 import { EntityManager, FindOptionsWhere, ObjectLiteral } from "typeorm";
-import { User } from "../entities";
+import { User } from "../entities/index.js";
 import { randomUUID } from "crypto";
 
 export const getOrNew = async <

@@ -1,3 +1,9 @@
 {
-  "name": "test"
+  "name": "test",
+  "scripts": {
+    "cleanup": "scripts/cleanup.sh"
+  },
+  "dependencies": {
+    "react-native-macos": "^0.72.11"
+  }
 }

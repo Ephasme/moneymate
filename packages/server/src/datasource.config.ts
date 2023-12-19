@@ -7,10 +7,10 @@ import {
   Account,
   Payee,
   Transfer,
-} from "./entities";
-import { Budget } from "./entities/Budget";
+} from "./entities/index.js";
+import { Budget } from "./entities/Budget.js";
 import env from "env-var";
-import { EnvelopeGroup } from "./entities/EnvelopeGroup";
+import { EnvelopeGroup } from "./entities/EnvelopeGroup.js";
 
 const DB_HOST = env.get("DB_HOST").required().asString();
 const DB_PORT = env.get("DB_PORT").required().asPortNumber();

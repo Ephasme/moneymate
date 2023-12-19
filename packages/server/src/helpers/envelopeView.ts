@@ -1,5 +1,5 @@
 import { EnvelopeViewInput } from "@moneymate/shared";
-import { Envelope } from "../entities";
+import { Envelope } from "../entities/index.js";
 import * as dateFns from "date-fns";
 
 function enrichEnvelope(

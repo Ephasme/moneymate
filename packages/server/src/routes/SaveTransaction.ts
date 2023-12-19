@@ -6,8 +6,8 @@ import {
 import { FastifyPluginCallback } from "fastify";
 import _ from "lodash";
 import { EntityManager } from "typeorm";
-import { Account, Allocation, Transaction } from "../entities";
-import { getOrNew } from "../helpers/getOrNew";
+import { Account, Allocation, Transaction } from "../entities/index.js";
+import { getOrNew } from "../helpers/getOrNew.js";
 
 export const SaveTransaction = ({
   entities,

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { TransactionStatuses } from "../model";
+import { TransactionStatuses } from "../model/index.js";
 
 export const AllocationEditedDeletedSchema = z.object({
   id: z.string(),

@@ -4,8 +4,8 @@ import {
 } from "@moneymate/shared";
 import { FastifyPluginCallback } from "fastify";
 import { EntityManager } from "typeorm";
-import { EnvelopeGroup } from "../entities";
-import { envelopeGroupView } from "../helpers/envelopeGroupView";
+import { EnvelopeGroup } from "../entities/index.js";
+import { envelopeGroupView } from "../helpers/envelopeGroupView.js";
 
 export const GetEnvelopeGroup = ({
   entities,

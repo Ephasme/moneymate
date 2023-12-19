@@ -1,5 +1,5 @@
 import { EntityManager } from "typeorm";
-import { Transaction } from "../entities";
+import { Transaction } from "../entities/index.js";
 import * as dateFns from "date-fns";
 
 export class BudgetRepository {

@@ -4,44 +4,45 @@ import {
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
+  type Relation,
 } from "typeorm";
-import { Transaction } from "./Transaction";
-import { User } from "./User";
-import { Account } from "./Account";
-import { Envelope } from "./Envelope";
-import { Allocation } from "./Allocation";
-import { Transfer } from "./Transfer";
-import { EnvelopeGroup } from "./EnvelopeGroup";
+import { Transaction } from "./Transaction.js";
+import { User } from "./User.js";
+import { Account } from "./Account.js";
+import { Envelope } from "./Envelope.js";
+import { Allocation } from "./Allocation.js";
+import { Transfer } from "./Transfer.js";
+import { EnvelopeGroup } from "./EnvelopeGroup.js";
 
 @Entity()
 export class Budget {
   @PrimaryGeneratedColumn("uuid")
   id!: string;
 
-  @Column()
+  @Column({ type: "varchar" })
   name!: string;
 
   @OneToMany(() => Envelope, (x) => x.budget)
-  envelopes!: Envelope[];
+  envelopes!: Relation<Envelope>[];
 
   @OneToMany(() => EnvelopeGroup, (x) => x.budget)
-  envelopeGroups!: EnvelopeGroup[];
+  envelopeGroups!: Relation<EnvelopeGroup>[];
 
   @OneToMany(() => Transaction, (x) => x.budget)
-  transactions!: Transaction[];
+  transactions!: Relation<Transaction>[];
 
   @OneToMany(() => Allocation, (x) => x.budget)
-  allocations!: Allocation[];
+  allocations!: Relation<Allocation>[];
 
   @OneToMany(() => Transfer, (x) => x.budget)
-  transfers!: Transfer[];
+  transfers!: Relation<Transfer>[];
 
   @OneToMany(() => Account, (x) => x.budget)
-  accounts!: Account[];
+  accounts!: Relation<Account>[];
 
   @ManyToOne(() => User, (x) => x.budgets)
-  user!: User;
+  user!: Relation<User>;
 
-  @Column()
+  @Column({ type: "varchar" })
   userId!: string;
 }

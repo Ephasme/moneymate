@@ -1,5 +1,5 @@
 import { EntityManager } from "typeorm";
-import { Transfer } from "../entities";
+import { Transfer } from "../entities/index.js";
 import * as dateFns from "date-fns";
 
 export class TransferRepository {

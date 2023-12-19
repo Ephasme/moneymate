@@ -1,39 +1,44 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { Transaction } from "./Transaction";
-import { Envelope } from "./Envelope";
-import { User } from "./User";
-import { Budget } from "./Budget";
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  type Relation,
+} from "typeorm";
+import { Envelope } from "./Envelope.js";
+import { User } from "./User.js";
+import { Budget } from "./Budget.js";
 
 @Entity()
 export class Transfer {
   @PrimaryGeneratedColumn("uuid")
   id!: string;
 
-  @Column()
+  @Column({ type: "datetime" })
   date!: Date;
 
   @ManyToOne(() => Envelope, (x) => x.fromTransfers)
-  fromEnvelope!: Envelope;
+  fromEnvelope!: Relation<Envelope>;
 
-  @Column()
+  @Column({ type: "varchar" })
   fromEnvelopeId!: string;
 
   @ManyToOne(() => Envelope, (x) => x.toTransfers)
-  toEnvelope!: Envelope;
+  toEnvelope!: Relation<Envelope>;
 
-  @Column()
+  @Column({ type: "varchar" })
   toEnvelopeId!: string;
 
   @ManyToOne(() => Budget, (x) => x.transfers)
-  budget!: Budget;
+  budget!: Relation<Budget>;
 
-  @Column()
+  @Column({ type: "varchar" })
   budgetId!: string;
 
   @ManyToOne(() => User, (x) => x.transfers)
-  user!: User;
+  user!: Relation<User>;
 
-  @Column()
+  @Column({ type: "varchar" })
   userId!: string;
 
   @Column({ type: "bigint" })

@@ -2,9 +2,19 @@
   "name": "@moneymate/api",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "packageManager": "pnpm@8.12.0",
+  "type": "module",
+  "files": [
+    "dist",
+    "node_modules"
+  ],
+  "main": "dist/index.js",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "engineStrict": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc"
   },
   "keywords": [],
   "author": "",
@@ -15,5 +25,9 @@
     "lodash": "^4.17.21",
     "urlcat": "^3.1.0",
     "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3",
+    "yalc": "1.0.0-pre.53"
   }
 }

@@ -8,10 +8,10 @@ import {
 } from "@moneymate/shared";
 import { FastifyPluginCallback } from "fastify";
 import { EntityManager } from "typeorm";
-import { Budget } from "../entities/Budget";
-import { getOrNew } from "../helpers/getOrNew";
-import { Envelope } from "../entities";
-import { EnvelopeGroup } from "../entities/EnvelopeGroup";
+import { Budget } from "../entities/Budget.js";
+import { getOrNew } from "../helpers/getOrNew.js";
+import { Envelope } from "../entities/index.js";
+import { EnvelopeGroup } from "../entities/EnvelopeGroup.js";
 
 export const SaveBudget = ({
   entities,

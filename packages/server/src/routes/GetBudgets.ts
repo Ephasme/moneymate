@@ -1,7 +1,7 @@
 import { GetBudgetsResponseInput } from "@moneymate/shared";
 import { FastifyPluginCallback } from "fastify";
 import { EntityManager } from "typeorm";
-import { Budget } from "../entities/Budget";
+import { Budget } from "../entities/Budget.js";
 
 export const GetBudgets = ({
   entities,

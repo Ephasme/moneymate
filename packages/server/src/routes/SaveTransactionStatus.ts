@@ -5,7 +5,7 @@ import {
 } from "@moneymate/shared";
 import { FastifyPluginCallback } from "fastify";
 import { EntityManager } from "typeorm";
-import { Transaction } from "../entities";
+import { Transaction } from "../entities/index.js";
 
 export const SaveTransactionStatus = ({
   entities,

@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { EnvelopeGroupViewSchema } from "../views/EnvelopeGroupViewSchema";
-import { MonthSchema } from "./MonthSchema";
+import { EnvelopeGroupViewSchema } from "../views/EnvelopeGroupViewSchema.js";
+import { MonthSchema } from "./MonthSchema.js";
 
 export const GetEnvelopeGroupsQuerySchema = z.object({
   currentMonth: MonthSchema.optional(),

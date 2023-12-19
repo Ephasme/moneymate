@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { AllocationViewSchema } from "../views/AllocationViewSchema";
+import { AllocationViewSchema } from "../views/AllocationViewSchema.js";
 
 export const GetAllocationParamsSchema = z.object({
   allocationId: z.string().uuid(),

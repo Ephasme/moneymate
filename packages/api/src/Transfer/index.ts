@@ -1,11 +1,17 @@
 import {
   SaveTransferRequestInput,
+  SaveTransferResponse,
   SaveTransferResponseSchema,
 } from "@moneymate/shared";
-import { TokenProvider } from "../types";
+import { TokenProvider } from "../types/index.js";
+
+export type TransferActions = {
+  saveTransfer(props: SaveTransferRequestInput): Promise<SaveTransferResponse>;
+};
 
 export const saveTransfer =
-  (getToken: TokenProvider) => async (props: SaveTransferRequestInput) => {
+  (getToken: TokenProvider): TransferActions["saveTransfer"] =>
+  async (props: SaveTransferRequestInput) => {
     try {
       const reply = await fetch(`http://localhost:3000/api/transfer`, {
         method: "POST",

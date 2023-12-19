@@ -1,11 +1,9 @@
 import {
   GetAccountParamsSchema,
   GetAccountResponseInput,
-  TransactionStatus,
 } from "@moneymate/shared";
 import { FastifyPluginCallback } from "fastify";
 import { EntityManager } from "typeorm";
-import { Account, Transaction } from "../entities";
 
 export const GetAccount = ({
   entities,

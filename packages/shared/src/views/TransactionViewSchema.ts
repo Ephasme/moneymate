@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { AllocationViewSchema } from "./AllocationViewSchema";
-import { TransactionStatuses } from "../model";
+import { AllocationViewSchema } from "./AllocationViewSchema.js";
+import { TransactionStatuses } from "../model/index.js";
 
 export const TransactionViewSchema = z.object({
   id: z.string().uuid(),

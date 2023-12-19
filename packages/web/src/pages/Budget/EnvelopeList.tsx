@@ -5,18 +5,9 @@ import {
 } from "@moneymate/shared";
 import AddIcon from "@mui/icons-material/Add";
 import ArrowDownIcon from "@mui/icons-material/ArrowDropDown";
-import DeleteIcon from "@mui/icons-material/Delete";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
-import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
-import {
-  Box,
-  Button,
-  Checkbox,
-  ClickAwayListener,
-  IconButton,
-  TextField,
-} from "@mui/material";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { Box, Checkbox, IconButton } from "@mui/material";
+import { useCallback, useEffect, useState } from "react";
 import { formatCurrency } from "../../helpers/formatCurrency";
 import { useBudget } from "../Common/useBudget";
 import { useEnvelopeGroups } from "../Common/useEnvelopeGroups";
@@ -28,16 +19,9 @@ import { CreateEnvelopeDialog } from "./CreateEnvelopeDialog";
 import { CreateEnvelopeGroupDialog } from "./CreateEnvelopeGroupDialog";
 import { CurrentMonthSelector } from "./CurrentMonthSelector";
 import _ from "lodash";
-import { useEnvelope } from "../Common/useEnvelope";
-import {
-  FloatingArrow,
-  useFloating,
-  arrow,
-  offset,
-  FloatingPortal,
-} from "@floating-ui/react";
-import { Formik } from "formik";
 import { useBudgetViewStore } from "./store";
+import { EnvelopeName } from "./EnvelopeName";
+import { EnvelopeGroupName } from "./EnvelopeGroupName";
 
 type EnvelopeGroupInfo = {
   allocated: bigint;
@@ -45,83 +29,9 @@ type EnvelopeGroupInfo = {
   balance: bigint;
 };
 
-export const EnvelopeName = ({ envelopeId }: { envelopeId: string }) => {
-  const envelope = useEnvelope(envelopeId);
-  const [isOpen, setIsOpen] = useState(false);
-  const arrowRef = useRef(null);
-  const { refs, floatingStyles, context } = useFloating({
-    open: isOpen,
-    onOpenChange: setIsOpen,
-    middleware: [
-      offset(10),
-      arrow({
-        element: arrowRef,
-      }),
-    ],
-  });
-
-  if (!envelope) return <Box className="flex-grow">Loading...</Box>;
-
-  return (
-    <>
-      <button
-        onClick={() => {
-          setIsOpen(true);
-        }}
-        ref={refs.setReference}
-        className="hover:underline underline-offset-2"
-      >
-        {envelope.name}
-      </button>
-      {isOpen && (
-        <FloatingPortal>
-          <ClickAwayListener onClickAway={() => setIsOpen(false)}>
-            <Box
-              ref={refs.setFloating}
-              style={floatingStyles}
-              className="flex flex-col gap-2 bg-white p-3 rounded-lg"
-              sx={{
-                boxShadow: "0px 5px 25px 5px rgba(0,0,0,0.2)",
-              }}
-            >
-              <FloatingArrow
-                className="fill-white"
-                ref={arrowRef}
-                context={context}
-              />
-              <Formik
-                initialValues={{ name: envelope.name }}
-                onSubmit={() => {}}
-              >
-                {({ getFieldProps }) => (
-                  <TextField label="Name" {...getFieldProps("name")} />
-                )}
-              </Formik>
-              <Box className="flex gap-2">
-                <Button startIcon={<VisibilityOffIcon />} variant="outlined">
-                  Hide
-                </Button>
-                <Button
-                  startIcon={<DeleteIcon />}
-                  color="error"
-                  variant="outlined"
-                >
-                  Delete
-                </Button>
-                <Box className="pl-4">
-                  <Button variant="contained">Save</Button>
-                </Box>
-              </Box>
-            </Box>
-          </ClickAwayListener>
-        </FloatingPortal>
-      )}
-    </>
-  );
-};
-
 export const EnvelopeList = () => {
   const [currentGroupId, setCurrentGroupId] = useState<string>();
+  const [showHidden, setShowHidden] = useState(false);
   const [createEnvelopeModalOpen, setCreateEnvelopeModalOpen] = useState(false);
   const [createEnvelopeGroupModalOpen, setCreateEnvelopeGroupModalOpen] =
     useState(false);
@@ -234,6 +144,16 @@ export const EnvelopeList = () => {
         <CurrentMonthSelector />
         <AvailableFunds />
       </Box>
+      <Box className="flex items-center">
+        <Checkbox
+          size="small"
+          checked={showHidden}
+          onChange={(_, value) => {
+            setShowHidden(value);
+          }}
+        />
+        <Box>Show hidden envelopes</Box>
+      </Box>
       <Box
         className="grid"
         sx={{ gridTemplateColumns: "38px 24px auto 20% 20% 20%" }}
@@ -305,6 +225,7 @@ export const EnvelopeList = () => {
           <Box>Balance</Box>
         </Box>
         {filteredGroups.map((group) => {
+          if (!showHidden && group.isHidden) return null;
           return (
             <Box key={group.id} className="contents">
               <Box className="flex items-center border-b border-slate-300 bg-[#EDF1F5]">
@@ -349,7 +270,7 @@ export const EnvelopeList = () => {
                 className="flex items-center border-b border-slate-300 gap-2 pl-2 bg-[#EDF1F5]"
                 key={group.id}
               >
-                <Box>{group.name}</Box>
+                <EnvelopeGroupName envelopeGroupId={group.id} />
                 <IconButton
                   size="small"
                   onClick={() => {
@@ -376,7 +297,8 @@ export const EnvelopeList = () => {
 
               {groupStates[group.id] === "open" &&
                 group.envelopes.map((id) => {
-                  const { activity } = envelopeById.get(id) ?? {};
+                  const { activity, isHidden } = envelopeById.get(id) ?? {};
+                  if (!showHidden && isHidden) return null;
                   return (
                     <Box className="contents" key={id}>
                       <Box className="flex items-center border-b border-slate-300 justify-start">

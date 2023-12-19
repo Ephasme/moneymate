@@ -4,7 +4,7 @@ import {
 } from "@moneymate/shared";
 import { FastifyPluginCallback } from "fastify";
 import { EntityManager } from "typeorm";
-import { Account } from "../entities";
+import { Account } from "../entities/index.js";
 
 export const GetAccounts = ({
   entities,

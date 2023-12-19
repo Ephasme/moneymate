@@ -1,6 +1,6 @@
 import * as dateFns from "date-fns";
 import { EntityManager } from "typeorm";
-import { Allocation } from "../entities";
+import { Allocation } from "../entities/index.js";
 import _ from "lodash";
 
 export class AllocationRepository {

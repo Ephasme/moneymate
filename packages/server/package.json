@@ -2,11 +2,15 @@
   "name": "@moneymate/server",
   "packageManager": "pnpm@8.12.0",
   "version": "1.0.0",
+  "type": "module",
+  "files": [
+    "dist"
+  ],
   "main": "index.js",
   "license": "MIT",
   "scripts": {
     "dev": "./scripts/dev-nodemon.sh",
-    "build": "tsc -p ./tsconfig.json",
+    "build": "tsc",
     "to:drop": "DOTENV_CONFIG_PATH=.env.local node -r dotenv/config -r ts-node/register ./node_modules/typeorm/cli.js schema:drop -d ./src/datasource.config.ts"
   },
   "devDependencies": {
@@ -16,6 +20,7 @@
     "nodemon": "^3.0.2",
     "pino-pretty": "^10.2.3",
     "ts-node": "^10.9.2",
+    "tsx": "^4.6.2",
     "typescript": "^5.3.3"
   },
   "dependencies": {

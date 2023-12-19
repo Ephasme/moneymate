@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { AccountViewSchema } from "../views/AccountViewSchema";
+import { AccountViewSchema } from "../views/AccountViewSchema.js";
 
 export const GetAccountParamsSchema = z.object({
   accountId: z.string().uuid(),

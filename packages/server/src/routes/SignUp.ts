@@ -3,9 +3,9 @@ import { SignUpRequestSchema, SignUpResponse } from "@moneymate/shared";
 import { FastifyPluginCallback } from "fastify";
 import jwt from "jsonwebtoken";
 import { EntityManager } from "typeorm";
-import { User } from "../entities";
-import { createSalt } from "../helpers/createSalt";
-import { encryptPassword } from "../helpers";
+import { User } from "../entities/index.js";
+import { createSalt } from "../helpers/createSalt.js";
+import { encryptPassword } from "../helpers/index.js";
 
 export const SignUp = ({
   entities,

@@ -5,8 +5,8 @@ import {
 } from "@moneymate/shared";
 import { FastifyPluginCallback } from "fastify";
 import { EntityManager } from "typeorm";
-import { Budget } from "../entities/Budget";
-import { BudgetRepository } from "../services/BudgetRepository";
+import { Budget } from "../entities/Budget.js";
+import { BudgetRepository } from "../services/BudgetRepository.js";
 
 export const GetBudget = ({
   entities,

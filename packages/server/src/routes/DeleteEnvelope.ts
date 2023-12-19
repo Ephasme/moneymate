@@ -4,7 +4,7 @@ import {
 } from "@moneymate/shared";
 import { FastifyPluginCallback } from "fastify";
 import { EntityManager } from "typeorm";
-import { Envelope } from "../entities";
+import { Envelope } from "../entities/index.js";
 
 export const DeleteEnvelope = ({
   entities,
@@ -13,7 +13,7 @@ export const DeleteEnvelope = ({
 }): FastifyPluginCallback => {
   return (server, _, done) => {
     server.delete(
-      "/api/allocation/:allocationId",
+      "/api/envelope/:envelopeId",
       async (request, reply): Promise<DeleteEnvelopeResponse> => {
         const user = await request.user();
         const { envelopeId } = DeleteEnvelopeParamsSchema.parse(request.params);

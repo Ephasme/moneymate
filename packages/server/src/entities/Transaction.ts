@@ -4,13 +4,14 @@ import {
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
+  type Relation,
 } from "typeorm";
 import { TransactionStatus, TransactionStatuses } from "@moneymate/shared";
-import { Account } from "./Account";
-import { Allocation } from "./Allocation";
-import { Payee } from "./Payee";
-import { Budget } from "./Budget";
-import { User } from "./User";
+import { Account } from "./Account.js";
+import { Allocation } from "./Allocation.js";
+import { Payee } from "./Payee.js";
+import { Budget } from "./Budget.js";
+import { User } from "./User.js";
 
 @Entity()
 export class Transaction {
@@ -18,41 +19,41 @@ export class Transaction {
   id!: string;
 
   @Column({ type: "enum", enum: TransactionStatuses, default: "pending" })
-  status!: TransactionStatus;
+  status!: Relation<TransactionStatus>;
 
   @ManyToOne(() => Account, (x) => x.transactions)
-  account!: Account;
+  account!: Relation<Account>;
 
-  @Column()
+  @Column({ type: "varchar" })
   accountId!: string;
 
   @ManyToOne(() => Budget, (x) => x.transactions)
-  budget!: Budget;
+  budget!: Relation<Budget>;
 
-  @Column()
+  @Column({ type: "varchar" })
   budgetId!: string;
 
   @ManyToOne(() => User, (x) => x.transactions)
-  user!: User;
+  user!: Relation<User>;
 
-  @Column()
+  @Column({ type: "varchar" })
   userId!: string;
 
   @Column({ type: "bigint" })
   amount!: string;
 
-  @Column({ nullable: true })
+  @Column({ type: "varchar", nullable: true })
   description?: string;
 
   @ManyToOne(() => Payee, { nullable: true })
-  payee?: Payee;
+  payee?: Relation<Payee>;
 
-  @Column({ nullable: true })
+  @Column({ type: "varchar", nullable: true })
   payeeId?: string;
 
-  @Column()
+  @Column({ type: "datetime" })
   date!: Date;
 
   @OneToMany(() => Allocation, (x) => x.transaction)
-  allocations!: Allocation[];
+  allocations!: Relation<Allocation>[];
 }

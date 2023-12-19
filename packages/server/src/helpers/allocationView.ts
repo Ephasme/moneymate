@@ -1,5 +1,5 @@
 import { AllocationViewInput } from "@moneymate/shared";
-import { Allocation } from "../entities";
+import { Allocation } from "../entities/index.js";
 
 export const allocationView = (a: Allocation): AllocationViewInput => ({
   id: a.id,

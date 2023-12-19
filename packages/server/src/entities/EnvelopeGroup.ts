@@ -4,40 +4,41 @@ import {
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
+  type Relation,
 } from "typeorm";
-import { Envelope } from "./Envelope";
-import { User } from "./User";
-import { Budget } from "./Budget";
+import { Envelope } from "./Envelope.js";
+import { User } from "./User.js";
+import { Budget } from "./Budget.js";
 
 @Entity()
 export class EnvelopeGroup {
   @PrimaryGeneratedColumn("uuid")
   id!: string;
 
-  @Column()
+  @Column({ type: "varchar" })
   name!: string;
 
   @ManyToOne(() => User, (x) => x.envelopeGroups)
-  user!: User;
+  user!: Relation<User>;
 
   @ManyToOne(() => Budget, (x) => x.envelopeGroups)
-  budget!: Budget;
+  budget!: Relation<Budget>;
 
-  @Column()
+  @Column({ type: "varchar" })
   budgetId!: string;
 
-  @Column()
+  @Column({ type: "varchar" })
   userId!: string;
 
   @OneToMany(() => Envelope, (group) => group.parent)
-  envelopes!: Envelope[];
+  envelopes!: Relation<Envelope>[];
 
-  @Column({ default: false })
+  @Column({ type: "bool", default: false })
   isSystem!: boolean;
 
-  @Column({ default: false })
+  @Column({ type: "bool", default: false })
   isHidden!: boolean;
 
-  @Column({ default: false })
+  @Column({ type: "bool", default: false })
   isDefault!: boolean;
 }

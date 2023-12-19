@@ -1,1 +1,1 @@
-export * from "./encryptPassword";
+export * from "./encryptPassword.js";

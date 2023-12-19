@@ -1,8 +1,8 @@
 import { FastifyPluginCallback } from "fastify";
 import { SignInRequestSchema } from "@moneymate/shared";
 import { EntityManager } from "typeorm";
-import { encryptPassword } from "../helpers";
-import { User } from "../entities";
+import { encryptPassword } from "../helpers/index.js";
+import { User } from "../entities/index.js";
 import jwt from "jsonwebtoken";
 
 export const SignIn = ({

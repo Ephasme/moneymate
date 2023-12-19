@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { BudgetViewSchema } from "../views/BudgetViewSchema";
-import { MonthSchema } from "./MonthSchema";
+import { BudgetViewSchema } from "../views/BudgetViewSchema.js";
+import { MonthSchema } from "./MonthSchema.js";
 
 export const GetBudgetQuerySchema = z.object({
   currentMonth: MonthSchema.optional(),

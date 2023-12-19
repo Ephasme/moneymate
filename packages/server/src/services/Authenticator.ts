@@ -2,8 +2,8 @@ import env from "env-var";
 import { FastifyInstance, FastifyRequest } from "fastify";
 import jwt from "jsonwebtoken";
 import { EntityManager } from "typeorm";
-import { User } from "../entities";
-import { tokenDataSchema } from "../types";
+import { User } from "../entities/index.js";
+import { tokenDataSchema } from "../types/index.js";
 
 const JWT_SECRET = env.get("JWT_SECRET").required().asString();
 

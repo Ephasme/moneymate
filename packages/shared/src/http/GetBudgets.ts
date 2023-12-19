@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { BudgetViewSchema } from "../views/BudgetViewSchema";
+import { BudgetViewSchema } from "../views/BudgetViewSchema.js";
 
 export const GetBudgetsRequestSchema = z.null();
 export type GetBudgetsRequest = z.infer<typeof GetBudgetsRequestSchema>;

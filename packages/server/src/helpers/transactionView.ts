@@ -1,7 +1,7 @@
 import { TransactionViewInput } from "@moneymate/shared";
-import { Transaction } from "../entities";
-import { allocationView } from "./allocationView";
-import { sumBy } from "./sumBy";
+import { Transaction } from "../entities/index.js";
+import { allocationView } from "./allocationView.js";
+import { sumBy } from "./sumBy.js";
 
 export const transactionView = (x: Transaction): TransactionViewInput => {
   const allocations = x.allocations.map(allocationView);

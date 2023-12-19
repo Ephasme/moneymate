@@ -1,58 +1,60 @@
 import {
-  SaveAccountResponse,
-  SaveAccountResponseSchema,
-  SaveAllocationResponse,
-  SaveBudgetResponse,
-  SaveBudgetResponseSchema,
-  SaveEnvelopeResponse,
-  SaveEnvelopeResponseSchema,
-  SaveTransactionResponse,
-  SaveTransactionResponseSchema,
+  DeleteAllocationResponse,
+  GetAccountParams,
   GetAccountResponse,
   GetAccountResponseSchema,
   GetAccountsResponse,
   GetAccountsResponseSchema,
+  GetAllocationResponse,
+  GetAllocationResponseSchema,
+  GetBudgetResponse,
+  GetBudgetResponseSchema,
   GetBudgetsResponse,
   GetBudgetsResponseSchema,
-  GetEnvelopeResponse,
-  GetEnvelopeResponseSchema,
-  GetEnvelopesResponse,
-  GetEnvelopesResponseSchema,
-  GetTransactionsResponse,
-  GetTransactionsResponseSchema,
+  SaveAccountResponse,
+  SaveAccountResponseSchema,
+  SaveAllocationResponse,
+  SaveAllocationResponseSchema,
+  SaveBudgetResponse,
+  SaveBudgetResponseSchema,
   SignInResponse,
   SignInResponseSchema,
   SignUpResponse,
   SignUpResponseSchema,
-  GetBudgetResponse,
-  GetBudgetResponseSchema,
-  SaveAllocationResponseSchema,
-  GetTransactionResponse,
-  GetTransactionResponseSchema,
-  GetAllocationResponseSchema,
-  GetAllocationResponse,
-  DeleteAllocationResponse,
-  SaveTransferResponse,
-  SaveTransactionRequestInput,
-  SaveTransferRequestInput,
-  SaveEnvelopeRequestInput,
-  TransactionStatus,
-  SaveTransactionStatusResponse,
-  GetAccountParams,
-  DeleteTransactionResponse,
-  SaveEnvelopeGroupRequestInput,
-  SaveEnvelopeGroupResponse,
-  GetEnvelopeGroupResponse,
-  GetEnvelopeGroupsResponse,
-  GetEnvelopeGroupsResponseSchema,
-  GetEnvelopeGroupResponseSchema,
 } from "@moneymate/shared";
-import { saveTransfer } from "./Transfer";
-import urlcat from "urlcat";
+import {
+  EnvelopeGroupActions,
+  deleteEnvelopeGroup,
+  editEnvelopeGroup,
+  getEnvelopeGroup,
+  getEnvelopeGroups,
+  saveEnvelopeGroup,
+} from "./src/EnvelopeGroup/index.js";
+import {
+  EnvelopeActions,
+  deleteEnvelope,
+  editEnvelope,
+  getEnvelope,
+  getEnvelopes,
+  saveEnvelope,
+} from "./src/Envelope/index.js";
+import {
+  TransactionActions,
+  deleteTransaction,
+  getTransaction,
+  getTransactions,
+  saveTransaction,
+  saveTransactionStatus,
+} from "./src/Transaction/index.js";
+import { TransferActions, saveTransfer } from "./src/Transfer/index.js";
 
-import { z } from "zod";
-import { TokenProvider } from "./types";
 import * as dateFns from "date-fns";
+import { z } from "zod";
+import { TokenProvider } from "./src/types/index.js";
+
+export const sayHi = (value: string) => {
+  return `hi ${value}`;
+};
 
 const AllocationPropsSchema = z.object({
   id: z.string().uuid().optional(),
@@ -63,81 +65,60 @@ const AllocationPropsSchema = z.object({
 });
 type AllocationProps = z.infer<typeof AllocationPropsSchema>;
 
-export interface Api {
-  getTransactions(props: {
-    budgetId: string;
-    accountId: string;
-  }): Promise<GetTransactionsResponse>;
+export type Api = TransferActions &
+  EnvelopeActions &
+  EnvelopeGroupActions &
+  TransactionActions & {
+    saveAllocation(props: AllocationProps): Promise<SaveAllocationResponse>;
+    deleteAllocation(props: {
+      allocationId: string;
+    }): Promise<DeleteAllocationResponse>;
 
-  getTransaction(props: {
-    transactionId: string;
-  }): Promise<GetTransactionResponse>;
-  saveAllocation(props: AllocationProps): Promise<SaveAllocationResponse>;
-  deleteAllocation(props: {
-    allocationId: string;
-  }): Promise<DeleteAllocationResponse>;
-  saveEnvelope(props: SaveEnvelopeRequestInput): Promise<SaveEnvelopeResponse>;
-  saveEnvelopeGroup(
-    props: SaveEnvelopeGroupRequestInput
-  ): Promise<SaveEnvelopeGroupResponse>;
-  saveTransfer(props: SaveTransferRequestInput): Promise<SaveTransferResponse>;
-  saveTransaction(
-    props: SaveTransactionRequestInput
-  ): Promise<SaveTransactionResponse>;
-  deleteTransaction(props: {
-    transactionId: string;
-  }): Promise<DeleteTransactionResponse>;
-
-  saveTransactionStatus(props: {
-    id: string;
-    status: TransactionStatus;
-  }): Promise<SaveTransactionStatusResponse>;
-
-  saveBudget(props: { id?: string; name: string }): Promise<SaveBudgetResponse>;
-  saveAccount(props: {
-    id?: string;
-    name: string;
-    budgetId: string;
-  }): Promise<SaveAccountResponse>;
-  getBudgets(): Promise<GetBudgetsResponse>;
-  getBudget(
-    props: { budgetId: string },
-    options?: { currentMonth?: Date }
-  ): Promise<GetBudgetResponse>;
-  getEnvelopes(
-    props: { budgetId: string },
-    options?: { currentMonth?: Date }
-  ): Promise<GetEnvelopesResponse>;
-  getEnvelope(
-    props: {
+    saveBudget(props: {
+      id?: string;
+      name: string;
+    }): Promise<SaveBudgetResponse>;
+    saveAccount(props: {
+      id?: string;
+      name: string;
       budgetId: string;
-      envelopeId: string;
-    },
-    options?: { currentMonth?: Date }
-  ): Promise<GetEnvelopeResponse>;
-  getEnvelopeGroup(props: {
-    budgetId: string;
-    envelopeGroupId: string;
-  }): Promise<GetEnvelopeGroupResponse>;
-  getEnvelopeGroups(props: {
-    budgetId: string;
-  }): Promise<GetEnvelopeGroupsResponse>;
+    }): Promise<SaveAccountResponse>;
+    getBudgets(): Promise<GetBudgetsResponse>;
+    getBudget(
+      props: { budgetId: string },
+      options?: { currentMonth?: Date }
+    ): Promise<GetBudgetResponse>;
 
-  getAllocation(props: {
-    allocationId: string;
-  }): Promise<GetAllocationResponse>;
-  getAccounts(props: { budgetId: string }): Promise<GetAccountsResponse>;
-  getAccount(props: GetAccountParams): Promise<GetAccountResponse>;
-  signIn(props: { email: string; password: string }): Promise<SignInResponse>;
-  signUp(props: {
-    email: string;
-    password: string;
-    passwordConfirmation: string;
-  }): Promise<SignUpResponse>;
-}
+    getAllocation(props: {
+      allocationId: string;
+    }): Promise<GetAllocationResponse>;
+    getAccounts(props: { budgetId: string }): Promise<GetAccountsResponse>;
+    getAccount(props: GetAccountParams): Promise<GetAccountResponse>;
+    signIn(props: { email: string; password: string }): Promise<SignInResponse>;
+    signUp(props: {
+      email: string;
+      password: string;
+      passwordConfirmation: string;
+    }): Promise<SignUpResponse>;
+  };
 
 export const makeApi = (getToken: TokenProvider): Api => ({
   saveTransfer: saveTransfer(getToken),
+  deleteEnvelope: deleteEnvelope(getToken),
+  deleteEnvelopeGroup: deleteEnvelopeGroup(getToken),
+  saveEnvelopeGroup: saveEnvelopeGroup(getToken),
+  getEnvelopeGroup: getEnvelopeGroup(getToken),
+  getEnvelopeGroups: getEnvelopeGroups(getToken),
+  saveEnvelope: saveEnvelope(getToken),
+  getEnvelope: getEnvelope(getToken),
+  getEnvelopes: getEnvelopes(getToken),
+  saveTransaction: saveTransaction(getToken),
+  saveTransactionStatus: saveTransactionStatus(getToken),
+  deleteTransaction: deleteTransaction(getToken),
+  getTransactions: getTransactions(getToken),
+  getTransaction: getTransaction(getToken),
+  editEnvelope: editEnvelope(getToken),
+  editEnvelopeGroup: editEnvelopeGroup(getToken),
   async deleteAllocation({ allocationId }) {
     try {
       const reply = await fetch(
@@ -184,126 +165,7 @@ export const makeApi = (getToken: TokenProvider): Api => ({
       throw error;
     }
   },
-  async saveEnvelope(props) {
-    try {
-      const reply = await fetch(`http://localhost:3000/api/envelope`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${await getToken()}`,
-        },
-        body: JSON.stringify(props),
-      });
-      if (!reply.ok) {
-        console.error(await reply.text());
-        throw new Error("Failed to create Envelope");
-      } else {
-        const result = await reply.json();
-        return SaveEnvelopeResponseSchema.parse(result);
-      }
-    } catch (error) {
-      console.error("Failed to create Envelope", { error });
-      throw error;
-    }
-  },
-  async saveEnvelopeGroup(props) {
-    try {
-      const reply = await fetch(`http://localhost:3000/api/envelope-group`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${await getToken()}`,
-        },
-        body: JSON.stringify(props),
-      });
-      if (!reply.ok) {
-        console.error(await reply.text());
-        throw new Error("Failed to create Envelope group");
-      } else {
-        const result = await reply.json();
-        return SaveEnvelopeResponseSchema.parse(result);
-      }
-    } catch (error) {
-      console.error("Failed to create Envelope group", { error });
-      throw error;
-    }
-  },
 
-  async saveTransaction(props) {
-    try {
-      const reply = await fetch(`http://localhost:3000/api/transaction`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${await getToken()}`,
-        },
-        body: JSON.stringify(props),
-      });
-      if (!reply.ok) {
-        console.error(await reply.text());
-        throw new Error("Failed to create transaction");
-      } else {
-        const result = await reply.json();
-        return SaveTransactionResponseSchema.parse(result);
-      }
-    } catch (error) {
-      console.error("Failed to create transaction", { error });
-      throw error;
-    }
-  },
-  async deleteTransaction(props) {
-    try {
-      const reply = await fetch(
-        urlcat(`http://localhost:3000/api/transaction/:id`, {
-          id: props.transactionId,
-        }),
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${await getToken()}`,
-          },
-        }
-      );
-      if (!reply.ok) {
-        console.error(await reply.text());
-        throw new Error("Failed to delete transaction");
-      } else {
-        const result = await reply.json();
-        return SaveTransactionResponseSchema.parse(result);
-      }
-    } catch (error) {
-      console.error("Failed to delete transaction", { error });
-      throw error;
-    }
-  },
-  async saveTransactionStatus({ id, status }) {
-    try {
-      const reply = await fetch(
-        urlcat("http://localhost:3000/api/transaction/:transactionId/status", {
-          transactionId: id,
-        }),
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${await getToken()}`,
-          },
-          body: JSON.stringify({ status }),
-        }
-      );
-      if (!reply.ok) {
-        console.error(await reply.text());
-        throw new Error("Failed to save transaction status");
-      } else {
-        const result = await reply.json();
-        return SaveTransactionResponseSchema.parse(result);
-      }
-    } catch (error) {
-      console.error("Failed to save transaction status", { error });
-      throw error;
-    }
-  },
   async getAllocation({ allocationId }) {
     try {
       const reply = await fetch(
@@ -328,163 +190,19 @@ export const makeApi = (getToken: TokenProvider): Api => ({
       throw error;
     }
   },
-  async getEnvelope({ budgetId, envelopeId }, { currentMonth } = {}) {
-    try {
-      const reply = await fetch(
-        urlcat(
-          `http://localhost:3000/api/budget/:budgetId/envelope/:envelopeId`,
-          {
-            budgetId,
-            envelopeId,
-            currentMonth: currentMonth
-              ? dateFns.format(currentMonth, "dd/MM/yyyy")
-              : undefined,
-          }
-        ),
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${await getToken()}`,
-          },
-        }
-      );
-      if (!reply.ok) {
-        console.error(await reply.text());
-        throw new Error("Failed to get envelope");
-      } else {
-        const result = await reply.json();
-        return GetEnvelopeResponseSchema.parse(result);
-      }
-    } catch (error) {
-      console.error("Failed to get envelope", { error });
-      throw error;
-    }
-  },
-  async getEnvelopeGroup({ budgetId, envelopeGroupId }) {
-    try {
-      const reply = await fetch(
-        urlcat(
-          `http://localhost:3000/api/budget/:budgetId/envelope-group/:envelopeGroupId`,
-          {
-            budgetId,
-            envelopeGroupId,
-          }
-        ),
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${await getToken()}`,
-          },
-        }
-      );
-      if (!reply.ok) {
-        console.error(await reply.text());
-        throw new Error("Failed to get envelope group");
-      } else {
-        const result = await reply.json();
-        return GetEnvelopeGroupResponseSchema.parse(result);
-      }
-    } catch (error) {
-      console.error("Failed to get envelope group", { error });
-      throw error;
-    }
-  },
-  async getEnvelopeGroups({ budgetId }) {
-    try {
-      const reply = await fetch(
-        urlcat(`http://localhost:3000/api/budget/:budgetId/envelope-group`, {
-          budgetId,
-        }),
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${await getToken()}`,
-          },
-        }
-      );
-      if (!reply.ok) {
-        console.error(await reply.text());
-        throw new Error("Failed to get envelope group");
-      } else {
-        const result = await reply.json();
-        return GetEnvelopeGroupsResponseSchema.parse(result);
-      }
-    } catch (error) {
-      console.error("Failed to get envelope group", { error });
-      throw error;
-    }
-  },
-  async getEnvelopes({ budgetId }, { currentMonth } = {}) {
-    try {
-      const reply = await fetch(
-        urlcat("http://localhost:3000/api/budget/:budgetId/envelope", {
-          budgetId,
-          currentMonth: currentMonth
-            ? dateFns.format(currentMonth, "dd/MM/yyyy")
-            : undefined,
-        }),
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${await getToken()}`,
-          },
-        }
-      );
-      if (!reply.ok) {
-        console.error(await reply.text());
-        throw new Error("Failed to get envelopes");
-      } else {
-        const result = await reply.json();
-        return GetEnvelopesResponseSchema.parse(result);
-      }
-    } catch (error) {
-      console.error("Failed to get envelopes", { error });
-      throw error;
-    }
-  },
-  async getTransactions({ budgetId, accountId }) {
-    try {
-      const reply = await fetch(
-        `http://localhost:3000/api/budget/${budgetId}/account/${accountId}/transaction`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${await getToken()}`,
-          },
-        }
-      );
-      if (!reply.ok) {
-        console.error(await reply.text());
-        throw new Error("Failed to get transactions");
-      } else {
-        const result = await reply.json();
-        return GetTransactionsResponseSchema.parse(result);
-      }
-    } catch (error) {
-      console.error("Failed to get transactions", { error });
-      throw error;
-    }
-  },
 
   async getAccount({ accountId }) {
     try {
-      const reply = await fetch(
-        urlcat("http://localhost:3000/api/account/:accountId", {
-          accountId,
-        }),
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${await getToken()}`,
-          },
-        }
-      );
+      const enc_accountId = encodeURIComponent(accountId);
+      const path = `/api/account/${enc_accountId}`;
+      const url = new URL(path, "http://localhost:3000");
+      const reply = await fetch(url.href, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${await getToken()}`,
+        },
+      });
       if (!reply.ok) {
         console.error(await reply.text());
         throw new Error("Failed to get account");
@@ -568,47 +286,24 @@ export const makeApi = (getToken: TokenProvider): Api => ({
     }
   },
 
-  async getTransaction({ transactionId }) {
-    try {
-      const reply = await fetch(
-        `http://localhost:3000/api/transaction/${transactionId}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${await getToken()}`,
-          },
-        }
-      );
-      if (!reply.ok) {
-        console.error(await reply.text());
-        throw new Error("Failed to get transaction");
-      } else {
-        const result = await reply.json();
-        return GetTransactionResponseSchema.parse(result);
-      }
-    } catch (error) {
-      console.log("Could not fetch transaction", { error });
-      throw error;
-    }
-  },
   async getBudget({ budgetId }, { currentMonth } = {}) {
     try {
-      const reply = await fetch(
-        urlcat("http://localhost:3000/api/budget/:budgetId", {
-          budgetId,
-          currentMonth: currentMonth
-            ? dateFns.format(currentMonth, "dd/MM/yyyy")
-            : undefined,
-        }),
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${await getToken()}`,
-          },
-        }
-      );
+      const enc_budgetId = encodeURIComponent(budgetId);
+      const path = `/api/budget/${enc_budgetId}`;
+      const url = new URL(path, "http://localhost:3000");
+      if (currentMonth) {
+        url.searchParams.append(
+          "currentMonth",
+          dateFns.format(currentMonth, "dd/MM/yyyy")
+        );
+      }
+      const reply = await fetch(url.href, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${await getToken()}`,
+        },
+      });
       if (!reply.ok) {
         console.error(await reply.text());
         throw new Error("Failed to get budget");

@@ -4,8 +4,8 @@ import {
 } from "@moneymate/shared";
 import { FastifyPluginCallback } from "fastify";
 import { EntityManager } from "typeorm";
-import { Allocation } from "../entities";
-import { allocationView } from "../helpers/allocationView";
+import { Allocation } from "../entities/index.js";
+import { allocationView } from "../helpers/allocationView.js";
 
 export const GetAllocation = ({
   entities,

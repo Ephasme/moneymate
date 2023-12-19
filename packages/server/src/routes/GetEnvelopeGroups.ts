@@ -1,15 +1,12 @@
 import {
   EnvelopeGroupViewInput,
   GetEnvelopeGroupsParamsSchema,
-  GetEnvelopeGroupsQuerySchema,
   GetEnvelopeGroupsResponseInput,
 } from "@moneymate/shared";
 import { FastifyPluginCallback } from "fastify";
 import { EntityManager } from "typeorm";
-import { EnvelopeGroup } from "../entities";
-import { envelopeGroupView } from "../helpers/envelopeGroupView";
-import { AllocationRepository } from "../services/AllocationRepository";
-import { TransferRepository } from "../services/TransferRepository";
+import { EnvelopeGroup } from "../entities/index.js";
+import { envelopeGroupView } from "../helpers/envelopeGroupView.js";
 
 export const GetEnvelopeGroups = ({
   entities,

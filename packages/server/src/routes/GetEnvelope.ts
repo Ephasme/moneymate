@@ -5,8 +5,8 @@ import {
 } from "@moneymate/shared";
 import { FastifyPluginCallback } from "fastify";
 import { EntityManager } from "typeorm";
-import { Envelope } from "../entities";
-import { envelopeView } from "../helpers/envelopeView";
+import { Envelope } from "../entities/index.js";
+import { envelopeView } from "../helpers/envelopeView.js";
 
 export const GetEnvelope = ({
   entities,

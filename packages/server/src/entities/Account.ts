@@ -4,31 +4,32 @@ import {
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
+  type Relation,
 } from "typeorm";
-import { Budget } from "./Budget";
-import { Transaction } from "./Transaction";
-import { User } from "./User";
+import { Budget } from "./Budget.js";
+import { Transaction } from "./Transaction.js";
+import { User } from "./User.js";
 
 @Entity()
 export class Account {
   @PrimaryGeneratedColumn("uuid")
   id!: string;
 
-  @Column()
+  @Column({ type: "varchar" })
   name!: string;
 
   @OneToMany(() => Transaction, (x) => x.account)
-  transactions!: Transaction[];
+  transactions!: Relation<Transaction>[];
 
   @ManyToOne(() => Budget, (x) => x.accounts)
-  budget!: Budget;
+  budget!: Relation<Budget>;
 
-  @Column()
+  @Column({ type: "varchar" })
   budgetId!: string;
 
   @ManyToOne(() => User, (x) => x.accounts)
-  user!: User;
+  user!: Relation<User>;
 
-  @Column()
+  @Column({ type: "varchar" })
   userId!: string;
 }

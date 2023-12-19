@@ -1,13 +1,14 @@
+import "reflect-metadata";
 import cors from "@fastify/cors";
 import env from "env-var";
 import Fastify from "fastify";
-import dataSource from "./datasource.config";
-import { User } from "./entities";
-import { Routes } from "./routes";
-import { Authenticator } from "./services/Authenticator";
-import { AllocationRepository } from "./services/AllocationRepository";
-import { TransferRepository } from "./services/TransferRepository";
-import { BudgetRepository } from "./services/BudgetRepository";
+import dataSource from "./datasource.config.js";
+import { User } from "./entities/index.js";
+import { Routes } from "./routes/index.js";
+import { Authenticator } from "./services/Authenticator.js";
+import { AllocationRepository } from "./services/AllocationRepository.js";
+import { TransferRepository } from "./services/TransferRepository.js";
+import { BudgetRepository } from "./services/BudgetRepository.js";
 
 declare module "fastify" {
   interface FastifyRequest {

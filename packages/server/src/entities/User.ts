@@ -1,48 +1,54 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { Account } from "./Account";
-import { Envelope } from "./Envelope";
-import { Budget } from "./Budget";
-import { Transaction } from "./Transaction";
-import { Allocation } from "./Allocation";
-import { Payee } from "./Payee";
-import { Transfer } from "./Transfer";
-import { EnvelopeGroup } from "./EnvelopeGroup";
+import {
+  Column,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  type Relation,
+} from "typeorm";
+import { Account } from "./Account.js";
+import { Envelope } from "./Envelope.js";
+import { Budget } from "./Budget.js";
+import { Transaction } from "./Transaction.js";
+import { Allocation } from "./Allocation.js";
+import { Payee } from "./Payee.js";
+import { Transfer } from "./Transfer.js";
+import { EnvelopeGroup } from "./EnvelopeGroup.js";
 
 @Entity()
 export class User {
   @PrimaryGeneratedColumn("uuid")
   id!: string;
 
-  @Column()
+  @Column({ type: "varchar" })
   email!: string;
 
-  @Column()
+  @Column({ type: "varchar" })
   password!: string;
 
-  @Column()
+  @Column({ type: "varchar" })
   salt!: string;
 
   @OneToMany(() => Account, (x) => x.user)
-  accounts!: Account[];
+  accounts!: Relation<Account>[];
 
   @OneToMany(() => Envelope, (x) => x.user)
-  envelopes!: Envelope[];
+  envelopes!: Relation<Envelope>[];
 
   @OneToMany(() => EnvelopeGroup, (x) => x.user)
-  envelopeGroups!: EnvelopeGroup[];
+  envelopeGroups!: Relation<EnvelopeGroup>[];
 
   @OneToMany(() => Budget, (x) => x.user)
-  budgets!: Budget[];
+  budgets!: Relation<Budget>[];
 
   @OneToMany(() => Transaction, (x) => x.user)
-  transactions!: Transaction[];
+  transactions!: Relation<Transaction>[];
 
   @OneToMany(() => Allocation, (x) => x.user)
-  allocations!: Allocation[];
+  allocations!: Relation<Allocation>[];
 
   @OneToMany(() => Transfer, (x) => x.budget)
-  transfers!: Transfer[];
+  transfers!: Relation<Transfer>[];
 
   @OneToMany(() => Payee, (x) => x.user)
-  payees!: Payee[];
+  payees!: Relation<Payee>[];
 }
