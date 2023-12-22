@@ -12,7 +12,6 @@ export const getOrNew = async <
 ) => {
   let isNew: boolean = false;
   let item: T | null;
-  const onNew = async () => {};
   if (id) {
     item = await entities.findOneBy<T>(T, {
       id,
@@ -21,13 +20,13 @@ export const getOrNew = async <
     if (!item) {
       isNew = true;
       item = new T();
-      item.id = randomUUID();
+      item.id = id ?? randomUUID();
       item.userId = user.id;
     }
   } else {
     isNew = true;
     item = new T();
-    item.id = randomUUID();
+    item.id = id ?? randomUUID();
     item.userId = user.id;
   }
   return [item, isNew] as const;

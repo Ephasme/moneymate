@@ -9,6 +9,7 @@ import { Authenticator } from "./services/Authenticator.js";
 import { AllocationRepository } from "./services/AllocationRepository.js";
 import { TransferRepository } from "./services/TransferRepository.js";
 import { BudgetRepository } from "./services/BudgetRepository.js";
+import { AccountRepository } from "./services/AccountRepository.js";
 
 declare module "fastify" {
   interface FastifyRequest {
@@ -42,6 +43,7 @@ async function main() {
       allocationRepository: new AllocationRepository(entities),
       transferRepository: new TransferRepository(entities),
       budgetRepository: new BudgetRepository(entities),
+      accountRepository: new AccountRepository(entities),
     })
   );
 

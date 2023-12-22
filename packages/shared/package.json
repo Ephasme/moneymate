@@ -8,12 +8,14 @@
   ],
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "build:w": "chokidar './**/*.ts' -d 1000 --initial -c 'pnpm build' -i '**/node_modules/**' -i '**/dist/**'"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "chokidar-cli": "^3.0.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
   },

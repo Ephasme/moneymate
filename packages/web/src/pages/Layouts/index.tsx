@@ -10,10 +10,10 @@ export const MainLayout = ({
 }) => {
   return (
     <Spaces.ViewPort className="flex">
-      <Spaces.Fill>
+      <Spaces.Fill className="flex">
         <Spaces.LeftResizable
-          className="flex flex-col bg-blue-300"
-          size={"25%"}
+          className="flex flex-col bg-[#2C396A] text-white"
+          size={"22%"}
         >
           {leftPanel}
         </Spaces.LeftResizable>

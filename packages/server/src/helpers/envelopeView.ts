@@ -57,6 +57,16 @@ export const envelopeView = (
       id: allocation.id,
       amount: allocation.amount,
     })),
+    fromTransfers: envelope.fromTransfers.map((transfer) => ({
+      id: transfer.id,
+      date: transfer.date.toISOString(),
+      amount: transfer.amount,
+    })),
+    toTransfers: envelope.fromTransfers.map((transfer) => ({
+      id: transfer.id,
+      date: transfer.date.toISOString(),
+      amount: transfer.amount,
+    })),
     isDefault: envelope.isDefault,
     isHidden: envelope.isHidden,
     parentId: envelope.parentId,

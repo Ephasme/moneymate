@@ -40,7 +40,11 @@ export const EnvelopeName = ({ envelopeId }: { envelopeId: string }) => {
     <RowEditModal
       open={isOpen}
       isHidden={envelope.isHidden}
-      canBeDeleted={true}
+      canBeDeleted={
+        envelope.allocations.length === 0 &&
+        envelope.toTransfers.length === 0 &&
+        envelope.fromTransfers.length === 0
+      }
       name={envelope.name}
       onOpenChange={(open) => {
         setIsOpen(open);

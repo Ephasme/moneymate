@@ -120,6 +120,7 @@ export const TransactionEditRow = ({
     },
     onSuccess() {
       queryClient.invalidateQueries({ queryKey: ["transactions"] });
+      queryClient.invalidateQueries({ queryKey: ["accounts"] });
       onCancel?.();
     },
     onError(error) {

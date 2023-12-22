@@ -30,6 +30,7 @@ import { SignUp } from "./SignUp.js";
 import { DeleteEnvelope } from "./DeleteEnvelope.js";
 import { DeleteEnvelopeGroup } from "./DeleteEnvelopeGroup.js";
 import { EditEnvelopeGroup } from "./EditEnvelopeGroup.js";
+import { AccountRepository } from "../services/AccountRepository.js";
 
 export const Routes = (deps: {
   JWT_SECRET: string;
@@ -37,6 +38,7 @@ export const Routes = (deps: {
   allocationRepository: AllocationRepository;
   transferRepository: TransferRepository;
   budgetRepository: BudgetRepository;
+  accountRepository: AccountRepository;
 }): FastifyPluginCallback => {
   return (server, _, done) => {
     server.register(SignIn(deps));

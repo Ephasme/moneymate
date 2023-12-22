@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { TransferViewSchema } from "./TransferViewSchema.js";
 
 export const EnvelopeViewSchema = z.object({
   id: z.string().uuid(),
@@ -11,6 +12,8 @@ export const EnvelopeViewSchema = z.object({
       amount: z.string().transform(BigInt),
     })
     .array(),
+  fromTransfers: TransferViewSchema.array(),
+  toTransfers: TransferViewSchema.array(),
   balance: z.string().transform(BigInt),
   allocated: z.string().transform(BigInt),
   activity: z.string().transform(BigInt),

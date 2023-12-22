@@ -18,7 +18,7 @@ export const SignUp = ({
     server.post(
       "/api/sign-up",
       async (request, reply): Promise<SignUpResponse | undefined> => {
-        const { email, password, passwordConfirmation } =
+        const { id, email, password, passwordConfirmation } =
           SignUpRequestSchema.parse(request.body);
 
         if (password !== passwordConfirmation) {
@@ -34,7 +34,7 @@ export const SignUp = ({
 
         const salt = createSalt();
         const user = new User();
-        user.id = randomUUID();
+        user.id = id ?? randomUUID();
         user.email = email;
         user.password = encryptPassword(password, salt);
         user.salt = salt;
