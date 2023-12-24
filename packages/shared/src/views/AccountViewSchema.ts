@@ -4,6 +4,7 @@ export const AccountViewSchema = z.object({
   id: z.string().uuid(),
   name: z.string(),
 
+  reconciledBalance: z.string().transform(BigInt),
   clearedBalance: z.string().transform(BigInt),
   pendingBalance: z.string().transform(BigInt),
 });

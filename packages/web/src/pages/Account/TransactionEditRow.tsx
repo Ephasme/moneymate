@@ -1,4 +1,8 @@
-import { AllocationEdited, TransactionStatus } from "@moneymate/shared";
+import {
+  AllocationPatched,
+  AllocationPostedInput,
+  TransactionStatus,
+} from "@moneymate/shared";
 import {
   Autocomplete,
   Box,
@@ -15,9 +19,9 @@ import { NumericFormat } from "react-number-format";
 import { api } from "../../api";
 import * as mil from "../../helpers/mil";
 import { useStore } from "../../store";
+import { useTransaction } from "../Common/useTransaction";
 import { SingleAllocationEditor } from "./SingleAllocationEditor";
 import { TransactionStatusButton } from "./TransactionStatusButton";
-import { useTransaction } from "../Common/useTransaction";
 
 export const useAccounts = () => {
   const budgetId = useStore((state) => state.budgetId);
@@ -48,7 +52,7 @@ export const TransactionEditRow = ({
       description: transaction?.description ?? "",
       status: (transaction?.status ?? "pending") as TransactionStatus,
       allocations: (transaction?.allocations ?? []).map(
-        (x): AllocationEdited => ({
+        (x): AllocationPatched => ({
           id: x.id,
           envelopeId: x.envelopeId,
           amount: x.amount,
@@ -83,8 +87,8 @@ export const TransactionEditRow = ({
     singleOrNone,
     multiple,
   }: {
-    singleOrNone?: (x?: AllocationEdited) => T;
-    multiple?: (x: AllocationEdited[]) => T;
+    singleOrNone?: (x?: AllocationPatched) => T;
+    multiple?: (x: AllocationPatched[]) => T;
   }) {
     if (formik.values.allocations.length <= 1) {
       return singleOrNone?.(formik.values.allocations[0]);
@@ -95,28 +99,59 @@ export const TransactionEditRow = ({
 
   const { mutate: save } = useMutation({
     mutationFn: async () => {
-      await api.saveTransaction({
-        accountId: formik.values.accountId,
-        amount: (
-          (formik.values.positiveAmount ?? 0n) -
-          (formik.values.negativeAmount ?? 0n)
-        ).toString(),
-        budgetId,
-        date: formik.values.date.toISOString(),
-        description: formik.values.description,
-        status: formik.values.status,
-        id: transactionId,
-        allocations: formik.values.allocations.map((allocation) => {
-          if (allocation.status === "active") {
-            return {
-              ...allocation,
-              date: allocation.date?.toISOString(),
-              amount: allocation.amount.toString(),
-            };
-          }
-          return allocation;
-        }),
-      });
+      if (transaction) {
+        await api.patchTransactions([
+          {
+            accountId: formik.values.accountId,
+            amount: (
+              (formik.values.positiveAmount ?? 0n) -
+              (formik.values.negativeAmount ?? 0n)
+            ).toString(),
+            budgetId,
+            date: formik.values.date.toISOString(),
+            description: formik.values.description,
+            status: formik.values.status,
+            id: transaction.id,
+            allocations: formik.values.allocations.map((allocation) => {
+              if (allocation.status === "active") {
+                return {
+                  ...allocation,
+                  date: allocation.date?.toISOString(),
+                  amount: allocation.amount?.toString(),
+                };
+              }
+              return allocation;
+            }),
+          },
+        ]);
+      } else {
+        await api.createTransactions([
+          {
+            accountId: formik.values.accountId,
+            id: transactionId,
+            amount: (
+              (formik.values.positiveAmount ?? 0n) -
+              (formik.values.negativeAmount ?? 0n)
+            ).toString(),
+            budgetId,
+            date: formik.values.date.toISOString(),
+            description: formik.values.description,
+            status: formik.values.status,
+            allocations: formik.values.allocations
+              .map((allocation): AllocationPostedInput | undefined => {
+                if (allocation.status === "active" && allocation.envelopeId) {
+                  return {
+                    id: allocation.id as string | undefined,
+                    envelopeId: allocation.envelopeId,
+                    date: allocation.date?.toISOString(),
+                    amount: (allocation.amount ?? 0n).toString(),
+                  };
+                }
+              })
+              .filter((x): x is AllocationPostedInput => !!x),
+          },
+        ]);
+      }
     },
     onSuccess() {
       queryClient.invalidateQueries({ queryKey: ["transactions"] });

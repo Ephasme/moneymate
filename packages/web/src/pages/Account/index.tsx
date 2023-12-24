@@ -1,9 +1,11 @@
 import { offset, useFloating } from "@floating-ui/react";
-import DeleteIcon from "@mui/icons-material/Delete";
+import { TransactionStatus } from "@moneymate/shared";
 import ClearIcon from "@mui/icons-material/Copyright";
 import UnclearIcon from "@mui/icons-material/CopyrightTwoTone";
+import DeleteIcon from "@mui/icons-material/Delete";
 import MoreIcon from "@mui/icons-material/MoreHoriz";
-import { Box, Button, Checkbox } from "@mui/material";
+import EditIcon from "@mui/icons-material/Edit";
+import { Box, Button, Checkbox, IconButton } from "@mui/material";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
@@ -15,7 +17,8 @@ import { MainLayout } from "../Layouts";
 import { TransactionEditRow } from "./TransactionEditRow";
 import { TransactionRow } from "./TransactionRow";
 import { useAccountsStore } from "./store";
-import { TransactionStatus } from "@moneymate/shared";
+import { ReconcileBanner } from "./ReconcileBanner";
+import { ReconcileButton } from "./ReconcileButton";
 
 export const Account = () => {
   const [showNewTransaction, setShowNewTransaction] = useState<boolean>(false);
@@ -23,7 +26,7 @@ export const Account = () => {
   const queryClient = useQueryClient();
   const { accountId } = useParams<{ accountId: string }>();
   const { data: account } = useAccount(accountId);
-  const { data: transactions } = useTransactions(accountId);
+  const { data: transactions = [] } = useTransactions(accountId);
   const selectedTransactions = useAccountsStore(
     (state) => state.selectedTransactions
   );
@@ -36,37 +39,33 @@ export const Account = () => {
     middleware: [offset(-80)],
   });
 
-  const { mutate: deleteTransaction } = useMutation({
+  const { mutate: deleteTransactions } = useMutation({
     mutationFn: async (list: string[]) => {
-      for (const id of list) {
-        await api.deleteTransaction({ transactionId: id });
-      }
+      await api.deleteTransactions(list.map((id) => ({ id })));
     },
     onSuccess: () => {
       clearTransactions();
-      queryClient.invalidateQueries({
-        queryKey: ["transactions"],
-      });
+      queryClient.invalidateQueries({ queryKey: ["transactions"] });
+      queryClient.invalidateQueries({ queryKey: ["accounts", { accountId }] });
     },
     onError: (error) => {
       console.error(error);
     },
   });
 
-  const { mutate: saveTransactionStatus } = useMutation({
+  const { mutate: patchTransactions } = useMutation({
     mutationFn: async (props: {
       list: string[];
       status: TransactionStatus;
     }) => {
-      for (const id of props.list) {
-        await api.saveTransactionStatus({ id, status: props.status });
-      }
+      await api.patchTransactions(
+        props.list.map((id) => ({ id, status: props.status }))
+      );
     },
     onSuccess: () => {
       clearTransactions();
-      queryClient.invalidateQueries({
-        queryKey: ["transactions"],
-      });
+      queryClient.invalidateQueries({ queryKey: ["transactions"] });
+      queryClient.invalidateQueries({ queryKey: ["accounts", { accountId }] });
     },
     onError: (error) => {
       console.error(error);
@@ -75,7 +74,7 @@ export const Account = () => {
 
   const computeSelectionBalance = () => {
     let balance = 0n;
-    for (const transaction of transactions ?? []) {
+    for (const transaction of transactions) {
       if (selectedTransactions.includes(transaction.id)) {
         balance += transaction.amount;
       }
@@ -89,11 +88,21 @@ export const Account = () => {
     <MainLayout>
       <Box className="flex flex-col flex-grow" ref={refs.setReference}>
         <Box className="flex-grow flex flex-col items-start justify-stretch">
-          <Box className="pt-5 pl-4 text-3xl">{account.name}</Box>
+          <Box className="w-full flex items-center justify-between pt-5 px-4 ">
+            <Box className="text-3xl">{account.name}</Box>
+            <Box className="flex items-center gap-2">
+              <IconButton size="large">
+                <EditIcon fontSize="large" />
+              </IconButton>
+              <ReconcileButton />
+            </Box>
+          </Box>
           <Box className="flex flex-row w-full p-4 mt-4 mb-4 border-t border-b border-solid border-slate-300">
             <Box className="flex flex-col">
               <Box className="text-xl">
-                {formatCurrency(account.clearedBalance)}
+                {formatCurrency(
+                  account.clearedBalance + account.reconciledBalance
+                )}
               </Box>
               <Box className="text-sm">Cleared</Box>
             </Box>
@@ -108,13 +117,15 @@ export const Account = () => {
             <Box className="flex flex-col">
               <Box className="text-xl">
                 {formatCurrency(
-                  account.clearedBalance + account.pendingBalance
+                  account.clearedBalance +
+                    account.pendingBalance +
+                    account.reconciledBalance
                 )}
               </Box>
               <Box className="text-sm">Total</Box>
             </Box>
           </Box>
-          <Box className="mb-4 ml-4">
+          <Box className="flex w-full items-center justify-between px-4 pb-4">
             <Button
               variant="contained"
               onClick={() => {
@@ -124,6 +135,7 @@ export const Account = () => {
               Add transaction
             </Button>
           </Box>
+          <ReconcileBanner accountId={account.id} />
           <Box className="grid grid-cols-[38px_170px_1fr_1fr_1fr_1fr_1fr_38px] w-full">
             <Box className="contents uppercase">
               <Box className="flex items-center border-b border-t border-solid border-slate-300 justify-center">
@@ -193,7 +205,7 @@ export const Account = () => {
               <button
                 className="p-2"
                 onClick={() => {
-                  deleteTransaction(selectedTransactions);
+                  deleteTransactions(selectedTransactions);
                 }}
               >
                 Delete
@@ -204,7 +216,7 @@ export const Account = () => {
               <button
                 className="p-2"
                 onClick={() => {
-                  saveTransactionStatus({
+                  patchTransactions({
                     list: selectedTransactions,
                     status: "cleared",
                   });
@@ -218,7 +230,7 @@ export const Account = () => {
               <button
                 className="p-2"
                 onClick={() => {
-                  saveTransactionStatus({
+                  patchTransactions({
                     list: selectedTransactions,
                     status: "pending",
                   });

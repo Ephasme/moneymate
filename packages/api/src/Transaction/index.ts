@@ -1,15 +1,16 @@
 import {
-  DeleteTransactionParams,
-  DeleteTransactionResponse,
-  SaveTransactionRequestInput,
-  SaveTransactionResponse,
-  GetTransactionsResponse,
+  CreateTransactionsRequestInput,
+  CreateTransactionsResponse,
+  CreateTransactionsResponseSchema,
+  DeleteTransactionsRequest,
+  DeleteTransactionsResponse,
+  DeleteTransactionsResponseSchema,
   GetTransactionResponse,
-  TransactionStatus,
-  SaveTransactionStatusResponse,
-  SaveTransactionResponseSchema,
-  GetTransactionsResponseSchema,
   GetTransactionResponseSchema,
+  GetTransactionsResponse,
+  GetTransactionsResponseSchema,
+  PatchTransactionsRequestInput,
+  PatchTransactionsResponse,
 } from "@moneymate/shared";
 import { TokenProvider } from "../types/index.js";
 
@@ -21,21 +22,44 @@ export type TransactionActions = {
   getTransaction(props: {
     transactionId: string;
   }): Promise<GetTransactionResponse>;
-  saveTransaction(
-    props: SaveTransactionRequestInput
-  ): Promise<SaveTransactionResponse>;
-  deleteTransaction(props: {
-    transactionId: string;
-  }): Promise<DeleteTransactionResponse>;
-
-  saveTransactionStatus(props: {
-    id: string;
-    status: TransactionStatus;
-  }): Promise<SaveTransactionStatusResponse>;
+  patchTransactions(
+    props: PatchTransactionsRequestInput
+  ): Promise<PatchTransactionsResponse>;
+  createTransactions(
+    props: CreateTransactionsRequestInput
+  ): Promise<CreateTransactionsResponse>;
+  deleteTransactions(
+    props: DeleteTransactionsRequest
+  ): Promise<DeleteTransactionsResponse>;
 };
 
-export const saveTransaction =
-  (getToken: TokenProvider): TransactionActions["saveTransaction"] =>
+export const patchTransactions =
+  (getToken: TokenProvider): TransactionActions["patchTransactions"] =>
+  async (props) => {
+    try {
+      const reply = await fetch(`http://localhost:3000/api/transaction`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${await getToken()}`,
+        },
+        body: JSON.stringify(props),
+      });
+      if (!reply.ok) {
+        console.error(await reply.text());
+        throw new Error("Failed to patch transaction");
+      } else {
+        const result = await reply.json();
+        return CreateTransactionsResponseSchema.parse(result);
+      }
+    } catch (error) {
+      console.error("Failed to patch transaction", { error });
+      throw error;
+    }
+  };
+
+export const createTransactions =
+  (getToken: TokenProvider): TransactionActions["createTransactions"] =>
   async (props) => {
     try {
       const reply = await fetch(`http://localhost:3000/api/transaction`, {
@@ -51,7 +75,7 @@ export const saveTransaction =
         throw new Error("Failed to create transaction");
       } else {
         const result = await reply.json();
-        return SaveTransactionResponseSchema.parse(result);
+        return CreateTransactionsResponseSchema.parse(result);
       }
     } catch (error) {
       console.error("Failed to create transaction", { error });
@@ -59,12 +83,11 @@ export const saveTransaction =
     }
   };
 
-export const deleteTransaction =
-  (getToken: TokenProvider): TransactionActions["deleteTransaction"] =>
+export const deleteTransactions =
+  (getToken: TokenProvider): TransactionActions["deleteTransactions"] =>
   async (props) => {
     try {
-      const enc_id = encodeURIComponent(props.transactionId);
-      const path = `/api/transaction/${enc_id}`;
+      const path = `/api/transaction`;
       const url = new URL(path, "http://localhost:3000");
       const reply = await fetch(url.href, {
         method: "DELETE",
@@ -72,44 +95,17 @@ export const deleteTransaction =
           "Content-Type": "application/json",
           Authorization: `Bearer ${await getToken()}`,
         },
+        body: JSON.stringify(props),
       });
       if (!reply.ok) {
         console.error(await reply.text());
         throw new Error("Failed to delete transaction");
       } else {
         const result = await reply.json();
-        return SaveTransactionResponseSchema.parse(result);
+        return DeleteTransactionsResponseSchema.parse(result);
       }
     } catch (error) {
       console.error("Failed to delete transaction", { error });
-      throw error;
-    }
-  };
-
-export const saveTransactionStatus =
-  (getToken: TokenProvider): TransactionActions["saveTransactionStatus"] =>
-  async ({ id, status }) => {
-    try {
-      const enc_id = encodeURIComponent(id);
-      const path = `/api/transaction/${enc_id}/status`;
-      const url = new URL(path, "http://localhost:3000");
-      const reply = await fetch(url.href, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${await getToken()}`,
-        },
-        body: JSON.stringify({ status }),
-      });
-      if (!reply.ok) {
-        console.error(await reply.text());
-        throw new Error("Failed to save transaction status");
-      } else {
-        const result = await reply.json();
-        return SaveTransactionResponseSchema.parse(result);
-      }
-    } catch (error) {
-      console.error("Failed to save transaction status", { error });
       throw error;
     }
   };

@@ -3,6 +3,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "../../api";
 import { matchStatus } from "@moneymate/shared";
 import ClearedIcon from "@mui/icons-material/Copyright";
+import LockedIcon from "@mui/icons-material/Lock";
 import { useTransaction } from "../Common/useTransaction";
 
 export const TransactionStatusButton = ({
@@ -12,8 +13,8 @@ export const TransactionStatusButton = ({
 }) => {
   const queryClient = useQueryClient();
   const { data: transaction } = useTransaction(transactionId);
-  const { mutate: saveStatus } = useMutation({
-    mutationFn: api.saveTransactionStatus,
+  const { mutate: patchTransactions } = useMutation({
+    mutationFn: api.patchTransactions,
     onSuccess() {
       queryClient.invalidateQueries({
         queryKey: ["transactions", { transactionId }],
@@ -27,11 +28,21 @@ export const TransactionStatusButton = ({
   if (!transaction) return null;
 
   return matchStatus(transaction.status, {
+    onReconciled: () => (
+      <IconButton
+        size="small"
+        onClick={() => {
+          patchTransactions([{ id: transaction.id, status: "pending" }]);
+        }}
+      >
+        <LockedIcon fontSize="small" />
+      </IconButton>
+    ),
     onPending: () => (
       <IconButton
         size="small"
         onClick={() => {
-          saveStatus({ id: transaction.id, status: "cleared" });
+          patchTransactions([{ id: transaction.id, status: "cleared" }]);
         }}
       >
         <ClearedIcon fontSize="small" color="disabled" />
@@ -41,7 +52,7 @@ export const TransactionStatusButton = ({
       <IconButton
         size="small"
         onClick={() => {
-          saveStatus({ id: transaction.id, status: "pending" });
+          patchTransactions([{ id: transaction.id, status: "pending" }]);
         }}
       >
         <ClearedIcon fontSize="small" color="primary" />

@@ -1,7 +1,6 @@
 export * from "./src/http/DeleteAllocation.js";
 export * from "./src/http/DeleteEnvelope.js";
 export * from "./src/http/DeleteEnvelopeGroup.js";
-export * from "./src/http/DeleteTransaction.js";
 export * from "./src/http/GetAccount.js";
 export * from "./src/http/GetAccounts.js";
 export * from "./src/http/GetAllocation.js";
@@ -13,18 +12,16 @@ export * from "./src/http/GetEnvelopeGroups.js";
 export * from "./src/http/GetEnvelopes.js";
 export * from "./src/http/EditEnvelope.js";
 export * from "./src/http/EditEnvelopeGroup.js";
-export * from "./src/http/GetTransaction.js";
-export * from "./src/http/GetTransactions.js";
 export * from "./src/http/SaveAccount.js";
 export * from "./src/http/SaveAllocation.js";
 export * from "./src/http/SaveBudget.js";
 export * from "./src/http/SaveEnvelope.js";
 export * from "./src/http/SaveEnvelopeGroup.js";
-export * from "./src/http/SaveTransaction.js";
-export * from "./src/http/SaveTransactionStatus.js";
 export * from "./src/http/SaveTransfer.js";
 export * from "./src/http/SignIn.js";
 export * from "./src/http/SignUp.js";
+
+export * from "./src/http/Transaction/index.js";
 
 export * from "./src/views/AccountViewSchema.js";
 export * from "./src/views/AllocationViewSchema.js";

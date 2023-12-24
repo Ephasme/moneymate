@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { TransactionViewSchema } from "../views/TransactionViewSchema.js";
+import { TransactionViewSchema } from "../../views/TransactionViewSchema.js";
 
 export const GetTransactionsParamsSchema = z.object({
   budgetId: z.string().uuid(),

@@ -40,11 +40,11 @@ import {
 } from "./src/Envelope/index.js";
 import {
   TransactionActions,
-  deleteTransaction,
+  createTransactions,
+  deleteTransactions,
   getTransaction,
   getTransactions,
-  saveTransaction,
-  saveTransactionStatus,
+  patchTransactions,
 } from "./src/Transaction/index.js";
 import { TransferActions, saveTransfer } from "./src/Transfer/index.js";
 
@@ -112,9 +112,9 @@ export const makeApi = (getToken: TokenProvider): Api => ({
   saveEnvelope: saveEnvelope(getToken),
   getEnvelope: getEnvelope(getToken),
   getEnvelopes: getEnvelopes(getToken),
-  saveTransaction: saveTransaction(getToken),
-  saveTransactionStatus: saveTransactionStatus(getToken),
-  deleteTransaction: deleteTransaction(getToken),
+  createTransactions: createTransactions(getToken),
+  patchTransactions: patchTransactions(getToken),
+  deleteTransactions: deleteTransactions(getToken),
   getTransactions: getTransactions(getToken),
   getTransaction: getTransaction(getToken),
   editEnvelope: editEnvelope(getToken),
