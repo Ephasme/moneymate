@@ -1,38 +1,17 @@
 import { Box } from "@mui/material";
 import { useState } from "react";
 import { useEnvelope } from "../Common/useEnvelope";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { api } from "../../api";
 import { RowEditModal } from "./RowEditModal";
+import { useDeleteEnvelope } from "../Common/useDeleteEnvelope";
+import { useEditEnvelope } from "../Common/useEditEnvelope";
 
 export const EnvelopeName = ({ envelopeId }: { envelopeId: string }) => {
-  const queryClient = useQueryClient();
   const envelope = useEnvelope(envelopeId);
 
   const [isOpen, setIsOpen] = useState(false);
 
-  const { mutate: deleteEnvelope } = useMutation({
-    mutationFn: api.deleteEnvelope,
-    onSuccess: () => {
-      setIsOpen(false);
-      queryClient.invalidateQueries({ queryKey: ["envelopes"] });
-      queryClient.invalidateQueries({ queryKey: ["envelope-groups"] });
-    },
-    onError: (error) => {
-      console.error(error);
-    },
-  });
-  const { mutate: editEnvelope } = useMutation({
-    mutationFn: api.editEnvelope,
-    onSuccess: () => {
-      setIsOpen(false);
-      queryClient.invalidateQueries({ queryKey: ["envelopes"] });
-      queryClient.invalidateQueries({ queryKey: ["envelope-groups"] });
-    },
-    onError: (error) => {
-      console.error(error);
-    },
-  });
+  const { mutate: deleteEnvelope } = useDeleteEnvelope();
+  const { mutate: editEnvelope } = useEditEnvelope();
 
   if (!envelope) return <Box className="flex-grow">Loading...</Box>;
 

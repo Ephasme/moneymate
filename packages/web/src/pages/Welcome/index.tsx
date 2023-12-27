@@ -1,11 +1,12 @@
 import { Box, Button, TextField } from "@mui/material";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Form, Formik } from "formik";
 import { useNavigate } from "react-router-dom";
 import * as Spaces from "react-spaces";
 import { api } from "../../api";
 import { useStore } from "../../store";
 import { Loading } from "../Loading";
+import { useBudgets } from "../Common/useBudgets";
 
 export const WelcomeCreateBudget = () => {
   const queryClient = useQueryClient();
@@ -45,10 +46,7 @@ export const WelcomeCreateBudget = () => {
 export const WelcomeSelectBudget = () => {
   const setBudgetId = useStore((state) => state.setBudgetId);
   const navigate = useNavigate();
-  const { data: budgets } = useQuery({
-    queryKey: ["budgets"],
-    queryFn: api.getBudgets,
-  });
+  const { data: budgets } = useBudgets();
 
   return (
     <Spaces.ViewPort className="flex">
@@ -72,10 +70,7 @@ export const WelcomeSelectBudget = () => {
 };
 
 export const Welcome = () => {
-  const { data: budgets } = useQuery({
-    queryKey: ["budgets"],
-    queryFn: api.getBudgets,
-  });
+  const { data: budgets } = useBudgets();
 
   if (!budgets) return <Loading />;
   if (budgets.length === 0) return <WelcomeCreateBudget />;

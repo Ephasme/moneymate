@@ -6,25 +6,9 @@ import {
   DialogTitle,
   TextField,
 } from "@mui/material";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Formik } from "formik";
-import { api } from "../../api";
 import { useStore } from "../../store";
-
-const useSaveEnvelope = (props: { onClose: () => void }) => {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: api.saveEnvelope,
-    onError(error) {
-      console.error(error);
-    },
-    onSuccess() {
-      queryClient.invalidateQueries({ queryKey: ["envelopes"] });
-      queryClient.invalidateQueries({ queryKey: ["envelope-groups"] });
-      props.onClose();
-    },
-  });
-};
+import { useSaveEnvelope } from "../Common/useSaveEnvelope";
 
 export const CreateEnvelopeDialog = ({
   groupId,

@@ -15,19 +15,16 @@ export const GetEnvelope = ({
 }): FastifyPluginCallback => {
   return (server, _ignored, done) => {
     server.get(
-      "/api/budget/:budgetId/envelope/:envelopeId",
+      "/api/envelope/:envelopeId",
       async (request, reply): Promise<GetEnvelopeResponseInput> => {
         const user = await request.user();
-        const { budgetId, envelopeId } = GetEnvelopeParamsSchema.parse(
-          request.params
-        );
+        const { envelopeId } = GetEnvelopeParamsSchema.parse(request.params);
 
         const { currentMonth: currentMonthFromQuery } =
           GetEnvelopeQuerySchema.parse(request.query);
 
         const envelope = await entities.findOne(Envelope, {
           where: {
-            budgetId,
             userId: user.id,
             id: envelopeId,
           },

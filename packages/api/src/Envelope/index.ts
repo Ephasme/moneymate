@@ -29,7 +29,6 @@ export type EnvelopeActions = {
   ): Promise<GetEnvelopesResponse>;
   getEnvelope(
     props: {
-      budgetId: string;
       envelopeId: string;
     },
     options?: { currentMonth?: Date }
@@ -118,11 +117,10 @@ export const deleteEnvelope =
 
 export const getEnvelope =
   (getToken: TokenProvider): EnvelopeActions["getEnvelope"] =>
-  async ({ budgetId, envelopeId }, { currentMonth } = {}) => {
+  async ({ envelopeId }, { currentMonth } = {}) => {
     try {
       const enc_envelopeId = encodeURIComponent(envelopeId);
-      const enc_budgetId = encodeURIComponent(budgetId);
-      const path = `/api/budget/${enc_budgetId}/envelope/${enc_envelopeId}`;
+      const path = `/api/envelope/${enc_envelopeId}`;
       const url = new URL(path, "http://localhost:3000");
       url.search = new URLSearchParams({
         currentMonth: currentMonth

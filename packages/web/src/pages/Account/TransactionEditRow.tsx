@@ -12,7 +12,7 @@ import {
   TextField,
 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useFormik } from "formik";
 import { useEffect } from "react";
 import { NumericFormat } from "react-number-format";
@@ -22,14 +22,7 @@ import { useStore } from "../../store";
 import { useTransaction } from "../Common/useTransaction";
 import { SingleAllocationEditor } from "./SingleAllocationEditor";
 import { TransactionStatusButton } from "./TransactionStatusButton";
-
-export const useAccounts = () => {
-  const budgetId = useStore((state) => state.budgetId);
-  return useQuery({
-    queryKey: ["accounts", { budgetId }],
-    queryFn: () => api.getAccounts({ budgetId }),
-  });
-};
+import { useAccounts } from "../Common/useAccounts";
 
 export const TransactionEditRow = ({
   accountId,
@@ -99,18 +92,21 @@ export const TransactionEditRow = ({
 
   const { mutate: save } = useMutation({
     mutationFn: async () => {
+      const newTransaction = {
+        accountId: formik.values.accountId,
+        budgetId,
+        amount: (
+          (formik.values.positiveAmount ?? 0n) -
+          (formik.values.negativeAmount ?? 0n)
+        ).toString(),
+        date: formik.values.date.toISOString(),
+        description: formik.values.description,
+        status: formik.values.status,
+      };
       if (transaction) {
         await api.patchTransactions([
           {
-            accountId: formik.values.accountId,
-            amount: (
-              (formik.values.positiveAmount ?? 0n) -
-              (formik.values.negativeAmount ?? 0n)
-            ).toString(),
-            budgetId,
-            date: formik.values.date.toISOString(),
-            description: formik.values.description,
-            status: formik.values.status,
+            ...newTransaction,
             id: transaction.id,
             allocations: formik.values.allocations.map((allocation) => {
               if (allocation.status === "active") {
@@ -127,16 +123,8 @@ export const TransactionEditRow = ({
       } else {
         await api.createTransactions([
           {
-            accountId: formik.values.accountId,
+            ...newTransaction,
             id: transactionId,
-            amount: (
-              (formik.values.positiveAmount ?? 0n) -
-              (formik.values.negativeAmount ?? 0n)
-            ).toString(),
-            budgetId,
-            date: formik.values.date.toISOString(),
-            description: formik.values.description,
-            status: formik.values.status,
             allocations: formik.values.allocations
               .map((allocation): AllocationPostedInput | undefined => {
                 if (allocation.status === "active" && allocation.envelopeId) {

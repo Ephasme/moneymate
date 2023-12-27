@@ -1,15 +1,12 @@
 import { offset, useFloating } from "@floating-ui/react";
-import { TransactionStatus } from "@moneymate/shared";
 import ClearIcon from "@mui/icons-material/Copyright";
 import UnclearIcon from "@mui/icons-material/CopyrightTwoTone";
 import DeleteIcon from "@mui/icons-material/Delete";
 import MoreIcon from "@mui/icons-material/MoreHoriz";
 import EditIcon from "@mui/icons-material/Edit";
 import { Box, Button, Checkbox, IconButton } from "@mui/material";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
-import { api } from "../../api";
 import { formatCurrency } from "../../helpers/formatCurrency";
 import { useAccount } from "../Common/useAccount";
 import { useTransactions } from "../Common/useTransactions";
@@ -19,11 +16,12 @@ import { TransactionRow } from "./TransactionRow";
 import { useAccountsStore } from "./store";
 import { ReconcileBanner } from "./ReconcileBanner";
 import { ReconcileButton } from "./ReconcileButton";
+import { useDeleteTransactions } from "../Common/useDeleteTransactions";
+import { usePatchTransactions } from "../Common/usePatchTransactions";
 
 export const Account = () => {
   const [showNewTransaction, setShowNewTransaction] = useState<boolean>(false);
 
-  const queryClient = useQueryClient();
   const { accountId } = useParams<{ accountId: string }>();
   const { data: account } = useAccount(accountId);
   const { data: transactions = [] } = useTransactions(accountId);
@@ -39,36 +37,15 @@ export const Account = () => {
     middleware: [offset(-80)],
   });
 
-  const { mutate: deleteTransactions } = useMutation({
-    mutationFn: async (list: string[]) => {
-      await api.deleteTransactions(list.map((id) => ({ id })));
-    },
-    onSuccess: () => {
+  const { mutate: deleteTransactions } = useDeleteTransactions({
+    onSuccess() {
       clearTransactions();
-      queryClient.invalidateQueries({ queryKey: ["transactions"] });
-      queryClient.invalidateQueries({ queryKey: ["accounts", { accountId }] });
-    },
-    onError: (error) => {
-      console.error(error);
     },
   });
 
-  const { mutate: patchTransactions } = useMutation({
-    mutationFn: async (props: {
-      list: string[];
-      status: TransactionStatus;
-    }) => {
-      await api.patchTransactions(
-        props.list.map((id) => ({ id, status: props.status }))
-      );
-    },
-    onSuccess: () => {
+  const { mutate: patchTransactions } = usePatchTransactions({
+    onSuccess() {
       clearTransactions();
-      queryClient.invalidateQueries({ queryKey: ["transactions"] });
-      queryClient.invalidateQueries({ queryKey: ["accounts", { accountId }] });
-    },
-    onError: (error) => {
-      console.error(error);
     },
   });
 
@@ -217,8 +194,10 @@ export const Account = () => {
                 className="p-2"
                 onClick={() => {
                   patchTransactions({
-                    list: selectedTransactions,
-                    status: "cleared",
+                    list: selectedTransactions.map((id) => ({
+                      id,
+                      status: "cleared",
+                    })),
                   });
                 }}
               >
@@ -231,8 +210,10 @@ export const Account = () => {
                 className="p-2"
                 onClick={() => {
                   patchTransactions({
-                    list: selectedTransactions,
-                    status: "pending",
+                    list: selectedTransactions.map((id) => ({
+                      id,
+                      status: "pending",
+                    })),
                   });
                 }}
               >

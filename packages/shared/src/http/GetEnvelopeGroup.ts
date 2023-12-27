@@ -8,7 +8,6 @@ export const GetEnvelopeGroupQuerySchema = z.object({
 export type GetEnvelopeGroupQuery = z.infer<typeof GetEnvelopeGroupQuerySchema>;
 
 export const GetEnvelopeGroupParamsSchema = z.object({
-  budgetId: z.string().uuid(),
   envelopeGroupId: z.string().uuid(),
 });
 export type GetEnvelopeGroupParams = z.infer<

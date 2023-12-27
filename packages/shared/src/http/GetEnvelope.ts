@@ -8,7 +8,6 @@ export const GetEnvelopeQuerySchema = z.object({
 export type GetEnvelopeQuery = z.infer<typeof GetEnvelopeQuerySchema>;
 
 export const GetEnvelopeParamsSchema = z.object({
-  budgetId: z.string().uuid(),
   envelopeId: z.string().uuid(),
 });
 export type GetEnvelopeParams = z.infer<typeof GetEnvelopeParamsSchema>;

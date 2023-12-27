@@ -24,7 +24,6 @@ export type EnvelopeGroupActions = {
     props: EditEnvelopeGroupParams & EditEnvelopeGroupRequest
   ): Promise<EditEnvelopeGroupResponse>;
   getEnvelopeGroup(props: {
-    budgetId: string;
     envelopeGroupId: string;
   }): Promise<GetEnvelopeGroupResponse>;
   getEnvelopeGroups(props: {
@@ -117,11 +116,10 @@ export const saveEnvelopeGroup =
 
 export const getEnvelopeGroup =
   (getToken: TokenProvider): EnvelopeGroupActions["getEnvelopeGroup"] =>
-  async ({ budgetId, envelopeGroupId }) => {
+  async ({ envelopeGroupId }) => {
     try {
       const enc_envelopeGroupId = encodeURIComponent(envelopeGroupId);
-      const enc_budgetId = encodeURIComponent(budgetId);
-      const path = `/api/budget/${enc_budgetId}/envelope-group/${enc_envelopeGroupId}`;
+      const path = `/api/envelope-group/${enc_envelopeGroupId}`;
       const url = new URL(path, "http://localhost:3000");
       const reply = await fetch(url.href, {
         method: "GET",

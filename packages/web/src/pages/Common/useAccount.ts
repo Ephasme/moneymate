@@ -1,10 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
-import { api } from "../../api";
+import { queries } from "./queries";
 
 export const useAccount = (accountId?: string) => {
   return useQuery({
-    queryKey: ["accounts", { accountId }],
-    queryFn: () => api.getAccount({ accountId: accountId! }),
+    ...queries.accounts.details(accountId!),
     enabled: !!accountId,
   });
 };

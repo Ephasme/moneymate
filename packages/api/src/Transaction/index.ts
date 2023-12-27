@@ -16,7 +16,6 @@ import { TokenProvider } from "../types/index.js";
 
 export type TransactionActions = {
   getTransactions(props: {
-    budgetId: string;
     accountId: string;
   }): Promise<GetTransactionsResponse>;
   getTransaction(props: {
@@ -112,10 +111,10 @@ export const deleteTransactions =
 
 export const getTransactions =
   (getToken: TokenProvider): TransactionActions["getTransactions"] =>
-  async ({ budgetId, accountId }) => {
+  async ({ accountId }) => {
     try {
       const reply = await fetch(
-        `http://localhost:3000/api/budget/${budgetId}/account/${accountId}/transaction`,
+        `http://localhost:3000/api/account/${accountId}/transaction`,
         {
           method: "GET",
           headers: {

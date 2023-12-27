@@ -2,15 +2,17 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "../../api";
 import { queries } from "./queries";
 
-export const useSaveTransfer = () => {
+export const useSaveEnvelope = (props: { onClose: () => void }) => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: api.saveTransfer,
+    mutationFn: api.saveEnvelope,
+    onError(error) {
+      console.error(error);
+    },
     onSuccess() {
       queryClient.invalidateQueries({ queryKey: queries.envelopes._def });
-    },
-    onError(err) {
-      console.error(err);
+      queryClient.invalidateQueries({ queryKey: queries.envelopeGroups._def });
+      props.onClose();
     },
   });
 };

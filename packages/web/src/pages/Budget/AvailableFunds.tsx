@@ -13,20 +13,11 @@ export const AvailableFunds = () => {
     button: string;
   };
   if (envelope.balance > 0n) {
-    colors = {
-      bg: "#C1EE9F",
-      button: "#4D9019",
-    };
+    colors = { bg: "#C1EE9F", button: "#4D9019" };
   } else if (envelope.balance < 0n) {
-    colors = {
-      bg: "#FAACA5",
-      button: "#C72C1D",
-    };
+    colors = { bg: "#FAACA5", button: "#C72C1D" };
   } else {
-    colors = {
-      bg: "#EDF1F5",
-      button: "#6D7A88",
-    };
+    colors = { bg: "#EDF1F5", button: "#6D7A88" };
   }
   return (
     <Box className="flex flex-col justify-center items-center flex-grow">

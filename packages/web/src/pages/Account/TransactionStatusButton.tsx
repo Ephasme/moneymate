@@ -1,9 +1,8 @@
-import { IconButton } from "@mui/material";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { api } from "../../api";
 import { matchStatus } from "@moneymate/shared";
 import ClearedIcon from "@mui/icons-material/Copyright";
 import LockedIcon from "@mui/icons-material/Lock";
+import { IconButton } from "@mui/material";
+import { usePatchTransactions } from "../Common/usePatchTransactions";
 import { useTransaction } from "../Common/useTransaction";
 
 export const TransactionStatusButton = ({
@@ -11,19 +10,8 @@ export const TransactionStatusButton = ({
 }: {
   transactionId: string;
 }) => {
-  const queryClient = useQueryClient();
   const { data: transaction } = useTransaction(transactionId);
-  const { mutate: patchTransactions } = useMutation({
-    mutationFn: api.patchTransactions,
-    onSuccess() {
-      queryClient.invalidateQueries({
-        queryKey: ["transactions", { transactionId }],
-      });
-      queryClient.invalidateQueries({
-        queryKey: ["accounts"],
-      });
-    },
-  });
+  const { mutate: patchTransactions } = usePatchTransactions();
 
   if (!transaction) return null;
 

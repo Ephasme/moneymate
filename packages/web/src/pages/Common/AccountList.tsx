@@ -1,12 +1,11 @@
 import EditIcon from "@mui/icons-material/Edit";
 import { Box, Button, IconButton } from "@mui/material";
-import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { useMatch, useNavigate } from "react-router-dom";
-import { api } from "../../api";
 import { formatCurrency } from "../../helpers/formatCurrency";
 import { useStore } from "../../store";
 import { EditAccountDialog } from "../Budget/EditAccountDialog";
+import { useAccounts } from "./useAccounts";
 
 export const AccountList = () => {
   const navigate = useNavigate();
@@ -15,10 +14,7 @@ export const AccountList = () => {
   const [accountId, setAccountId] = useState<string | undefined>(undefined);
   const currentState = useMatch("/:budgetId/accounts/:accountId");
 
-  const { data: accounts } = useQuery({
-    queryKey: ["accounts", { budgetId }],
-    queryFn: () => api.getAccounts({ budgetId }),
-  });
+  const { data: accounts } = useAccounts();
 
   if (!accounts) return <Box>Loading accounts...</Box>;
 

@@ -2,7 +2,6 @@ import { z } from "zod";
 import { TransactionViewSchema } from "../../views/TransactionViewSchema.js";
 
 export const GetTransactionsParamsSchema = z.object({
-  budgetId: z.string().uuid(),
   accountId: z.string().uuid(),
 });
 export type GetTransactionsParams = z.infer<typeof GetTransactionsParamsSchema>;

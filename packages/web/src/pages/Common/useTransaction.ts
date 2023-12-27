@@ -1,10 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
-import { api } from "../../api";
+import { queries } from "./queries";
 
 export const useTransaction = (transactionId?: string) => {
   return useQuery({
-    queryKey: ["transactions", { transactionId }],
-    queryFn: () => api.getTransaction({ transactionId: transactionId! }),
+    ...queries.transactions.details(transactionId!),
     enabled: !!transactionId,
   });
 };

@@ -16,15 +16,13 @@ export const GetTransactions = ({
 }): FastifyPluginCallback => {
   return (server, _, done) => {
     server.get(
-      "/api/budget/:budgetId/account/:accountId/transaction",
+      "/api/account/:accountId/transaction",
       async (request, reply): Promise<GetTransactionsResponseInput> => {
         const user = await request.user();
-        const { accountId, budgetId } = GetTransactionsParamsSchema.parse(
-          request.params
-        );
+        const { accountId } = GetTransactionsParamsSchema.parse(request.params);
 
         const transactions = await entities.find(Transaction, {
-          where: { accountId, budgetId, userId: user.id },
+          where: { accountId, userId: user.id },
           relations: [
             "payee",
             "account",

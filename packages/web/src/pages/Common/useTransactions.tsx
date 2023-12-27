@@ -1,12 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
-import { api } from "../../api";
-import { useStore } from "../../store";
+import { queries } from "./queries";
 
 export const useTransactions = (accountId?: string) => {
-  const budgetId = useStore((state) => state.budgetId);
   return useQuery({
-    queryKey: ["transactions", { accountId }],
-    queryFn: () => api.getTransactions({ budgetId, accountId: accountId! }),
+    ...queries.transactions.list({ accountId: accountId! }),
     enabled: !!accountId,
   });
 };

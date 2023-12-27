@@ -1,15 +1,13 @@
 import CancelIcon from "@mui/icons-material/CancelOutlined";
 import { Box, Button, IconButton } from "@mui/material";
 import { formatCurrency } from "../../helpers/formatCurrency";
-import { useAccount } from "../Common/useAccount";
-import { useAccountsStore } from "./store";
 import * as maths from "../../helpers/maths";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { api } from "../../api";
+import { useAccount } from "../Common/useAccount";
 import { useTransactions } from "../Common/useTransactions";
+import { useAccountsStore } from "./store";
+import { usePatchTransactions } from "../Common/usePatchTransactions";
 
 export const ReconcileBanner = ({ accountId }: { accountId: string }) => {
-  const queryClient = useQueryClient();
   const expectedReconciledBalance = useAccountsStore(
     (state) => state.expectedReconciledBalance
   );
@@ -18,15 +16,9 @@ export const ReconcileBanner = ({ accountId }: { accountId: string }) => {
   );
   const { data: account } = useAccount(accountId);
   const { refetch: refetchTransactions } = useTransactions(accountId);
-  const { mutate: patchTransactions } = useMutation({
-    mutationFn: api.patchTransactions,
-    onSuccess: () => {
+  const { mutate: patchTransactions } = usePatchTransactions({
+    onSuccess() {
       setExpectedReconciledBalance(undefined);
-      queryClient.invalidateQueries({ queryKey: ["transactions"] });
-      queryClient.invalidateQueries({ queryKey: ["accounts", { accountId }] });
-    },
-    onError: (error) => {
-      console.error(error);
     },
   });
   if (!expectedReconciledBalance) return null;
@@ -38,7 +30,6 @@ export const ReconcileBanner = ({ accountId }: { accountId: string }) => {
       const toPatch = (transactions ?? [])
         .filter((t) => t.status === "cleared")
         .map((x) => ({ id: x.id, status: "reconciled" as const }));
-      console.log({ toPatch, transactions });
       patchTransactions(toPatch);
     } else {
       throw new Error("Not implemented");

@@ -14,15 +14,15 @@ export const GetEnvelopeGroup = ({
 }): FastifyPluginCallback => {
   return (server, _ignored, done) => {
     server.get(
-      "/api/budget/:budgetId/envelope-group/:envelopeGroupId",
+      "/api/envelope-group/:envelopeGroupId",
       async (request, reply): Promise<GetEnvelopeGroupResponseInput> => {
         const user = await request.user();
-        const { budgetId, envelopeGroupId } =
-          GetEnvelopeGroupParamsSchema.parse(request.params);
+        const { envelopeGroupId } = GetEnvelopeGroupParamsSchema.parse(
+          request.params
+        );
 
         const envelopeGroup = await entities.findOne(EnvelopeGroup, {
           where: {
-            budgetId,
             userId: user.id,
             id: envelopeGroupId,
           },

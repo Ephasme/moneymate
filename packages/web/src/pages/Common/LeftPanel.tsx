@@ -1,20 +1,15 @@
 import { Box } from "@mui/material";
-import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import { api } from "../../api";
 import { useStore } from "../../store";
 import { AccountList } from "./AccountList";
 import { Logo } from "./Logo";
+import { useBudget } from "./useBudget";
 
 export const LeftPanel = () => {
   const budgetId = useStore((state) => state.budgetId);
   const navigate = useNavigate();
 
-  const { data: budget } = useQuery({
-    queryKey: ["budgets", { budgetId }],
-    queryFn: () => api.getBudget({ budgetId: budgetId! }),
-    enabled: !!budgetId,
-  });
+  const { data: budget } = useBudget();
 
   if (!budget) return <Box>Loading budget...</Box>;
 

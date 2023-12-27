@@ -1,40 +1,27 @@
 import { Box } from "@mui/material";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { api } from "../../api";
 import { useEnvelopeGroup } from "../Common/useEnvelopeGroup";
 import { RowEditModal } from "./RowEditModal";
+import { useDeleteEnvelopeGroup } from "../Common/useDeleteEnvelopeGroup";
+import { useEditEnvelopeGroup } from "../Common/useEditEnvelopeGroup";
 
 export const EnvelopeGroupName = ({
   envelopeGroupId,
 }: {
   envelopeGroupId: string;
 }) => {
-  const queryClient = useQueryClient();
   const envelopeGroup = useEnvelopeGroup(envelopeGroupId);
 
   const [isOpen, setIsOpen] = useState(false);
 
-  const { mutate: deleteEnvelopeGroup } = useMutation({
-    mutationFn: api.deleteEnvelopeGroup,
-    onSuccess: () => {
+  const { mutate: deleteEnvelopeGroup } = useDeleteEnvelopeGroup({
+    onSuccess() {
       setIsOpen(false);
-      queryClient.invalidateQueries({ queryKey: ["envelopes"] });
-      queryClient.invalidateQueries({ queryKey: ["envelope-groups"] });
-    },
-    onError: (error) => {
-      console.error(error);
     },
   });
-  const { mutate: editEnvelopeGroup } = useMutation({
-    mutationFn: api.editEnvelopeGroup,
-    onSuccess: () => {
+  const { mutate: editEnvelopeGroup } = useEditEnvelopeGroup({
+    onSuccess() {
       setIsOpen(false);
-      queryClient.invalidateQueries({ queryKey: ["envelopes"] });
-      queryClient.invalidateQueries({ queryKey: ["envelope-groups"] });
-    },
-    onError: (error) => {
-      console.error(error);
     },
   });
 
