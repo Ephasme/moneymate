@@ -1,12 +1,14 @@
 import { z } from "zod";
 import { TransactionStatuses } from "../../model/index.js";
 import { AllocationPatchedSchema } from "./AllocationPatched.js";
+import { RecurrenceViewSchema } from "../../views/RecurrenceViewSchema.js";
 
 export const TransactionPatchedSchema = z.object({
   id: z.string().uuid(),
   budgetId: z.string().uuid().optional(),
   accountId: z.string().uuid().optional(),
   description: z.string().optional().nullable(),
+  recurrence: RecurrenceViewSchema.optional(),
   amount: z.string().transform(BigInt).optional(),
   date: z
     .string()

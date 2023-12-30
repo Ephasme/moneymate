@@ -1,3 +1,4 @@
+import { TransactionStatus, TransactionStatuses } from "@moneymate/shared";
 import {
   Column,
   Entity,
@@ -6,11 +7,11 @@ import {
   PrimaryGeneratedColumn,
   type Relation,
 } from "typeorm";
-import { TransactionStatus, TransactionStatuses } from "@moneymate/shared";
 import { Account } from "./Account.js";
 import { Allocation } from "./Allocation.js";
-import { Payee } from "./Payee.js";
 import { Budget } from "./Budget.js";
+import { Payee } from "./Payee.js";
+import { Recurrence } from "./Recurrence.js";
 import { User } from "./User.js";
 
 @Entity()
@@ -56,4 +57,10 @@ export class Transaction {
 
   @OneToMany(() => Allocation, (x) => x.transaction)
   allocations!: Relation<Allocation>[];
+
+  @ManyToOne(() => Recurrence, { nullable: true })
+  recurrence!: Relation<Recurrence> | null;
+
+  @Column({ type: "varchar", nullable: true })
+  recurrenceId?: string;
 }

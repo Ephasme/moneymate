@@ -17,6 +17,13 @@ export const transactionView = (x: Transaction): TransactionViewInput => {
     date: x.date.toISOString(),
     payee: x.payee?.name,
     allocations,
+    recurrence: !x.recurrence
+      ? undefined
+      : {
+          ...x.recurrence,
+          startDate: x.recurrence.startDate.toISOString(),
+          currentDate: x.recurrence.currentDate.toISOString(),
+        },
     fullyAllocated: sumAllocs === BigInt(x.amount),
     unallocatedAmount: unallocated.toString(),
   };

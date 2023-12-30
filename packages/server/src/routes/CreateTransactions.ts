@@ -8,6 +8,7 @@ import { EntityManager } from "typeorm";
 import { Account, Allocation, Transaction } from "../entities/index.js";
 import { getOrNew } from "../helpers/getOrNew.js";
 import { randomUUID } from "crypto";
+import { Recurrence } from "../entities/Recurrence.js";
 
 export const CreateTransactions = ({
   entities,
@@ -27,6 +28,7 @@ export const CreateTransactions = ({
           date,
           id: transactionId,
           budgetId,
+          recurrence,
           accountId,
           allocations,
           status,
@@ -51,18 +53,32 @@ export const CreateTransactions = ({
             });
           }
 
+          let newRecurrence: Recurrence | undefined = undefined;
+          if (recurrence) {
+            newRecurrence = new Recurrence();
+            newRecurrence.frequency = recurrence.frequency;
+            newRecurrence.period = recurrence.period;
+            newRecurrence.id = recurrence.id;
+            newRecurrence.startDate = recurrence.startDate;
+            newRecurrence.currentDate = recurrence.currentDate;
+          }
+
           const transaction = new Transaction();
 
           transaction.id = randomUUID() ?? transactionId;
           transaction.userId = user.id;
           transaction.accountId = account.id;
           transaction.budgetId = budgetId;
+          transaction.recurrenceId = newRecurrence?.id;
           transaction.amount = amount.toString();
           transaction.description = description;
           transaction.date = date;
           transaction.status = status;
 
           await entities.transaction(async (manager) => {
+            if (newRecurrence) {
+              await manager.save(Recurrence, newRecurrence);
+            }
             const { id: transactionId } = await manager.save(
               Transaction,
               transaction

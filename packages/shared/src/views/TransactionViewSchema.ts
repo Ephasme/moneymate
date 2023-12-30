@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { AllocationViewSchema } from "./AllocationViewSchema.js";
 import { TransactionStatuses } from "../model/index.js";
+import { RecurrenceViewSchema } from "./RecurrenceViewSchema.js";
 
 export const TransactionViewSchema = z.object({
   id: z.string().uuid(),
@@ -12,6 +13,7 @@ export const TransactionViewSchema = z.object({
   date: z.string().datetime(),
   payee: z.string().optional(),
   allocations: AllocationViewSchema.array(),
+  recurrence: RecurrenceViewSchema.nullish(),
   fullyAllocated: z.boolean(),
   unallocatedAmount: z.string().transform(BigInt),
 });

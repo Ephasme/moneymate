@@ -1,6 +1,7 @@
 import {
   AllocationPatched,
   AllocationPostedInput,
+  RecurrencePeriod,
   TransactionStatus,
 } from "@moneymate/shared";
 import {
@@ -9,22 +10,27 @@ import {
   Button,
   Checkbox,
   ClickAwayListener,
+  FormControlLabel,
+  MenuItem,
+  Select,
   TextField,
 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useFormik } from "formik";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { NumericFormat } from "react-number-format";
 import { api } from "../../api";
 import * as mil from "../../helpers/mil";
 import { useStore } from "../../store";
+import { queries } from "../Common/queries";
+import { useAccounts } from "../Common/useAccounts";
 import { useTransaction } from "../Common/useTransaction";
 import { SingleAllocationEditor } from "./SingleAllocationEditor";
 import { TransactionStatusButton } from "./TransactionStatusButton";
-import { useAccounts } from "../Common/useAccounts";
+import { v4 as uuid } from "uuid";
 
-export const TransactionEditRow = ({
+export const TransactionRowEdit = ({
   accountId,
   transactionId,
   onCancel,
@@ -37,6 +43,14 @@ export const TransactionEditRow = ({
   const budgetId = useStore((state) => state.budgetId);
   const { data: transaction } = useTransaction(transactionId);
   const { data: accounts } = useAccounts();
+
+  const [period, setPeriod] = useState(
+    transaction?.recurrence?.period ?? "month"
+  );
+  const [frequency, setFrequency] = useState(
+    transaction?.recurrence?.frequency ?? 1
+  );
+  const [isRecurring, setRecurring] = useState(!!transaction?.recurrence);
 
   const getInitialValues = () => {
     return {
@@ -95,6 +109,15 @@ export const TransactionEditRow = ({
       const newTransaction = {
         accountId: formik.values.accountId,
         budgetId,
+        recurrence: isRecurring
+          ? {
+              id: transaction?.recurrence?.id ?? uuid(),
+              period,
+              frequency,
+              startDate: formik.values.date.toISOString(),
+              currentDate: formik.values.date.toISOString(),
+            }
+          : undefined,
         amount: (
           (formik.values.positiveAmount ?? 0n) -
           (formik.values.negativeAmount ?? 0n)
@@ -142,8 +165,8 @@ export const TransactionEditRow = ({
       }
     },
     onSuccess() {
-      queryClient.invalidateQueries({ queryKey: ["transactions"] });
-      queryClient.invalidateQueries({ queryKey: ["accounts"] });
+      queryClient.invalidateQueries({ queryKey: queries.transactions._def });
+      queryClient.invalidateQueries({ queryKey: queries.accounts._def });
       onCancel?.();
     },
     onError(error) {
@@ -161,7 +184,8 @@ export const TransactionEditRow = ({
   return (
     <ClickAwayListener
       onClickAway={() => {
-        onCancel?.();
+        console.log("click away");
+        // onCancel?.();
       }}
     >
       <Box className="contents">
@@ -172,9 +196,7 @@ export const TransactionEditRow = ({
           <DatePicker
             format="dd/MM/yyyy"
             onChange={(value) => {
-              if (value) {
-                formik.setFieldValue("date", value);
-              }
+              formik.setFieldValue("date", value);
             }}
             sx={{
               "& .MuiInputBase-root": {
@@ -297,10 +319,51 @@ export const TransactionEditRow = ({
         </Box>
 
         <Box
-          className="flex flex-col items-end bg-slate-100 border-slate-300 border-solid"
+          className="flex flex-row items-center p-2 pl-[46px] bg-slate-100 border-slate-300 border-solid"
           sx={{ gridColumn: "1 / span 8" }}
         >
-          <Box className="flex gap-2 m-2">
+          <Box>
+            <FormControlLabel
+              label="Recurring"
+              control={
+                <Checkbox
+                  checked={isRecurring}
+                  onChange={(_, checked) => setRecurring(checked)}
+                  size="small"
+                />
+              }
+            />
+          </Box>
+          {isRecurring && (
+            <Box className="flex gap-2 items-center">
+              Repeat every
+              <NumericFormat
+                value={frequency}
+                onValueChange={({ floatValue }) => {
+                  if (floatValue) {
+                    setFrequency(floatValue);
+                  }
+                }}
+                size="small"
+                customInput={TextField}
+              />
+              <Select
+                value={period}
+                onChange={(ev) => {
+                  setPeriod(ev.target.value as RecurrencePeriod);
+                }}
+                size="small"
+              >
+                <MenuItem value={"year"}>Year</MenuItem>
+                <MenuItem value={"quarter"}>Quarter</MenuItem>
+                <MenuItem value={"month"}>Month</MenuItem>
+                <MenuItem value={"week"}>Week</MenuItem>
+                <MenuItem value={"day"}>Day</MenuItem>
+              </Select>
+            </Box>
+          )}
+          <Box className="flex-grow"></Box>
+          <Box className="flex flex-row gap-2">
             <Button
               size="small"
               variant="outlined"

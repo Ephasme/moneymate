@@ -11,7 +11,7 @@ import { formatCurrency } from "../../helpers/formatCurrency";
 import { useAccount } from "../Common/useAccount";
 import { useTransactions } from "../Common/useTransactions";
 import { MainLayout } from "../Layouts";
-import { TransactionEditRow } from "./TransactionEditRow";
+import { TransactionRowEdit } from "./TransactionRowEdit";
 import { TransactionRow } from "./TransactionRow";
 import { useAccountsStore } from "./store";
 import { ReconcileBanner } from "./ReconcileBanner";
@@ -62,7 +62,7 @@ export const Account = () => {
   if (!account) return <Box>Loading...</Box>;
 
   return (
-    <MainLayout>
+    <MainLayout rightPanel={null}>
       <Box className="flex flex-col flex-grow" ref={refs.setReference}>
         <Box className="flex-grow flex flex-col items-start justify-stretch">
           <Box className="w-full flex items-center justify-between pt-5 px-4 ">
@@ -141,7 +141,7 @@ export const Account = () => {
               </Box>
             </Box>
             {showNewTransaction && (
-              <TransactionEditRow
+              <TransactionRowEdit
                 accountId={account.id}
                 onCancel={() => {
                   setShowNewTransaction(false);
@@ -193,12 +193,12 @@ export const Account = () => {
               <button
                 className="p-2"
                 onClick={() => {
-                  patchTransactions({
-                    list: selectedTransactions.map((id) => ({
+                  patchTransactions(
+                    selectedTransactions.map((id) => ({
                       id,
                       status: "cleared",
-                    })),
-                  });
+                    }))
+                  );
                 }}
               >
                 Clear
@@ -209,12 +209,12 @@ export const Account = () => {
               <button
                 className="p-2"
                 onClick={() => {
-                  patchTransactions({
-                    list: selectedTransactions.map((id) => ({
+                  patchTransactions(
+                    selectedTransactions.map((id) => ({
                       id,
                       status: "pending",
-                    })),
-                  });
+                    }))
+                  );
                 }}
               >
                 Unclear

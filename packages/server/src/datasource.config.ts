@@ -11,6 +11,7 @@ import {
 import { Budget } from "./entities/Budget.js";
 import env from "env-var";
 import { EnvelopeGroup } from "./entities/EnvelopeGroup.js";
+import { Recurrence } from "./entities/Recurrence.js";
 
 const DB_HOST = env.get("DB_HOST").required().asString();
 const DB_PORT = env.get("DB_PORT").required().asPortNumber();
@@ -37,5 +38,6 @@ export default new DataSource({
     Payee,
     Budget,
     Transfer,
+    Recurrence,
   ],
 });

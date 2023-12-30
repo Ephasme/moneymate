@@ -1,20 +1,15 @@
 import {
-  DeleteAllocationResponse,
   GetAccountParams,
   GetAccountResponse,
   GetAccountResponseSchema,
   GetAccountsResponse,
   GetAccountsResponseSchema,
-  GetAllocationResponse,
-  GetAllocationResponseSchema,
   GetBudgetResponse,
   GetBudgetResponseSchema,
   GetBudgetsResponse,
   GetBudgetsResponseSchema,
   SaveAccountResponse,
   SaveAccountResponseSchema,
-  SaveAllocationResponse,
-  SaveAllocationResponseSchema,
   SaveBudgetResponse,
   SaveBudgetResponseSchema,
   SignInResponse,
@@ -23,14 +18,6 @@ import {
   SignUpResponseSchema,
 } from "@moneymate/shared";
 import {
-  EnvelopeGroupActions,
-  deleteEnvelopeGroup,
-  editEnvelopeGroup,
-  getEnvelopeGroup,
-  getEnvelopeGroups,
-  saveEnvelopeGroup,
-} from "./src/EnvelopeGroup/index.js";
-import {
   EnvelopeActions,
   deleteEnvelope,
   editEnvelope,
@@ -38,6 +25,14 @@ import {
   getEnvelopes,
   saveEnvelope,
 } from "./src/Envelope/index.js";
+import {
+  EnvelopeGroupActions,
+  deleteEnvelopeGroup,
+  editEnvelopeGroup,
+  getEnvelopeGroup,
+  getEnvelopeGroups,
+  saveEnvelopeGroup,
+} from "./src/EnvelopeGroup/index.js";
 import {
   TransactionActions,
   createTransactions,
@@ -49,31 +44,23 @@ import {
 import { TransferActions, saveTransfer } from "./src/Transfer/index.js";
 
 import * as dateFns from "date-fns";
-import { z } from "zod";
+import {
+  AllocationActions,
+  deleteAllocation,
+  getAllocation,
+  saveAllocation,
+} from "./src/Allocation/index.js";
 import { TokenProvider } from "./src/types/index.js";
 
 export const sayHi = (value: string) => {
   return `hi ${value}`;
 };
 
-const AllocationPropsSchema = z.object({
-  id: z.string().uuid().optional(),
-  budgetId: z.string(),
-  transactionId: z.string(),
-  envelopeId: z.string(),
-  amount: z.number(),
-});
-type AllocationProps = z.infer<typeof AllocationPropsSchema>;
-
 export type Api = TransferActions &
   EnvelopeActions &
   EnvelopeGroupActions &
-  TransactionActions & {
-    saveAllocation(props: AllocationProps): Promise<SaveAllocationResponse>;
-    deleteAllocation(props: {
-      allocationId: string;
-    }): Promise<DeleteAllocationResponse>;
-
+  TransactionActions &
+  AllocationActions & {
     saveBudget(props: {
       id?: string;
       name: string;
@@ -89,9 +76,6 @@ export type Api = TransferActions &
       options?: { currentMonth?: Date }
     ): Promise<GetBudgetResponse>;
 
-    getAllocation(props: {
-      allocationId: string;
-    }): Promise<GetAllocationResponse>;
     getAccounts(props: { budgetId: string }): Promise<GetAccountsResponse>;
     getAccount(props: GetAccountParams): Promise<GetAccountResponse>;
     signIn(props: { email: string; password: string }): Promise<SignInResponse>;
@@ -103,93 +87,25 @@ export type Api = TransferActions &
   };
 
 export const makeApi = (getToken: TokenProvider): Api => ({
-  saveTransfer: saveTransfer(getToken),
+  createTransactions: createTransactions(getToken),
+  deleteAllocation: deleteAllocation(getToken),
   deleteEnvelope: deleteEnvelope(getToken),
   deleteEnvelopeGroup: deleteEnvelopeGroup(getToken),
-  saveEnvelopeGroup: saveEnvelopeGroup(getToken),
-  getEnvelopeGroup: getEnvelopeGroup(getToken),
-  getEnvelopeGroups: getEnvelopeGroups(getToken),
-  saveEnvelope: saveEnvelope(getToken),
-  getEnvelope: getEnvelope(getToken),
-  getEnvelopes: getEnvelopes(getToken),
-  createTransactions: createTransactions(getToken),
-  patchTransactions: patchTransactions(getToken),
   deleteTransactions: deleteTransactions(getToken),
-  getTransactions: getTransactions(getToken),
-  getTransaction: getTransaction(getToken),
   editEnvelope: editEnvelope(getToken),
   editEnvelopeGroup: editEnvelopeGroup(getToken),
-  async deleteAllocation({ allocationId }) {
-    try {
-      const reply = await fetch(
-        `http://localhost:3000/api/allocation/${allocationId}`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${await getToken()}`,
-          },
-        }
-      );
-      if (!reply.ok) {
-        console.error(await reply.text());
-        throw new Error("Failed to delete Allocation");
-      } else {
-        const result = await reply.json();
-        return SaveAllocationResponseSchema.parse(result);
-      }
-    } catch (error) {
-      console.error("Failed to delete Allocation", { error });
-      throw error;
-    }
-  },
-  async saveAllocation(props) {
-    try {
-      const reply = await fetch(`http://localhost:3000/api/allocation`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${await getToken()}`,
-        },
-        body: JSON.stringify(props),
-      });
-      if (!reply.ok) {
-        console.error(await reply.text());
-        throw new Error("Failed to save Allocation");
-      } else {
-        const result = await reply.json();
-        return SaveAllocationResponseSchema.parse(result);
-      }
-    } catch (error) {
-      console.error("Failed to save Allocation", { error });
-      throw error;
-    }
-  },
-
-  async getAllocation({ allocationId }) {
-    try {
-      const reply = await fetch(
-        `http://localhost:3000/api/allocation/${allocationId}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${await getToken()}`,
-          },
-        }
-      );
-      if (!reply.ok) {
-        console.error(await reply.text());
-        throw new Error("Failed to get allocation");
-      } else {
-        const result = await reply.json();
-        return GetAllocationResponseSchema.parse(result);
-      }
-    } catch (error) {
-      console.error("Failed to get allocation", { error });
-      throw error;
-    }
-  },
+  getAllocation: getAllocation(getToken),
+  getEnvelope: getEnvelope(getToken),
+  getEnvelopeGroup: getEnvelopeGroup(getToken),
+  getEnvelopeGroups: getEnvelopeGroups(getToken),
+  getEnvelopes: getEnvelopes(getToken),
+  getTransaction: getTransaction(getToken),
+  getTransactions: getTransactions(getToken),
+  patchTransactions: patchTransactions(getToken),
+  saveAllocation: saveAllocation(getToken),
+  saveEnvelope: saveEnvelope(getToken),
+  saveEnvelopeGroup: saveEnvelopeGroup(getToken),
+  saveTransfer: saveTransfer(getToken),
 
   async getAccount({ accountId }) {
     try {

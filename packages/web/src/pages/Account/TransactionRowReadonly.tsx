@@ -3,9 +3,10 @@ import * as dateFns from "date-fns";
 import { formatCurrency } from "../../helpers/formatCurrency";
 import { useTransaction } from "../Common/useTransaction";
 import { TransactionStatusButton } from "./TransactionStatusButton";
+import ClockIcon from "@mui/icons-material/History";
 import { useAccountsStore } from "./store";
 
-export const TransactionReadonlyRow = ({
+export const TransactionRowReadonly = ({
   transactionId,
   onEdit,
 }: {
@@ -80,7 +81,14 @@ export const TransactionReadonlyRow = ({
           onEdit();
         }}
       >
-        <Box>{transaction.description}</Box>
+        <Box className="flex justify-between flex-grow">
+          <Box>{transaction.description}</Box>
+          <Box>
+            {transaction.recurrence ? (
+              <ClockIcon className="text-slate-400" />
+            ) : null}
+          </Box>
+        </Box>
       </Box>
       <Box
         className="flex items-center border-b border-solid border-slate-300 justify-end pr-[calc(8px_+_14px)]"

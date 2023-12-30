@@ -6,6 +6,7 @@ import { FastifyPluginCallback } from "fastify";
 import { EntityManager } from "typeorm";
 import { Account, Allocation, Transaction } from "../entities/index.js";
 import { getOrNew } from "../helpers/getOrNew.js";
+import { Recurrence } from "../entities/Recurrence.js";
 
 export const PatchTransactions = ({
   entities,
@@ -25,6 +26,7 @@ export const PatchTransactions = ({
           date,
           id: transactionId,
           budgetId,
+          recurrence: inputRecurrence,
           accountId,
           allocations = [],
           status,
@@ -38,9 +40,12 @@ export const PatchTransactions = ({
             return reply.status(404).send({ message: "Budget not found" });
           }
 
-          const transaction = await entities.findOneBy(Transaction, {
-            id: transactionId,
-            userId: user.id,
+          const transaction = await entities.findOne(Transaction, {
+            where: {
+              id: transactionId,
+              userId: user.id,
+            },
+            relations: ["recurrence"],
           });
 
           if (!transaction) {
@@ -55,10 +60,51 @@ export const PatchTransactions = ({
           transaction.status = status ?? transaction.status;
 
           await entities.transaction(async (manager) => {
+            if (inputRecurrence === undefined) {
+              console.log("test");
+              const recurrence = await manager.findOne(Recurrence, {
+                where: {
+                  id: transaction.recurrence?.id,
+                },
+                relations: ["transactions"],
+              });
+              if (recurrence) {
+                for (const transaction of recurrence.transactions) {
+                  transaction.recurrence = null;
+                  await manager.save(Transaction, transaction);
+                }
+                await manager.delete(Recurrence, recurrence);
+              }
+            } else {
+              const recurrence = await manager.findOneBy(Recurrence, {
+                id: inputRecurrence.id,
+              });
+              if (recurrence) {
+                recurrence.frequency = inputRecurrence.frequency;
+                recurrence.period = inputRecurrence.period;
+                recurrence.startDate = inputRecurrence.startDate;
+                recurrence.currentDate = inputRecurrence.currentDate;
+                await manager.save(Recurrence, recurrence);
+              } else {
+                const newRecurrence = new Recurrence();
+                newRecurrence.frequency = inputRecurrence.frequency;
+                newRecurrence.period = inputRecurrence.period;
+                newRecurrence.startDate = inputRecurrence.startDate;
+                newRecurrence.currentDate = inputRecurrence.currentDate;
+                await manager.save(Recurrence, newRecurrence);
+                transaction.recurrence = newRecurrence;
+              }
+            }
+
             const { id: transactionId } = await manager.save(
               Transaction,
               transaction
             );
+
+            if (transaction.recurrence) {
+            } else {
+            }
+
             await Promise.all(
               allocations.map(async (allocation) => {
                 if (allocation.status === "deleted") {

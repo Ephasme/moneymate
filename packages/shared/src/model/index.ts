@@ -1,3 +1,13 @@
+export const RecurrencePeriod = [
+  "year",
+  "semester",
+  "quarter",
+  "month",
+  "week",
+  "day",
+] as const;
+export type RecurrencePeriod = (typeof RecurrencePeriod)[number];
+
 export const TransactionStatuses = [
   "pending",
   "cleared",

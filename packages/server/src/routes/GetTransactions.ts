@@ -26,6 +26,7 @@ export const GetTransactions = ({
           relations: [
             "payee",
             "account",
+            "recurrence",
             "allocations",
             "allocations.envelope",
           ],
