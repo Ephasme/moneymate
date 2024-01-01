@@ -1,7 +1,7 @@
 import { Box, Checkbox } from "@mui/material";
 import * as dateFns from "date-fns";
 import { formatCurrency } from "../../helpers/formatCurrency";
-import { useTransaction } from "../Common/useTransaction";
+import { useTransaction } from "../../hooks/queries/useTransaction";
 import { TransactionStatusButton } from "./TransactionStatusButton";
 import ClockIcon from "@mui/icons-material/History";
 import { useAccountsStore } from "./store";

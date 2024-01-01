@@ -2,3 +2,5 @@ node_modules
 .env.local
 packages/*/dist
 .turbo
+
+.DS_Store

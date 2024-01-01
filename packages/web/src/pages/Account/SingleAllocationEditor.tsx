@@ -1,7 +1,7 @@
 import { AllocationEdited } from "@moneymate/shared";
 import { Autocomplete, TextField } from "@mui/material";
 import { v4 as uuid } from "uuid";
-import { useEnvelopes } from "../Common/useEnvelopes";
+import { useEnvelopes } from "../../hooks/queries/useEnvelopes";
 import { produce } from "immer";
 
 export const SingleAllocationEditor = ({

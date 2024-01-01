@@ -2,10 +2,10 @@ import CancelIcon from "@mui/icons-material/CancelOutlined";
 import { Box, Button, IconButton } from "@mui/material";
 import { formatCurrency } from "../../helpers/formatCurrency";
 import * as maths from "../../helpers/maths";
-import { useAccount } from "../Common/useAccount";
-import { useTransactions } from "../Common/useTransactions";
+import { useAccount } from "../../hooks/queries/useAccount";
+import { useTransactions } from "../../hooks/queries/useTransactions";
 import { useAccountsStore } from "./store";
-import { usePatchTransactions } from "../Common/usePatchTransactions";
+import { usePatchTransactions } from "../../hooks/queries/usePatchTransactions";
 
 export const ReconcileBanner = ({ accountId }: { accountId: string }) => {
   const expectedReconciledBalance = useAccountsStore(

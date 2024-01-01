@@ -8,16 +8,16 @@ import { Box, Button, Checkbox, IconButton } from "@mui/material";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { formatCurrency } from "../../helpers/formatCurrency";
-import { useAccount } from "../Common/useAccount";
-import { useTransactions } from "../Common/useTransactions";
+import { useAccount } from "../../hooks/queries/useAccount";
+import { useTransactions } from "../../hooks/queries/useTransactions";
 import { MainLayout } from "../Layouts";
 import { TransactionRowEdit } from "./TransactionRowEdit";
 import { TransactionRow } from "./TransactionRow";
 import { useAccountsStore } from "./store";
 import { ReconcileBanner } from "./ReconcileBanner";
 import { ReconcileButton } from "./ReconcileButton";
-import { useDeleteTransactions } from "../Common/useDeleteTransactions";
-import { usePatchTransactions } from "../Common/usePatchTransactions";
+import { useDeleteTransactions } from "../../hooks/queries/useDeleteTransactions";
+import { usePatchTransactions } from "../../hooks/queries/usePatchTransactions";
 
 export const Account = () => {
   const [showNewTransaction, setShowNewTransaction] = useState<boolean>(false);

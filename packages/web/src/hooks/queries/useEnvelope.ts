@@ -4,9 +4,8 @@ import { queries } from "./queries";
 
 export const useEnvelope = (envelopeId: string | undefined) => {
   const currentMonth = useStore((state) => state.currentMonth);
-  const { data: envelope } = useQuery({
+  return useQuery({
     ...queries.envelopes.details(envelopeId!, { currentMonth }),
     enabled: !!envelopeId,
   });
-  return envelope;
 };

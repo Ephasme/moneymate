@@ -25,7 +25,12 @@ const router = createBrowserRouter([
 ]);
 const theme = createTheme({
   typography: {
-    fontFamily: ["Inter", "sans-serif"].join(","),
+    fontFamily: ["Satoshi", "sans-serif"].join(","),
+  },
+  palette: {
+    primary: {
+      main: "#212121",
+    },
   },
 });
 

@@ -23,6 +23,7 @@
     "@tanstack/react-query-devtools": "^5.13.5",
     "big.js": "^6.2.1",
     "date-fns": "^2.30.0",
+    "emoji-picker-react": "^4.6.0",
     "formik": "^2.4.5",
     "immer": "^10.0.3",
     "lodash": "^4.17.21",

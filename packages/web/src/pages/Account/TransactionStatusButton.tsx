@@ -2,8 +2,8 @@ import { matchStatus } from "@moneymate/shared";
 import ClearedIcon from "@mui/icons-material/Copyright";
 import LockedIcon from "@mui/icons-material/Lock";
 import { IconButton } from "@mui/material";
-import { usePatchTransactions } from "../Common/usePatchTransactions";
-import { useTransaction } from "../Common/useTransaction";
+import { usePatchTransactions } from "../../hooks/queries/usePatchTransactions";
+import { useTransaction } from "../../hooks/queries/useTransaction";
 
 export const TransactionStatusButton = ({
   transactionId,

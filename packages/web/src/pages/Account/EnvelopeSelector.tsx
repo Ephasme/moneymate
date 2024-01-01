@@ -2,7 +2,7 @@ import { Box, Button } from "@mui/material";
 import { produce } from "immer";
 import { useEffect, useState } from "react";
 import { v4 as uuid } from "uuid";
-import { useTransaction } from "../Common/useTransaction";
+import { useTransaction } from "../../hooks/queries/useTransaction";
 import {
   AllocationEditor,
   AllocationEditorItem,

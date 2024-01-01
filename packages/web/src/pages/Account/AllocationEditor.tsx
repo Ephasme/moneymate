@@ -2,7 +2,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { Autocomplete, Box, IconButton, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
 import { NumericFormat } from "react-number-format";
-import { useEnvelopes } from "../Common/useEnvelopes";
+import { useEnvelopes } from "../../hooks/queries/useEnvelopes";
 
 export type AllocationEditorItemDeleted = {
   id: string;

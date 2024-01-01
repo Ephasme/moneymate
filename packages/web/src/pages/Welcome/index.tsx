@@ -6,7 +6,7 @@ import * as Spaces from "react-spaces";
 import { api } from "../../api";
 import { useStore } from "../../store";
 import { Loading } from "../Loading";
-import { useBudgets } from "../Common/useBudgets";
+import { useBudgets } from "../../hooks/queries/useBudgets";
 
 export const WelcomeCreateBudget = () => {
   const queryClient = useQueryClient();

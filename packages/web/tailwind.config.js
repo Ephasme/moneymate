@@ -3,7 +3,8 @@ export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     fontFamily: {
-      sans: ["Inter", "sans-serif"],
+      alt: ["Sentient", "sans-serif"],
+      main: ["Satoshi", "sans-serif"],
       number: ["Figtree", "monospace"],
     },
     extend: {},
