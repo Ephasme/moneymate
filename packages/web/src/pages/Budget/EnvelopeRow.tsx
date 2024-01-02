@@ -1,59 +1,82 @@
 import { Box } from "@mui/material";
-import { formatCurrency } from "../../helpers/formatCurrency";
 import { useEnvelope } from "../../hooks/queries/useEnvelope";
-import { CalendarIcon } from "../../icons/CalendarIcon";
-import { ProgressBar } from "./ProgressBar";
-import { Checkbox } from "./Checkbox";
-import { PriorityTag } from "./PriorityTag";
-import { Tag } from "./Tag";
-import { EnvelopeName } from "./EnvelopeName";
+import { useStore } from "../../store";
 import { AllocationField } from "./AllocationField";
+import { BalanceField } from "./BalanceField";
+import { Checkbox } from "./Checkbox";
+import { EnvelopeName } from "./EnvelopeName";
+import { PriorityTag } from "./PriorityTag";
+import { ProgressBar } from "./ProgressBar";
 
 export const EnvelopeRow = ({ envelopeId }: { envelopeId: string }) => {
   const { data: envelope } = useEnvelope(envelopeId);
+  const selectedEnvelopes = useStore((state) => state.selectedEnvelopes);
+  const setSelectedEnvelopes = useStore((state) => state.setSelectedEnvelopes);
   if (!envelope) return <Box>Loading envelope...</Box>;
+
+  const isSelected = selectedEnvelopes.includes(envelope.id);
+
   return (
     <>
-      <Box className="pr-4">
-        <Checkbox />
-      </Box>
-
+      <Box className={`h-full ${isSelected ? "bg-[#EAE8F2]" : ""}`}></Box>
       <Box
-        className={
-          "flex relative items-center justify-center " +
-          "p-[0.5rem] rounded-lg bg-white border-[0.5px] " +
-          "border-[#D7D9DF] h-12 w-12 pr-8"
-        }
-        sx={{
-          boxShadow:
-            "0px 0px 8px 0px rgba(0, 0, 0, 0.08), 0px 0.5px 0px 0px rgba(0, 0, 0, 0.12)",
-        }}
+        className={`flex items-center justify-center py-5 ${
+          isSelected ? "bg-[#EAE8F2]" : ""
+        }`}
       >
-        <Box className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[2rem]">
-          {envelope.emoji}
+        <Checkbox
+          checked={isSelected}
+          onChange={(_, checked) => {
+            setSelectedEnvelopes([{ envelopeId: envelope.id, checked }]);
+          }}
+        />
+      </Box>
+      <Box
+        className={`flex items-center justify-center h-full px-4 ${
+          isSelected ? "bg-[#EAE8F2]" : ""
+        }`}
+      >
+        <Box
+          className={
+            "relative rounded-lg bg-white border-[0.5px] " +
+            "border-[#D7D9DF] h-12 w-12"
+          }
+          sx={{
+            boxShadow:
+              "0px 0px 8px 0px rgba(0, 0, 0, 0.08), 0px 0.5px 0px 0px rgba(0, 0, 0, 0.12)",
+          }}
+        >
+          <Box className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[2rem]">
+            {envelope.emoji}
+          </Box>
         </Box>
       </Box>
-
-      <Box className="flex flex-grow h-full flex-col justify-between py-1 mr-8">
-        <Box className="flex gap-3">
+      <Box
+        className={`flex flex-grow h-full flex-col justify-around py-3 px-3  ${
+          isSelected ? "bg-[#EAE8F2]" : ""
+        }`}
+      >
+        <Box className="flex justify-between gap-3">
           <EnvelopeName envelope={envelope} />
-          <Box className="flex gap-1">
-            <PriorityTag level={1} />
-            <Tag text="dépenses" />
-            <Tag
-              text="le 2 du mois"
-              startIcon={
-                <Box className="w-[0.93rem]">
-                  <CalendarIcon />
-                </Box>
-              }
-            />
-          </Box>
+          <PriorityTag level={1} />
         </Box>
         <ProgressBar />
       </Box>
-      <AllocationField envelope={envelope} />
-      <Box>{formatCurrency(envelope.balance)} restant</Box>
+      <Box
+        className={`flex items-center justify-end h-full ${
+          isSelected ? "bg-[#EAE8F2]" : ""
+        }`}
+      >
+        <AllocationField envelope={envelope} />
+      </Box>
+      <Box
+        className={`flex items-center justify-end h-full ${
+          isSelected ? "bg-[#EAE8F2]" : ""
+        }`}
+      >
+        <BalanceField envelope={envelope} />
+      </Box>
+      <Box className={`h-full ${isSelected ? "bg-[#EAE8F2]" : ""}`}></Box>
     </>
   );
 };

@@ -1,11 +1,11 @@
 import { EnvelopeView, MAIN_ENVELOPE_ID } from "@moneymate/shared";
-import { Box } from "@mui/material";
+import { Box, TextField } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { NumericFormat } from "react-number-format";
+import { v4 as uuid } from "uuid";
 import { formatCurrency } from "../../helpers/formatCurrency";
 import * as mil from "../../helpers/mil";
 import { usePostTransfers } from "../../hooks/queries";
-import { v4 as uuid } from "uuid";
 import { useStore } from "../../store";
 
 export const AllocationField = ({ envelope }: { envelope: EnvelopeView }) => {
@@ -28,12 +28,26 @@ export const AllocationField = ({ envelope }: { envelope: EnvelopeView }) => {
   if (isEdit) {
     return (
       <NumericFormat
-        className="text-right mr-8 bg-transparent outline-none font-black"
         decimalScale={2}
         decimalSeparator=","
+        customInput={TextField}
+        fullWidth
+        variant="standard"
+        sx={{
+          "&.MuiTextField-root": {
+            minWidth: "5rem",
+            marginLeft: "0.5rem",
+            marginRight: "1rem",
+            width: "100%",
+            "& input": {
+              fontWeight: "bold",
+              textAlign: "right",
+            },
+          },
+        }}
         thousandSeparator=" "
         value={mil.divToNumber(value)}
-        getInputRef={ref}
+        inputRef={ref}
         onBlur={() => {
           setEdit(false);
         }}
@@ -66,9 +80,11 @@ export const AllocationField = ({ envelope }: { envelope: EnvelopeView }) => {
       onClick={() => {
         setEdit(true);
       }}
-      className="font-black mr-8 text-right"
+      className="flex items-center justify-end mr-4"
     >
-      {formatCurrency(envelope.allocated)}
+      <Box className="font-black text-right">
+        {formatCurrency(envelope.allocated)}
+      </Box>
     </Box>
   );
 };
