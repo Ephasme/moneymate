@@ -7,7 +7,7 @@ export const TransactionPatchedSchema = z.object({
   id: z.string().uuid(),
   budgetId: z.string().uuid().optional(),
   accountId: z.string().uuid().optional(),
-  description: z.string().optional().nullable(),
+  description: z.string().nullish(),
   recurrence: RecurrenceViewSchema.optional(),
   amount: z.string().transform(BigInt).optional(),
   date: z

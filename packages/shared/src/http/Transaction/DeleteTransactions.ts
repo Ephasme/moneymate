@@ -1,9 +1,7 @@
 import { z } from "zod";
 
 export const DeleteTransactionsRequestSchema = z
-  .object({
-    id: z.string().uuid(),
-  })
+  .object({ id: z.string().uuid() })
   .array();
 
 export type DeleteTransactionsRequest = z.infer<

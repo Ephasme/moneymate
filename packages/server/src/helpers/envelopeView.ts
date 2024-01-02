@@ -53,6 +53,8 @@ export const envelopeView = (
   return {
     id: envelope.id,
     name: envelope.name,
+    emoji: envelope.emoji,
+    description: envelope.description,
     allocations: envelope.allocations.map((allocation) => ({
       id: allocation.id,
       amount: allocation.amount,

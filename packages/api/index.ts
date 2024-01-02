@@ -19,11 +19,10 @@ import {
 } from "@moneymate/shared";
 import {
   EnvelopeActions,
-  deleteEnvelope,
-  editEnvelope,
+  postEnvelopes,
   getEnvelope,
   getEnvelopes,
-  saveEnvelope,
+  patchEnvelopes,
 } from "./src/Envelope/index.js";
 import {
   EnvelopeGroupActions,
@@ -41,7 +40,7 @@ import {
   getTransactions,
   patchTransactions,
 } from "./src/Transaction/index.js";
-import { TransferActions, saveTransfer } from "./src/Transfer/index.js";
+import { TransferActions, postTransfers } from "./src/Transfer/index.js";
 
 import * as dateFns from "date-fns";
 import {
@@ -89,10 +88,8 @@ export type Api = TransferActions &
 export const makeApi = (getToken: TokenProvider): Api => ({
   createTransactions: createTransactions(getToken),
   deleteAllocation: deleteAllocation(getToken),
-  deleteEnvelope: deleteEnvelope(getToken),
   deleteEnvelopeGroup: deleteEnvelopeGroup(getToken),
   deleteTransactions: deleteTransactions(getToken),
-  editEnvelope: editEnvelope(getToken),
   editEnvelopeGroup: editEnvelopeGroup(getToken),
   getAllocation: getAllocation(getToken),
   getEnvelope: getEnvelope(getToken),
@@ -101,11 +98,12 @@ export const makeApi = (getToken: TokenProvider): Api => ({
   getEnvelopes: getEnvelopes(getToken),
   getTransaction: getTransaction(getToken),
   getTransactions: getTransactions(getToken),
+  patchEnvelopes: patchEnvelopes(getToken),
   patchTransactions: patchTransactions(getToken),
   saveAllocation: saveAllocation(getToken),
-  saveEnvelope: saveEnvelope(getToken),
+  postEnvelopes: postEnvelopes(getToken),
   saveEnvelopeGroup: saveEnvelopeGroup(getToken),
-  saveTransfer: saveTransfer(getToken),
+  postTransfers: postTransfers(getToken),
 
   async getAccount({ accountId }) {
     try {

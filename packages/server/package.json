@@ -11,7 +11,7 @@
   "scripts": {
     "dev": "./scripts/dev-nodemon.sh",
     "build": "tsc",
-    "to:drop": "DOTENV_CONFIG_PATH=.env.local tsx -r dotenv/config ../../node_modules/typeorm/cli.js schema:drop -d ./src/datasource.config.ts"
+    "to:drop": "DOTENV_CONFIG_PATH=.env.local node --import tsx -r dotenv/config ../../node_modules/typeorm/cli.js schema:drop -d --inspect ./src/datasource.config.ts"
   },
   "devDependencies": {
     "@types/jsonwebtoken": "^9.0.5",

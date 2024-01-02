@@ -1,6 +1,6 @@
 import {
-  CreateTransactionsRequestSchema,
-  CreateTransactionsResponse,
+  PostTransactionsRequestSchema,
+  PostTransactionsResponse,
 } from "@moneymate/shared";
 import { FastifyPluginCallback } from "fastify";
 import _ from "lodash";
@@ -10,7 +10,7 @@ import { getOrNew } from "../helpers/getOrNew.js";
 import { randomUUID } from "crypto";
 import { Recurrence } from "../entities/Recurrence.js";
 
-export const CreateTransactions = ({
+export const PostTransactions = ({
   entities,
 }: {
   entities: EntityManager;
@@ -18,9 +18,9 @@ export const CreateTransactions = ({
   return (server, _ignored, done) => {
     server.post(
       "/api/transaction",
-      async (request, reply): Promise<CreateTransactionsResponse> => {
+      async (request, reply): Promise<PostTransactionsResponse> => {
         const user = await request.user();
-        const list = CreateTransactionsRequestSchema.parse(request.body);
+        const list = PostTransactionsRequestSchema.parse(request.body);
 
         for (const {
           description,

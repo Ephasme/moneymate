@@ -1,7 +1,7 @@
 import {
-  CreateTransactionsRequestInput,
-  CreateTransactionsResponse,
-  CreateTransactionsResponseSchema,
+  PostTransactionsRequestInput,
+  PostTransactionsResponse,
+  PostTransactionsResponseSchema,
   DeleteTransactionsRequest,
   DeleteTransactionsResponse,
   DeleteTransactionsResponseSchema,
@@ -25,8 +25,8 @@ export type TransactionActions = {
     props: PatchTransactionsRequestInput
   ): Promise<PatchTransactionsResponse>;
   createTransactions(
-    props: CreateTransactionsRequestInput
-  ): Promise<CreateTransactionsResponse>;
+    props: PostTransactionsRequestInput
+  ): Promise<PostTransactionsResponse>;
   deleteTransactions(
     props: DeleteTransactionsRequest
   ): Promise<DeleteTransactionsResponse>;
@@ -49,7 +49,7 @@ export const patchTransactions =
         throw new Error("Failed to patch transaction");
       } else {
         const result = await reply.json();
-        return CreateTransactionsResponseSchema.parse(result);
+        return PostTransactionsResponseSchema.parse(result);
       }
     } catch (error) {
       console.error("Failed to patch transaction", { error });
@@ -74,7 +74,7 @@ export const createTransactions =
         throw new Error("Failed to create transaction");
       } else {
         const result = await reply.json();
-        return CreateTransactionsResponseSchema.parse(result);
+        return PostTransactionsResponseSchema.parse(result);
       }
     } catch (error) {
       console.error("Failed to create transaction", { error });

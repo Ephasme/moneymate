@@ -20,6 +20,12 @@ export class Envelope {
   @Column({ type: "varchar" })
   name!: string;
 
+  @Column({ type: "varchar", nullable: true, default: "" })
+  description?: string | null;
+
+  @Column({ type: "varchar", nullable: true })
+  emoji?: string | null;
+
   @OneToMany(() => Allocation, (x) => x.envelope)
   allocations!: Relation<Allocation>[];
 
@@ -29,11 +35,11 @@ export class Envelope {
   @OneToMany(() => Transfer, (x) => x.toEnvelope)
   toTransfers!: Relation<Transfer>[];
 
-  @ManyToOne(() => EnvelopeGroup, (x) => x.envelopes)
-  parent!: Relation<EnvelopeGroup>;
+  @ManyToOne(() => EnvelopeGroup, (x) => x.envelopes, { nullable: true })
+  parent?: Relation<EnvelopeGroup>;
 
-  @Column({ type: "varchar" })
-  parentId!: string;
+  @Column({ type: "varchar", nullable: true, default: null })
+  parentId?: string | null;
 
   @ManyToOne(() => User, (x) => x.envelopes)
   user!: Relation<User>;

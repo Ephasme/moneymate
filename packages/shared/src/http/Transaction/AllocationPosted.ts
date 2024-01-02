@@ -10,3 +10,6 @@ export const AllocationPostedSchema = z.object({
     .transform((x) => (x ? new Date(x) : undefined)),
   amount: z.string().transform(BigInt),
 });
+
+export type AllocationPosted = z.infer<typeof AllocationPostedSchema>;
+export type AllocationPostedInput = z.input<typeof AllocationPostedSchema>;

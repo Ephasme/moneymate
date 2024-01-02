@@ -1,28 +1,24 @@
 import {
-  DeleteEnvelopeParams,
-  DeleteEnvelopeResponse,
-  DeleteEnvelopeResponseSchema,
-  EditEnvelopeParams,
-  EditEnvelopeRequest,
-  EditEnvelopeResponse,
-  EditEnvelopeResponseSchema,
   GetEnvelopeResponse,
   GetEnvelopeResponseSchema,
   GetEnvelopesResponse,
   GetEnvelopesResponseSchema,
-  SaveEnvelopeRequestInput,
-  SaveEnvelopeResponse,
-  SaveEnvelopeResponseSchema,
+  PatchEnvelopesRequestInput,
+  PatchEnvelopesResponse,
+  PostEnvelopesRequestInput,
+  PostEnvelopesResponse,
+  PostEnvelopesResponseSchema,
 } from "@moneymate/shared";
 import * as dateFns from "date-fns";
 import { TokenProvider } from "../types/index.js";
 
 export type EnvelopeActions = {
-  deleteEnvelope(props: DeleteEnvelopeParams): Promise<DeleteEnvelopeResponse>;
-  saveEnvelope(props: SaveEnvelopeRequestInput): Promise<SaveEnvelopeResponse>;
-  editEnvelope(
-    props: EditEnvelopeParams & EditEnvelopeRequest
-  ): Promise<EditEnvelopeResponse>;
+  postEnvelopes(
+    props: PostEnvelopesRequestInput
+  ): Promise<PostEnvelopesResponse>;
+  patchEnvelopes(
+    props: PatchEnvelopesRequestInput
+  ): Promise<PatchEnvelopesResponse>;
   getEnvelopes(
     props: { budgetId: string },
     options?: { currentMonth?: Date }
@@ -35,15 +31,13 @@ export type EnvelopeActions = {
   ): Promise<GetEnvelopeResponse>;
 };
 
-export const editEnvelope =
-  (getToken: TokenProvider): EnvelopeActions["editEnvelope"] =>
-  async ({ envelopeId, ...body }) => {
-    const enc_envelopeId = encodeURIComponent(envelopeId);
-    const path = `/api/envelope/${enc_envelopeId}`;
-    const url = new URL(path, "http://localhost:3000");
+export const patchEnvelopes =
+  (getToken: TokenProvider) => async (body: PatchEnvelopesRequestInput) => {
     try {
+      const path = `/api/envelope`;
+      const url = new URL(path, "http://localhost:3000");
       const reply = await fetch(url.href, {
-        method: "PUT",
+        method: "PATCH",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${await getToken()}`,
@@ -52,65 +46,37 @@ export const editEnvelope =
       });
       if (!reply.ok) {
         console.error(await reply.text());
-        throw new Error("Failed to create Envelope");
+        throw new Error("Failed to patch envelopes");
       } else {
-        const result = await reply.json();
-        return EditEnvelopeResponseSchema.parse(result);
+        return reply.json();
       }
     } catch (error) {
-      console.error("Failed to create Envelope", { error });
+      console.error("Failed to patch envelopes", { error });
       throw error;
     }
   };
 
-export const saveEnvelope =
-  (getToken: TokenProvider): EnvelopeActions["saveEnvelope"] =>
-  async (props) => {
+export const postEnvelopes =
+  (getToken: TokenProvider) => async (body: PostEnvelopesRequestInput) => {
     try {
-      const reply = await fetch(`http://localhost:3000/api/envelope`, {
+      const path = `/api/envelope`;
+      const url = new URL(path, "http://localhost:3000");
+      const reply = await fetch(url.href, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${await getToken()}`,
         },
-        body: JSON.stringify(props),
+        body: JSON.stringify(body),
       });
       if (!reply.ok) {
         console.error(await reply.text());
-        throw new Error("Failed to create Envelope");
+        throw new Error("Failed to post envelope");
       } else {
-        const result = await reply.json();
-        return SaveEnvelopeResponseSchema.parse(result);
+        return PostEnvelopesResponseSchema.parse(await reply.json());
       }
     } catch (error) {
-      console.error("Failed to create Envelope", { error });
-      throw error;
-    }
-  };
-
-export const deleteEnvelope =
-  (getToken: TokenProvider): EnvelopeActions["deleteEnvelope"] =>
-  async ({ envelopeId }) => {
-    try {
-      const enc_envelopeId = encodeURIComponent(envelopeId);
-      const path = `/api/envelope/${enc_envelopeId}`;
-      const url = new URL(path, "http://localhost:3000");
-      const reply = await fetch(url.href, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${await getToken()}`,
-        },
-      });
-      if (!reply.ok) {
-        console.error(await reply.text());
-        throw new Error("Failed to delete envelope");
-      } else {
-        const result = await reply.json();
-        return DeleteEnvelopeResponseSchema.parse(result);
-      }
-    } catch (error) {
-      console.error("Failed to delete envelope", { error });
+      console.error("Failed to post envelope", { error });
       throw error;
     }
   };

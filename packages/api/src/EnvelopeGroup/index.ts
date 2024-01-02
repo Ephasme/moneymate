@@ -1,7 +1,7 @@
 import {
   DeleteEnvelopeGroupParams,
-  DeleteEnvelopeGroupRequest,
   DeleteEnvelopeGroupResponse,
+  DeleteEnvelopeGroupResponseSchema,
   EditEnvelopeGroupParams,
   EditEnvelopeGroupRequest,
   EditEnvelopeGroupResponse,
@@ -12,7 +12,7 @@ import {
   GetEnvelopeGroupsResponseSchema,
   SaveEnvelopeGroupRequestInput,
   SaveEnvelopeGroupResponse,
-  SaveEnvelopeResponseSchema,
+  SaveEnvelopeGroupResponseSchema,
 } from "@moneymate/shared";
 import { TokenProvider } from "../types/index.js";
 
@@ -81,7 +81,7 @@ export const deleteEnvelopeGroup =
         throw new Error("Failed to delete Envelope group");
       } else {
         const result = await reply.json();
-        return SaveEnvelopeResponseSchema.parse(result);
+        return DeleteEnvelopeGroupResponseSchema.parse(result);
       }
     } catch (error) {
       console.error("Failed to delete Envelope group", { error });
@@ -106,7 +106,7 @@ export const saveEnvelopeGroup =
         throw new Error("Failed to create Envelope group");
       } else {
         const result = await reply.json();
-        return SaveEnvelopeResponseSchema.parse(result);
+        return SaveEnvelopeGroupResponseSchema.parse(result);
       }
     } catch (error) {
       console.error("Failed to create Envelope group", { error });

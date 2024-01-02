@@ -61,7 +61,11 @@ export const AddEnvelopeButton = () => {
                 ref={refs.setFloating}
                 {...getFloatingProps()}
               >
-                <ModalContent />
+                <ModalContent
+                  onClose={() => {
+                    setIsOpened(false);
+                  }}
+                />
               </Box>
             </FloatingFocusManager>
           </FloatingOverlay>

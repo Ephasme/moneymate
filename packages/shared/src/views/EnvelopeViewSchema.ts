@@ -6,6 +6,8 @@ export const EnvelopeViewSchema = z.object({
   name: z.string(),
   isHidden: z.boolean(),
   isDefault: z.boolean(),
+  emoji: z.string(),
+  description: z.string(),
   allocations: z
     .object({
       id: z.string().uuid(),
@@ -17,7 +19,7 @@ export const EnvelopeViewSchema = z.object({
   balance: z.string().transform(BigInt),
   allocated: z.string().transform(BigInt),
   activity: z.string().transform(BigInt),
-  parentId: z.string().uuid(),
+  parentId: z.string().uuid().nullish(),
 });
 export type EnvelopeView = z.infer<typeof EnvelopeViewSchema>;
 export type EnvelopeViewInput = z.input<typeof EnvelopeViewSchema>;

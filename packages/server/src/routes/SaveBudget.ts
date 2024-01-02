@@ -1,6 +1,4 @@
-import { randomUUID } from "crypto";
 import {
-  MAIN_ENVELOPE_GROUP_ID,
   MAIN_ENVELOPE_ID,
   SYSTEM_ENVELOPE_GROUP_ID,
   SaveBudgetRequestSchema,
@@ -9,9 +7,9 @@ import {
 import { FastifyPluginCallback } from "fastify";
 import { EntityManager } from "typeorm";
 import { Budget } from "../entities/Budget.js";
-import { getOrNew } from "../helpers/getOrNew.js";
-import { Envelope } from "../entities/index.js";
 import { EnvelopeGroup } from "../entities/EnvelopeGroup.js";
+import { Envelope } from "../entities/index.js";
+import { getOrNew } from "../helpers/getOrNew.js";
 
 export const SaveBudget = ({
   entities,
@@ -47,18 +45,11 @@ export const SaveBudget = ({
             systemGroup.isSystem = true;
             await manager.save(systemGroup);
 
-            const mainGroup = new EnvelopeGroup();
-            mainGroup.id = MAIN_ENVELOPE_GROUP_ID;
-            mainGroup.budgetId = budget.id;
-            mainGroup.userId = user.id;
-            mainGroup.name = "Default Group";
-            mainGroup.isDefault = true;
-            await manager.save(mainGroup);
-
             const mainEnvelope = new Envelope();
             mainEnvelope.id = MAIN_ENVELOPE_ID;
+            mainEnvelope.description = "Defaut envelope";
+            mainEnvelope.emoji = "💰";
             mainEnvelope.budgetId = budget.id;
-            mainEnvelope.parentId = SYSTEM_ENVELOPE_GROUP_ID;
             mainEnvelope.userId = user.id;
             mainEnvelope.name = "Ready to Assign";
             mainEnvelope.isDefault = true;

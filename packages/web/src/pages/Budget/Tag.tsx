@@ -8,7 +8,7 @@ export const Tag = ({
   text: string;
 }) => {
   return (
-    <Box className="flex gap-1 items-center bg-white rounded-full px-3 text-[0.825rem] leading-4 font-medium">
+    <Box className="whitespace-nowrap flex gap-1 items-center bg-white rounded-full px-3 text-[0.825rem] leading-4 font-medium">
       {startIcon}
       <Box>{text}</Box>
     </Box>

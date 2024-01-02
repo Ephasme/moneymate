@@ -1,3 +1,4 @@
+export * from "./AllocationPosted.js";
 export * from "./AllocationPatched.js";
 export * from "./AllocationPatchedActive.js";
 export * from "./AllocationPatchedDeleted.js";
@@ -5,5 +6,5 @@ export * from "./DeleteTransactions.js";
 export * from "./GetTransaction.js";
 export * from "./GetTransactions.js";
 export * from "./PatchTransactions.js";
-export * from "./CreateTransactions.js";
+export * from "./PostTransactions.js";
 export * from "./TransactionPatched.js";

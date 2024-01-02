@@ -10,9 +10,17 @@ import EmojiPicker from "emoji-picker-react";
 import { Formik } from "formik";
 import { useState } from "react";
 import { TextField } from "../TextField";
+import { usePostEnvelopes } from "../../../hooks/queries";
+import { useStore } from "../../../store";
+import { v4 as uuid } from "uuid";
 
-export const ModalContent = () => {
-  const {} = useCreateTransaction();
+export const ModalContent = ({ onClose }: { onClose: () => void }) => {
+  const budgetId = useStore((state) => state.budgetId);
+  const { mutate: postEnvelopes } = usePostEnvelopes({
+    onSuccess() {
+      onClose();
+    },
+  });
   const [emojiPickerOpened, setEmojiPickerOpened] = useState(false);
   const { refs, context, floatingStyles } = useFloating({
     placement: "right",
@@ -26,12 +34,23 @@ export const ModalContent = () => {
     <Formik
       initialValues={{
         emoji: "😀",
+        name: "",
+        description: "",
       }}
       onSubmit={(values) => {
         console.log("data", { values });
+        postEnvelopes([
+          {
+            budgetId,
+            id: uuid(),
+            emoji: values.emoji,
+            name: values.name,
+            description: values.description,
+          },
+        ]);
       }}
     >
-      {({ setValues, submitForm, values }) => (
+      {({ setFieldValue, submitForm, resetForm, values }) => (
         <>
           <Box className="font-bold">Nouvelle enveloppe</Box>
           <Box className="flex items-center justify-start">
@@ -55,15 +74,33 @@ export const ModalContent = () => {
             >
               <EmojiPicker
                 onEmojiClick={(value) => {
-                  setValues({ emoji: value.emoji });
+                  setFieldValue("emoji", value.emoji);
                   setEmojiPickerOpened(false);
                 }}
               />
             </Box>
           )}
-          <TextField placeholder="Nom de l'enveloppe" />
-          <TextField placeholder="Description" />
+          <TextField
+            placeholder="Nom de l'enveloppe"
+            onChange={(ev) => {
+              setFieldValue("name", ev.target.value);
+            }}
+          />
+          <TextField
+            placeholder="Description"
+            onChange={(ev) => {
+              setFieldValue("description", ev.target.value);
+            }}
+          />
           <Button onClick={submitForm}>Save</Button>
+          <Button
+            onClick={() => {
+              resetForm();
+              onClose();
+            }}
+          >
+            Cancel
+          </Button>
         </>
       )}
     </Formik>

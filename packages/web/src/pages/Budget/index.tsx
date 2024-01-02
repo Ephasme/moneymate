@@ -27,9 +27,18 @@ export const Budget = () => {
           <Box> Enveloppes de dépenses</Box>
         </Box>
 
-        {filteredEnvelopes.map((envelope) => (
-          <EnvelopeRow envelopeId={envelope.id} />
-        ))}
+        <Box
+          className="grid items-center px-20 pb-3 pt-4"
+          sx={{
+            gridTemplateColumns:
+              "3.125rem 5rem auto minmax(0, 15%) minmax(0, 15%)",
+            rowGap: "2rem",
+          }}
+        >
+          {filteredEnvelopes.map((envelope) => (
+            <EnvelopeRow key={envelope.id} envelopeId={envelope.id} />
+          ))}
+        </Box>
       </Box>
     </MainLayout>
   );

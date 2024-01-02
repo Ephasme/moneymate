@@ -1,17 +1,19 @@
 import {
-  SaveTransferRequestInput,
-  SaveTransferResponse,
-  SaveTransferResponseSchema,
+  PostTransfersRequestInput,
+  PostTransfersResponse,
+  PostTransfersResponseSchema,
 } from "@moneymate/shared";
 import { TokenProvider } from "../types/index.js";
 
 export type TransferActions = {
-  saveTransfer(props: SaveTransferRequestInput): Promise<SaveTransferResponse>;
+  postTransfers(
+    props: PostTransfersRequestInput
+  ): Promise<PostTransfersResponse>;
 };
 
-export const saveTransfer =
-  (getToken: TokenProvider): TransferActions["saveTransfer"] =>
-  async (props: SaveTransferRequestInput) => {
+export const postTransfers =
+  (getToken: TokenProvider): TransferActions["postTransfers"] =>
+  async (props: PostTransfersRequestInput) => {
     try {
       const reply = await fetch(`http://localhost:3000/api/transfer`, {
         method: "POST",
@@ -23,13 +25,13 @@ export const saveTransfer =
       });
       if (!reply.ok) {
         console.error(await reply.text());
-        throw new Error("Failed to save transfer");
+        throw new Error("Failed to post transfer");
       } else {
         const result = await reply.json();
-        return SaveTransferResponseSchema.parse(result);
+        return PostTransfersResponseSchema.parse(result);
       }
     } catch (error) {
-      console.error("Failed to save transfer", { error });
+      console.error("Failed to post transfer", { error });
       throw error;
     }
   };

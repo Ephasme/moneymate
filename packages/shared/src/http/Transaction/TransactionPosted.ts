@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { TransactionStatuses } from "../../model/index.js";
 import { RecurrenceViewSchema } from "../../views/RecurrenceViewSchema.js";
-import { AllocationPostedSchema } from "./AllocationPostedSchema.js";
+import { AllocationPostedSchema } from "./AllocationPosted.js";
 
 export const TransactionPostedSchema = z.object({
   id: z.string().uuid().optional(),

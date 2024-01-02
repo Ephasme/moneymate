@@ -25,6 +25,7 @@ export default new DataSource({
   username: DB_USERNAME,
   password: DB_PASSWORD,
   database: "moneymate",
+  charset: "utf8mb4",
 
   synchronize: true,
 
