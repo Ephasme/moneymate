@@ -34,8 +34,7 @@ export const Budget = () => {
           className="grid w-full items-center"
           sx={{
             gridTemplateColumns:
-              // "5rem calc(34px + 2rem) calc(48px + 2rem) 1fr 1fr 1fr 5rem",
-              "1fr 1fr 1fr 1fr minmax(10rem, 1fr) 2fr 2fr",
+              "1fr calc(34px + 1rem) calc(48px + 2rem) 4fr minmax(11rem, 1fr) 1fr 1fr",
           }}
         >
           <Box className="border-b-[0.5px] border-b-[#999EAD] h-full min-h-[5rem]"></Box>
@@ -60,7 +59,7 @@ export const Budget = () => {
           <Box className="border-b-[0.5px] border-b-[#999EAD] col-span-2 px-4 h-full flex justify-start items-center">
             Enveloppes de dépenses
           </Box>
-          <Box className="border-b-[0.5px] border-b-[#999EAD] text-right pr-4 h-full flex justify-end items-center">
+          <Box className="border-b-[0.5px] border-b-[#999EAD] text-right pr-[calc(1.25rem_+_34px)] h-full flex justify-end items-center">
             Assigné
           </Box>
           <Box className="border-b-[0.5px] border-b-[#999EAD] text-right h-full flex justify-end items-center">

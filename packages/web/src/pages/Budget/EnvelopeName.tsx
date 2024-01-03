@@ -39,7 +39,7 @@ export const EnvelopeName = ({ envelope }: { envelope: EnvelopeView }) => {
               patchEnvelopes([{ id: envelope.id, name }]);
             }
           }}
-          className="font-bold leading-5 outline-none bg-transparent border-b-2 border-b-black"
+          className="font-bold flex-grow leading-5 outline-none bg-transparent border-b-2 border-b-black"
         />
       </ClickAwayListener>
     );
@@ -49,7 +49,7 @@ export const EnvelopeName = ({ envelope }: { envelope: EnvelopeView }) => {
       onClick={() => {
         setEdit(true);
       }}
-      className="font-bold leading-5 overflow-hidden whitespace-nowrap"
+      className="font-bold flex-grow leading-5 overflow-hidden whitespace-nowrap"
     >
       <Box className="text-ellipsis">{name}</Box>
     </Box>

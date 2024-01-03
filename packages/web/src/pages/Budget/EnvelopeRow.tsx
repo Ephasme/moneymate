@@ -56,7 +56,7 @@ export const EnvelopeRow = ({ envelopeId }: { envelopeId: string }) => {
           isSelected ? "bg-[#EAE8F2]" : ""
         }`}
       >
-        <Box className="flex justify-between gap-3">
+        <Box className="flex min-w-full justify-between gap-3">
           <EnvelopeName envelope={envelope} />
           <PriorityTag level={1} />
         </Box>
