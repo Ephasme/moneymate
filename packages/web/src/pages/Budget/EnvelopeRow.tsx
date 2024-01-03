@@ -67,7 +67,7 @@ export const EnvelopeRow = ({ envelopeId }: { envelopeId: string }) => {
           isSelected ? "bg-[#EAE8F2]" : ""
         }`}
       >
-        <AllocationField envelope={envelope} />
+        <AllocationField envelopeId={envelope.id} />
       </Box>
       <Box
         className={`flex items-center justify-end h-full ${
