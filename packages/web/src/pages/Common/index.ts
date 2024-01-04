@@ -1,4 +1,4 @@
-export * from "./LeftPanel";
+export * from ".";
 export * from "./Logo";
-export * from "../Budget/ProgressBar";
+export * from "./LeftPanel";
 export * from "./TopBar";

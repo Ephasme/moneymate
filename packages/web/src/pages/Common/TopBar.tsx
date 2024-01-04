@@ -1,21 +1,35 @@
+import { MAIN_ENVELOPE_ID } from "@moneymate/shared";
 import { Avatar, Box } from "@mui/material";
+import { formatCurrency } from "../../helpers/formatCurrency";
+import { useEnvelope } from "../../hooks/queries";
 import { DotsVerticalIcon } from "../../icons/DotsVerticalIcon";
 import { DottedBarsIcon } from "../../icons/DottedBarsIcon";
-import { SmallArrowDownIcon } from "../../icons/SmallArrowDownIcon";
 import { MagnifierIcon } from "../../icons/MagnifierIcon";
+import { MonthSelector } from "./MonthSelector";
+import { useStore } from "../../store";
+
+const TopBarReadyToAssign = () => {
+  const isCollapsed = useStore((state) => state.leftPanelCollapsed);
+  const { data: mainEnvelope } = useEnvelope(MAIN_ENVELOPE_ID);
+
+  if (!isCollapsed) return null;
+  if (!mainEnvelope) return null;
+
+  return (
+    <Box className="flex items-center font-medium text-2xl mr-6">
+      {formatCurrency(mainEnvelope.balance)}
+    </Box>
+  );
+};
 
 export const TopBar = () => {
   return (
-    <Box className="flex items-center justify-end h-[4.7rem] pr-8">
+    <Box className="flex items-center justify-end min-h-[4.7rem] pr-8">
+      <TopBarReadyToAssign />
       <Box className="flex mr-[1.5rem]">
         <MagnifierIcon />
       </Box>
-      <Box className="flex items-center mr-[1.5rem]">
-        <Box className="mr-[0.37rem] font-bold">Déc. 2023</Box>
-        <Box>
-          <SmallArrowDownIcon />
-        </Box>
-      </Box>
+      <MonthSelector />
       <Box className="mr-[1.5rem]">
         <DottedBarsIcon />
       </Box>

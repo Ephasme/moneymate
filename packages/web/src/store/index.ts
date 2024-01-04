@@ -3,8 +3,13 @@ import { persist, devtools } from "zustand/middleware";
 import * as dateFns from "date-fns";
 
 interface Store {
-  moveNextMonth: () => void;
-  movePreviousMonth: () => void;
+  rightPanelCollapsed: boolean;
+  setRightPanelCollapsed: (showRightPanel: boolean) => void;
+
+  leftPanelCollapsed: boolean;
+  setLeftPanelCollapsed: (collapseLeftPanel: boolean) => void;
+
+  setCurrentMonth: (currentMonth: Date) => void;
   currentMonth: Date;
 
   setToken: (token: string) => void;
@@ -23,13 +28,12 @@ export const useStore = create<Store>()(
   devtools(
     persist(
       (set, get) => ({
+        rightPanelCollapsed: false,
+        setRightPanelCollapsed: (value) => set({ rightPanelCollapsed: value }),
+        leftPanelCollapsed: true,
+        setLeftPanelCollapsed: (value) => set({ leftPanelCollapsed: value }),
         currentMonth: dateFns.startOfMonth(new Date()),
-        moveNextMonth: () => {
-          set({ currentMonth: dateFns.addMonths(get().currentMonth, 1) });
-        },
-        movePreviousMonth: () => {
-          set({ currentMonth: dateFns.subMonths(get().currentMonth, 1) });
-        },
+        setCurrentMonth: (currentMonth) => set({ currentMonth }),
         token: "",
         setToken: (token) => set({ token }),
         budgetId: "",

@@ -4,8 +4,11 @@ import { MainLayout } from "../Layouts";
 import { Checkbox } from "./Checkbox";
 import { EnvelopeRow } from "./EnvelopeRow";
 import { useStore } from "../../store";
+import { LeftPanel } from "../Common";
+import { AddEnvelopeButton } from "./AddEnvelopeButton";
+import { RightPanel } from "./RightPanel";
 
-export const Budget = () => {
+export const Envelopes = () => {
   const { data: envelopes } = useEnvelopes();
   const selectedEnvelopes = useStore((state) => state.selectedEnvelopes);
   const setSelectedEnvelopes = useStore((state) => state.setSelectedEnvelopes);
@@ -23,20 +26,17 @@ export const Budget = () => {
   });
 
   return (
-    <MainLayout>
+    <MainLayout
+      leftPanel={<LeftPanel mainButton={AddEnvelopeButton} />}
+      rightPanel={<RightPanel />}
+    >
       <Box
         className="flex flex-col flex-grow bg-slate-100 mr-4 mb-4 rounded-[2rem] overflow-y-scroll"
         sx={{
           background: "linear-gradient(113deg, #F3E9EA 0%, #F2F4F8 100%);",
         }}
       >
-        <Box
-          className="grid w-full items-center"
-          sx={{
-            gridTemplateColumns:
-              "1fr calc(34px + 1rem) calc(48px + 2rem) 4fr minmax(11rem, 1fr) 1fr 1fr",
-          }}
-        >
+        <Box className="grid w-full items-center grid-cols-envelopes">
           <Box className="border-b-[0.5px] border-b-[#999EAD] h-full min-h-[5rem]"></Box>
           <Box className="border-b-[0.5px] border-b-[#999EAD] h-full flex justify-center items-center">
             <Checkbox

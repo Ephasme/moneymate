@@ -7,7 +7,12 @@ export default {
       main: ["Satoshi", "sans-serif"],
       number: ["Figtree", "monospace"],
     },
-    extend: {},
+    extend: {
+      gridTemplateColumns: {
+        envelopes:
+          "1fr calc(34px + 1rem) calc(48px + 2rem) 4fr minmax(11rem, 1fr) 1fr 1fr",
+      },
+    },
   },
   plugins: [],
 };

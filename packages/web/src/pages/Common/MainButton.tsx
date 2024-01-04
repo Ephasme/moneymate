@@ -1,6 +1,6 @@
 import { Box, ButtonBase } from "@mui/material";
-import { BigPlusIcon } from "../../../icons/BigPlusIcon";
-import { useState } from "react";
+import { BigPlusIcon } from "../../icons/BigPlusIcon";
+import React, { useState } from "react";
 import {
   FloatingFocusManager,
   FloatingOverlay,
@@ -9,9 +9,19 @@ import {
   useFloating,
   useInteractions,
 } from "@floating-ui/react";
-import { ModalContent } from "./ModalContent";
+// ABCDEFGHIJKLMNOPQRSTUVWXYZ
+// ZYXWVUTSRQPONMLKJIHGFEDCBA
+// RÉUSIT
 
-export const AddEnvelopeButton = () => {
+export const MainButton = ({
+  text,
+  modal: Modal,
+  collapsed,
+}: {
+  text: string;
+  modal: ({ onClose }: { onClose: () => void }) => React.ReactElement;
+  collapsed?: boolean;
+}) => {
   const [isOpen, setIsOpened] = useState(false);
   const { refs, context } = useFloating({
     open: isOpen,
@@ -33,8 +43,8 @@ export const AddEnvelopeButton = () => {
             gap: "1rem",
             paddingTop: "0.88rem",
             paddingBottom: "0.88rem",
-            paddingLeft: "2rem",
-            paddingRight: "2rem",
+            paddingLeft: collapsed ? "0.88rem" : "2rem",
+            paddingRight: collapsed ? "0.88rem" : "2rem",
             lineHeight: "normal",
             color: "#FFF",
             fontFamily: 'Montserrat, "sans-serif"',
@@ -45,7 +55,7 @@ export const AddEnvelopeButton = () => {
         {...getReferenceProps()}
       >
         <BigPlusIcon />
-        <Box className="font-semibold">Enveloppe</Box>
+        {!collapsed && <Box className="font-semibold">{text}</Box>}
       </ButtonBase>
       <FloatingPortal>
         {isOpen && (
@@ -61,11 +71,7 @@ export const AddEnvelopeButton = () => {
                 ref={refs.setFloating}
                 {...getFloatingProps()}
               >
-                <ModalContent
-                  onClose={() => {
-                    setIsOpened(false);
-                  }}
-                />
+                <Modal onClose={() => setIsOpened(false)} />
               </Box>
             </FloatingFocusManager>
           </FloatingOverlay>
