@@ -1,34 +1,13 @@
 import { Box } from "@mui/material";
-import { useEffect, useLayoutEffect, useState } from "react";
-import { formatCurrency } from "../../helpers/formatCurrency";
+import { useEffect } from "react";
 import { useEnvelope } from "../../hooks/queries";
 import { useStore } from "../../store";
-
-export const AmountSpan = ({ amount }: { amount: bigint }) => {
-  const [fontSize, setFontSize] = useState(16);
-
-  useLayoutEffect(() => {
-    const length = amount.toString().length;
-    if (length > 5) {
-      setFontSize(16 - (length - 5));
-    }
-  }, []);
-
-  return (
-    <div
-      className="flex items-center justify-center"
-      style={{ fontSize: `${fontSize}px` }}
-    >
-      {formatCurrency(amount)}
-    </div>
-  );
-};
+import { AmountSpan } from "../Common/AmountSpan";
 
 const SingleEnvelopeDetails = ({ envelopeId }: { envelopeId: string }) => {
   const { data: envelope } = useEnvelope(envelopeId);
   if (!envelope) return <Box>Loading envelope...</Box>;
 
-  // console.log({ allocations: envelope.allocations });
   return (
     <Box
       className={`flex flex-col relative w-[25vw] min-w-[16rem] bg-[#F2F4F8] rounded-3xl mr-4 mb-4 overflow-hidden`}
