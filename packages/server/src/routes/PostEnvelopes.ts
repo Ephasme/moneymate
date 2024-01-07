@@ -15,16 +15,12 @@ export const PostEnvelopes = ({
   return (server, _ignored, done) => {
     server.post(
       "/api/envelope",
-      async (request, reply): Promise<PostEnvelopesResponse> => {
+      async (request, _reply): Promise<PostEnvelopesResponse> => {
         const user = await request.user();
         const list = PostEnvelopesRequestSchema.parse(request.body);
 
-        console.log("test2");
-
         for (const { id, hidden, name, description, emoji, budgetId } of list) {
           const envelope = new Envelope();
-
-          console.log("test", { emoji });
 
           envelope.id = randomUUID() ?? id;
           envelope.userId = user.id;

@@ -15,7 +15,7 @@ const IMatchSchema = z.object({
   params: z.record(z.string()),
   data: z.unknown(),
   handle: z.object({
-    menu: z.enum(["envelopes", "spendings"]).optional(),
+    menu: z.enum(["envelopes", "spendings", "accounts"]).optional(),
   }),
 });
 
@@ -75,8 +75,13 @@ const LeftPanelCollapsed = ({
           </ButtonBase>
         </Box>
         <Box className="flex gap-3 items-center">
-          <ButtonBase disableRipple>
-            <CreditCardIcon strokeWidth={0.8} />
+          <ButtonBase
+            onClick={() => {
+              navigate(`/${budgetId}/accounts`);
+            }}
+            disableRipple
+          >
+            <CreditCardIcon strokeWidth={menuName === "accounts" ? 1.7 : 0.8} />
           </ButtonBase>
         </Box>
         <Box
@@ -163,9 +168,20 @@ const LeftPanelExpanded = ({
             Enveloppes
           </ButtonBase>
         </Box>
-        <Box className="flex gap-3 items-center">
-          <CreditCardIcon strokeWidth={0.8} />
-          <ButtonBase disableRipple>Comptes</ButtonBase>
+        <Box
+          className={`flex gap-3 items-center ${
+            menuName === "accounts" ? "font-bold" : ""
+          }`}
+        >
+          <CreditCardIcon strokeWidth={menuName === "accounts" ? 1.7 : 0.8} />
+          <ButtonBase
+            onClick={() => {
+              navigate(`/${budgetId}/accounts`);
+            }}
+            disableRipple
+          >
+            Comptes
+          </ButtonBase>
         </Box>
         <Box
           className={`flex gap-3 items-center ${

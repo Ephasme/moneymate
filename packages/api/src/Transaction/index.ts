@@ -16,7 +16,7 @@ import { TokenProvider } from "../types/index.js";
 
 export type TransactionActions = {
   getTransactions(props: {
-    accountId: string;
+    budgetId: string;
   }): Promise<GetTransactionsResponse>;
   getTransaction(props: {
     transactionId: string;
@@ -24,7 +24,7 @@ export type TransactionActions = {
   patchTransactions(
     props: PatchTransactionsRequestInput
   ): Promise<PatchTransactionsResponse>;
-  createTransactions(
+  postTransactions(
     props: PostTransactionsRequestInput
   ): Promise<PostTransactionsResponse>;
   deleteTransactions(
@@ -57,8 +57,8 @@ export const patchTransactions =
     }
   };
 
-export const createTransactions =
-  (getToken: TokenProvider): TransactionActions["createTransactions"] =>
+export const postTransactions =
+  (getToken: TokenProvider): TransactionActions["postTransactions"] =>
   async (props) => {
     try {
       const reply = await fetch(`http://localhost:3000/api/transaction`, {
@@ -71,13 +71,13 @@ export const createTransactions =
       });
       if (!reply.ok) {
         console.error(await reply.text());
-        throw new Error("Failed to create transaction");
+        throw new Error("Failed to post transaction");
       } else {
         const result = await reply.json();
         return PostTransactionsResponseSchema.parse(result);
       }
     } catch (error) {
-      console.error("Failed to create transaction", { error });
+      console.error("Failed to post transaction", { error });
       throw error;
     }
   };
@@ -111,18 +111,18 @@ export const deleteTransactions =
 
 export const getTransactions =
   (getToken: TokenProvider): TransactionActions["getTransactions"] =>
-  async ({ accountId }) => {
+  async ({ budgetId }) => {
     try {
-      const reply = await fetch(
-        `http://localhost:3000/api/account/${accountId}/transaction`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${await getToken()}`,
-          },
-        }
-      );
+      const enc_budgetId = encodeURIComponent(budgetId);
+      const path = `/api/budget/${enc_budgetId}/transaction`;
+      const url = new URL(path, "http://localhost:3000");
+      const reply = await fetch(url.href, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${await getToken()}`,
+        },
+      });
       if (!reply.ok) {
         console.error(await reply.text());
         throw new Error("Failed to get transactions");

@@ -13,6 +13,7 @@ import { Envelope } from "./Envelope.js";
 import { Allocation } from "./Allocation.js";
 import { Transfer } from "./Transfer.js";
 import { EnvelopeGroup } from "./EnvelopeGroup.js";
+import { Payee } from "./Payee.js";
 
 @Entity()
 export class Budget {
@@ -39,6 +40,9 @@ export class Budget {
 
   @OneToMany(() => Account, (x) => x.budget)
   accounts!: Relation<Account>[];
+
+  @OneToMany(() => Payee, (x) => x.budget)
+  payees!: Relation<Payee>[];
 
   @ManyToOne(() => User, (x) => x.budgets)
   user!: Relation<User>;

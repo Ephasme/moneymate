@@ -67,7 +67,7 @@ export const MainButton = ({
           >
             <FloatingFocusManager context={context}>
               <Box
-                className="flex gap-6 flex-col bg-white p-6 rounded-2xl min-w-[35rem]"
+                className=" bg-white rounded-2xl min-w-[35rem]"
                 ref={refs.setFloating}
                 {...getFloatingProps()}
               >

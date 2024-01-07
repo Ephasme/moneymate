@@ -16,7 +16,7 @@ import { GetEnvelopeGroups } from "./GetEnvelopeGroups.js";
 import { GetEnvelopes } from "./GetEnvelopes.js";
 import { GetTransaction } from "./GetTransaction.js";
 import { GetTransactions } from "./GetTransactions.js";
-import { SaveAccount } from "./SaveAccount.js";
+import { PostAccounts } from "./PostAccounts.js";
 import { SaveAllocation } from "./SaveAllocation.js";
 import { SaveBudget } from "./SaveBudget.js";
 import { SaveEnvelopeGroup } from "./SaveEnvelopeGroup.js";
@@ -30,6 +30,7 @@ import { EditEnvelopeGroup } from "./EditEnvelopeGroup.js";
 import { AccountRepository } from "../services/AccountRepository.js";
 import { PatchTransactions } from "./PatchTransactions.js";
 import { PatchEnvelopes } from "./PatchEnvelopes.js";
+import { GetPayees } from "./GetPayees.js";
 
 export const Routes = (deps: {
   JWT_SECRET: string;
@@ -53,13 +54,14 @@ export const Routes = (deps: {
     server.register(GetEnvelopeGroup(deps));
     server.register(GetEnvelopeGroups(deps));
     server.register(GetEnvelopes(deps));
+    server.register(GetPayees(deps));
     server.register(GetTransaction(deps));
     server.register(GetTransactions(deps));
     server.register(PatchEnvelopes(deps));
     server.register(PatchTransactions(deps));
     server.register(PostEnvelopes(deps));
     server.register(PostTransactions(deps));
-    server.register(SaveAccount(deps));
+    server.register(PostAccounts(deps));
     server.register(SaveAllocation(deps));
     server.register(SaveBudget(deps));
     server.register(SaveEnvelopeGroup(deps));

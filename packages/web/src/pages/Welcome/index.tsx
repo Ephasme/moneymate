@@ -17,7 +17,7 @@ export const WelcomeCreateBudget = () => {
     onSuccess(data) {
       queryClient.invalidateQueries({ queryKey: ["budgets"] });
       setBudgetId(data.id);
-      navigate(`/${data.id}/budget`);
+      navigate(`/${data.id}/envelopes`);
     },
   });
   return (

@@ -3,9 +3,9 @@ import {
   PostTransactionsResponse,
 } from "@moneymate/shared";
 import { FastifyPluginCallback } from "fastify";
-import _ from "lodash";
+import _, { random } from "lodash";
 import { EntityManager } from "typeorm";
-import { Account, Allocation, Transaction } from "../entities/index.js";
+import { Account, Allocation, Payee, Transaction } from "../entities/index.js";
 import { getOrNew } from "../helpers/getOrNew.js";
 import { randomUUID } from "crypto";
 import { Recurrence } from "../entities/Recurrence.js";
@@ -29,6 +29,7 @@ export const PostTransactions = ({
           id: transactionId,
           budgetId,
           recurrence,
+          payee,
           accountId,
           allocations,
           status,
@@ -53,7 +54,21 @@ export const PostTransactions = ({
             });
           }
 
-          let newRecurrence: Recurrence | undefined = undefined;
+          let newPayee: Payee | null = null;
+          if (payee) {
+            newPayee = await entities.findOneBy(Payee, {
+              name: payee,
+            });
+            if (!newPayee) {
+              newPayee = new Payee();
+              newPayee.id = randomUUID();
+              newPayee.name = payee;
+              newPayee.budgetId = budgetId;
+              newPayee.userId = user.id;
+            }
+          }
+
+          let newRecurrence: Recurrence | null = null;
           if (recurrence) {
             newRecurrence = new Recurrence();
             newRecurrence.frequency = recurrence.frequency;
@@ -69,6 +84,7 @@ export const PostTransactions = ({
           transaction.userId = user.id;
           transaction.accountId = account.id;
           transaction.budgetId = budgetId;
+          transaction.payeeId = newPayee?.id;
           transaction.recurrenceId = newRecurrence?.id;
           transaction.amount = amount.toString();
           transaction.description = description;
@@ -76,6 +92,9 @@ export const PostTransactions = ({
           transaction.status = status;
 
           await entities.transaction(async (manager) => {
+            if (newPayee) {
+              await manager.save(Payee, newPayee);
+            }
             if (newRecurrence) {
               await manager.save(Recurrence, newRecurrence);
             }

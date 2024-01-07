@@ -2,9 +2,9 @@ import { createQueryKeyStore } from "@lukemorales/query-key-factory";
 import { api } from "../../api";
 export const queries = createQueryKeyStore({
   transactions: {
-    list: ({ accountId }: { accountId: string }) => ({
-      queryKey: [{ accountId }],
-      queryFn: () => api.getTransactions({ accountId }),
+    list: (budgetId: string) => ({
+      queryKey: [budgetId],
+      queryFn: () => api.getTransactions({ budgetId }),
     }),
     details: (transactionId: string) => ({
       queryKey: [transactionId],

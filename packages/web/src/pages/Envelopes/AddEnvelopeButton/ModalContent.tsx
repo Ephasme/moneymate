@@ -51,7 +51,7 @@ export const ModalContent = ({ onClose }: { onClose: () => void }) => {
       }}
     >
       {({ setFieldValue, submitForm, resetForm, values }) => (
-        <>
+        <Box className="p-6 flex flex-col gap-6">
           <Box className="font-bold">Nouvelle enveloppe</Box>
           <Box className="flex items-center justify-start">
             <Box
@@ -101,7 +101,7 @@ export const ModalContent = ({ onClose }: { onClose: () => void }) => {
           >
             Cancel
           </Button>
-        </>
+        </Box>
       )}
     </Formik>
   );

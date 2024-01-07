@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { AccountViewSchema } from "../views/AccountViewSchema.js";
+import { AccountViewSchema } from "../../views/AccountViewSchema.js";
 
 export const GetAccountsParamsSchema = z.object({
   budgetId: z.string().uuid(),

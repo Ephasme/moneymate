@@ -1,15 +1,8 @@
 import {
-  GetAccountParams,
-  GetAccountResponse,
-  GetAccountResponseSchema,
-  GetAccountsResponse,
-  GetAccountsResponseSchema,
   GetBudgetResponse,
   GetBudgetResponseSchema,
   GetBudgetsResponse,
   GetBudgetsResponseSchema,
-  SaveAccountResponse,
-  SaveAccountResponseSchema,
   SaveBudgetResponse,
   SaveBudgetResponseSchema,
   SignInResponse,
@@ -34,7 +27,7 @@ import {
 } from "./src/EnvelopeGroup/index.js";
 import {
   TransactionActions,
-  createTransactions,
+  postTransactions,
   deleteTransactions,
   getTransaction,
   getTransactions,
@@ -50,33 +43,35 @@ import {
   saveAllocation,
 } from "./src/Allocation/index.js";
 import { TokenProvider } from "./src/types/index.js";
+import {
+  AccountActions,
+  getAccount,
+  getAccounts,
+  postAccounts,
+} from "./src/Account/index.js";
+import { PayeeActions, getPayees } from "./src/Payee/index.js";
 
 export const sayHi = (value: string) => {
   return `hi ${value}`;
 };
 
-export type Api = TransferActions &
+export type Api = AccountActions &
+  AllocationActions &
   EnvelopeActions &
   EnvelopeGroupActions &
   TransactionActions &
-  AllocationActions & {
+  TransferActions &
+  PayeeActions & {
     saveBudget(props: {
       id?: string;
       name: string;
     }): Promise<SaveBudgetResponse>;
-    saveAccount(props: {
-      id?: string;
-      name: string;
-      budgetId: string;
-    }): Promise<SaveAccountResponse>;
     getBudgets(): Promise<GetBudgetsResponse>;
     getBudget(
       props: { budgetId: string },
       options?: { currentMonth?: Date }
     ): Promise<GetBudgetResponse>;
 
-    getAccounts(props: { budgetId: string }): Promise<GetAccountsResponse>;
-    getAccount(props: GetAccountParams): Promise<GetAccountResponse>;
     signIn(props: { email: string; password: string }): Promise<SignInResponse>;
     signUp(props: {
       email: string;
@@ -86,11 +81,13 @@ export type Api = TransferActions &
   };
 
 export const makeApi = (getToken: TokenProvider): Api => ({
-  createTransactions: createTransactions(getToken),
+  postTransactions: postTransactions(getToken),
   deleteAllocation: deleteAllocation(getToken),
   deleteEnvelopeGroup: deleteEnvelopeGroup(getToken),
   deleteTransactions: deleteTransactions(getToken),
   editEnvelopeGroup: editEnvelopeGroup(getToken),
+  getAccount: getAccount(getToken),
+  getAccounts: getAccounts(getToken),
   getAllocation: getAllocation(getToken),
   getEnvelope: getEnvelope(getToken),
   getEnvelopeGroup: getEnvelopeGroup(getToken),
@@ -100,58 +97,13 @@ export const makeApi = (getToken: TokenProvider): Api => ({
   getTransactions: getTransactions(getToken),
   patchEnvelopes: patchEnvelopes(getToken),
   patchTransactions: patchTransactions(getToken),
-  saveAllocation: saveAllocation(getToken),
+  postAccounts: postAccounts(getToken),
   postEnvelopes: postEnvelopes(getToken),
-  saveEnvelopeGroup: saveEnvelopeGroup(getToken),
   postTransfers: postTransfers(getToken),
+  saveAllocation: saveAllocation(getToken),
+  saveEnvelopeGroup: saveEnvelopeGroup(getToken),
+  getPayees: getPayees(getToken),
 
-  async getAccount({ accountId }) {
-    try {
-      const enc_accountId = encodeURIComponent(accountId);
-      const path = `/api/account/${enc_accountId}`;
-      const url = new URL(path, "http://localhost:3000");
-      const reply = await fetch(url.href, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${await getToken()}`,
-        },
-      });
-      if (!reply.ok) {
-        console.error(await reply.text());
-        throw new Error("Failed to get account");
-      } else {
-        const result = await reply.json();
-        return GetAccountResponseSchema.parse(result);
-      }
-    } catch (error) {
-      console.error("Failed to get account", { error });
-      throw error;
-    }
-  },
-
-  async saveAccount(props) {
-    try {
-      const reply = await fetch(`http://localhost:3000/api/account`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${await getToken()}`,
-        },
-        body: JSON.stringify(props),
-      });
-      if (!reply.ok) {
-        console.error(await reply.text());
-        throw new Error("Failed to create account");
-      } else {
-        const result = await reply.json();
-        return SaveAccountResponseSchema.parse(result);
-      }
-    } catch (error) {
-      console.error("Failed to create account", { error });
-      throw error;
-    }
-  },
   async saveBudget(props) {
     try {
       const reply = await fetch("http://localhost:3000/api/budget", {
@@ -171,31 +123,6 @@ export const makeApi = (getToken: TokenProvider): Api => ({
       }
     } catch (error) {
       console.error("Failed to create budget", { error });
-      throw error;
-    }
-  },
-
-  async getAccounts({ budgetId }) {
-    try {
-      const reply = await fetch(
-        `http://localhost:3000/api/budget/${budgetId}/account`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${await getToken()}`,
-          },
-        }
-      );
-      if (!reply.ok) {
-        console.error(await reply.text());
-        throw new Error("Failed to get budgets");
-      } else {
-        const result = await reply.json();
-        return GetAccountsResponseSchema.parse(result);
-      }
-    } catch (error) {
-      console.error("Could not fetch budgets", { error });
       throw error;
     }
   },

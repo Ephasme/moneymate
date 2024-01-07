@@ -9,6 +9,7 @@ export const TransactionPostedSchema = z.object({
   accountId: z.string().uuid(),
   description: z.string().optional(),
   amount: z.string().transform(BigInt),
+  payee: z.string().nullish(),
   recurrence: RecurrenceViewSchema.optional(),
   date: z
     .string()

@@ -1,8 +1,5 @@
 import { MainButton } from "../../Common/MainButton";
-
-export const ModalContent = () => {
-  return <div>Content modal</div>;
-};
+import { ModalContent } from "./ModalContent";
 
 export const AddTransactionButton = ({
   collapsed,

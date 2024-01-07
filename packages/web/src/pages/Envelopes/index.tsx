@@ -7,6 +7,7 @@ import { useStore } from "../../store";
 import { LeftPanel } from "../Common";
 import { AddEnvelopeButton } from "./AddEnvelopeButton";
 import { RightPanel } from "./RightPanel";
+import { MainPanel } from "../Common/MainPanel";
 
 export const Envelopes = () => {
   const { data: envelopes } = useEnvelopes();
@@ -30,12 +31,7 @@ export const Envelopes = () => {
       leftPanel={<LeftPanel mainButton={AddEnvelopeButton} />}
       rightPanel={<RightPanel />}
     >
-      <Box
-        className="flex flex-col flex-grow bg-slate-100 mr-4 mb-4 rounded-[2rem] overflow-y-scroll"
-        sx={{
-          background: "linear-gradient(113deg, #F3E9EA 0%, #F2F4F8 100%);",
-        }}
-      >
+      <MainPanel>
         <Box className="grid w-full items-center grid-cols-envelopes">
           <Box className="border-b-[0.5px] border-b-[#999EAD] h-full min-h-[5rem]"></Box>
           <Box className="border-b-[0.5px] border-b-[#999EAD] h-full flex justify-center items-center">
@@ -70,7 +66,7 @@ export const Envelopes = () => {
             <EnvelopeRow key={envelope.id} envelopeId={envelope.id} />
           ))}
         </Box>
-      </Box>
+      </MainPanel>
     </MainLayout>
   );
 };
