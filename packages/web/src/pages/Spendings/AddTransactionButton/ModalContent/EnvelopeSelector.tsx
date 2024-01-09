@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import { produce } from "immer";
 import _ from "lodash";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { NumericFormat } from "react-number-format";
 import { formatCurrency } from "../../../../helpers/formatCurrency";
 import * as mil from "../../../../helpers/mil";
@@ -35,7 +35,13 @@ export function keepNotNull(
 
 export type EnvelopeSelection = EnvelopeSelectionItem[];
 
-export const EnvelopeSelector = ({ totalAmount }: { totalAmount: bigint }) => {
+export const EnvelopeSelector = ({
+  totalAmount,
+  onChange,
+}: {
+  totalAmount: bigint;
+  onChange: (selection: EnvelopeSelection) => void;
+}) => {
   const [selection, setSelection] = useState<EnvelopeSelection>([
     { envelope: null, amount: totalAmount },
   ]);
@@ -44,6 +50,20 @@ export const EnvelopeSelector = ({ totalAmount }: { totalAmount: bigint }) => {
   function sumByAmount(selection: EnvelopeSelection) {
     return selection.reduce((acc, { amount }) => acc + amount, 0n);
   }
+
+  useEffect(() => {
+    if (selection.length === 1) {
+      setSelection(
+        produce((selection) => {
+          selection[0].amount = totalAmount;
+        })
+      );
+    }
+  }, [totalAmount]);
+
+  useEffect(() => {
+    onChange(selection);
+  }, [selection]);
 
   function match<T>({
     single = () => null,

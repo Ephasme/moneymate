@@ -1,28 +1,32 @@
-import { CSSProperties, useLayoutEffect, useState } from "react";
+import { HTMLProps } from "react";
 import { formatCurrency } from "../../helpers/formatCurrency";
 
 export const AmountSpan = ({
   amount,
-  baseFontSize = 16,
-  className = "",
-  style = {},
+  creditColor = false,
+  debitColor = false,
+  explicitPositive = false,
+  ...props
 }: {
   amount: bigint;
-  baseFontSize?: number;
-  className?: string;
-  style?: CSSProperties;
-}) => {
-  const [fontSize, setFontSize] = useState(baseFontSize);
+  creditColor?: boolean;
+  debitColor?: boolean;
+  explicitPositive?: boolean;
+} & HTMLProps<HTMLSpanElement>) => {
+  const color =
+    amount > 0n
+      ? creditColor
+        ? "text-[#37B692]"
+        : "text-black"
+      : debitColor
+      ? "text-[#FF1D36]"
+      : "text-black";
 
-  useLayoutEffect(() => {
-    const length = amount.toString().length;
-    if (length > 5) {
-      setFontSize(baseFontSize - (length - 5));
-    }
-  }, [baseFontSize, amount]);
+  const prefix = amount > 0n && explicitPositive ? "+" : "";
 
   return (
-    <span className={className} style={{ fontSize: `${fontSize}px`, ...style }}>
+    <span className={`${color}`} {...props}>
+      {prefix}
       {formatCurrency(amount)}
     </span>
   );

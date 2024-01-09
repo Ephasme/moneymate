@@ -10,7 +10,7 @@ export const ReadyToAssign = () => {
     <Box className="flex flex-col ml-8 text-3xl w-40 leading-8 font-medium">
       {mainEnvelope ? (
         <span>
-          <AmountSpan baseFontSize={30} amount={mainEnvelope.balance} />
+          <AmountSpan amount={mainEnvelope.balance} />
           <br /> à assigner
         </span>
       ) : (

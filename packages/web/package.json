@@ -22,6 +22,7 @@
     "@tanstack/react-query": "^5.8.7",
     "@tanstack/react-query-devtools": "^5.13.5",
     "big.js": "^6.2.1",
+    "classnames": "^2.5.1",
     "date-fns": "^2.30.0",
     "emoji-picker-react": "^4.6.0",
     "formik": "^2.4.5",

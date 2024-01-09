@@ -33,21 +33,22 @@ export const ModalContent = ({ onClose }: { onClose: () => void }) => {
         onSubmit={(values) => {
           if (!values.account) return;
           if (!values.envelopes) return;
-          postTransactions([
-            {
-              accountId: values.account.id,
-              allocations: values.envelopes
-                .filter(keepNotNull)
-                .map(({ envelope, amount }) => ({
-                  envelopeId: envelope.id,
-                  amount: amount.toString(),
-                })),
-              payee: values.payee,
-              date: values.date.toISOString(),
-              amount: values.amount.toString(),
-              budgetId,
-            },
-          ]);
+          console.log({ selection: values.envelopes });
+          const toPost = {
+            accountId: values.account.id,
+            allocations: values.envelopes
+              .filter(keepNotNull)
+              .map(({ envelope, amount }) => ({
+                envelopeId: envelope.id,
+                amount: amount.toString(),
+              })),
+            payee: values.payee,
+            date: values.date.toISOString(),
+            amount: values.amount.toString(),
+            budgetId,
+          };
+          console.log({ toPost });
+          postTransactions([toPost]);
         }}
         initialValues={{
           type: "credit" as "credit" | "debit",
@@ -101,7 +102,12 @@ export const ModalContent = ({ onClose }: { onClose: () => void }) => {
               </Box>
             </Box>
             <Box className="flex flex-col px-5 gap-2">
-              <EnvelopeSelector totalAmount={values.amount} />
+              <EnvelopeSelector
+                totalAmount={values.amount}
+                onChange={(selection) => {
+                  setFieldValue("envelopes", selection);
+                }}
+              />
               <Autocomplete
                 size="small"
                 freeSolo

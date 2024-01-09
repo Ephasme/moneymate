@@ -28,9 +28,9 @@ export const useStore = create<Store>()(
   devtools(
     persist(
       (set, get) => ({
-        rightPanelCollapsed: false,
+        rightPanelCollapsed: true,
         setRightPanelCollapsed: (value) => set({ rightPanelCollapsed: value }),
-        leftPanelCollapsed: true,
+        leftPanelCollapsed: false,
         setLeftPanelCollapsed: (value) => set({ leftPanelCollapsed: value }),
         currentMonth: dateFns.startOfMonth(new Date()),
         setCurrentMonth: (currentMonth) => set({ currentMonth }),
