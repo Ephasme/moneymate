@@ -17,9 +17,9 @@ export const usePatchTransactions = ({
     },
     onSuccess: () => {
       onSuccess();
-      console.log("coucou");
       queryClient.invalidateQueries({ queryKey: queries.transactions._def });
       queryClient.invalidateQueries({ queryKey: queries.accounts._def });
+      queryClient.invalidateQueries({ queryKey: queries.payees._def });
     },
     onError: (error) => {
       onError(error);

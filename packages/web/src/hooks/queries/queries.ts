@@ -1,6 +1,12 @@
 import { createQueryKeyStore } from "@lukemorales/query-key-factory";
 import { api } from "../../api";
 export const queries = createQueryKeyStore({
+  payees: {
+    list: (budgetId: string) => ({
+      queryKey: [budgetId],
+      queryFn: () => api.getPayees({ budgetId }),
+    }),
+  },
   transactions: {
     list: (budgetId: string) => ({
       queryKey: [budgetId],

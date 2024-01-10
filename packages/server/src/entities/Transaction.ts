@@ -50,7 +50,7 @@ export class Transaction {
   payee?: Relation<Payee>;
 
   @Column({ type: "varchar", nullable: true })
-  payeeId?: string;
+  payeeId?: string | null;
 
   @Column({ type: "datetime" })
   date!: Date;

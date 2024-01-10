@@ -1,11 +1,52 @@
 import {
+  Patch,
   PatchTransactionsRequestSchema,
   PatchTransactionsResponseInput,
   processPatch,
 } from "@moneymate/shared";
+import { randomUUID } from "crypto";
 import { FastifyPluginCallback } from "fastify";
-import { EntityManager, In } from "typeorm";
-import { Account, Allocation, Transaction } from "../entities/index.js";
+import { EntityManager } from "typeorm";
+import {
+  Account,
+  Allocation,
+  Payee,
+  Transaction,
+  User,
+} from "../entities/index.js";
+
+const ProcessPayee =
+  ({
+    manager,
+    user,
+    transaction,
+  }: {
+    manager: EntityManager;
+    user: User;
+    transaction: Transaction;
+  }) =>
+  async (payee: Patch<string> | undefined) => {
+    if (payee?.action === "delete") {
+      transaction.payeeId = null;
+    }
+    if (payee?.action === "edit") {
+      const payeeEntity = await manager.findOneBy(Payee, {
+        name: payee.value,
+      });
+      if (!payeeEntity) {
+        const newPayee = new Payee();
+        newPayee.name = payee.value;
+        newPayee.userId = user.id;
+        newPayee.budgetId = transaction.budgetId;
+        newPayee.id = randomUUID();
+        await manager.insert(Payee, newPayee);
+        transaction.payeeId = newPayee.id;
+      }
+      if (payeeEntity) {
+        transaction.payeeId = payeeEntity.id;
+      }
+    }
+  };
 
 export const PatchTransactions = ({
   entities,
@@ -25,6 +66,7 @@ export const PatchTransactions = ({
           date,
           id: transactionId,
           budgetId,
+          payee,
           recurrence: inputRecurrence,
           accountId,
           allocations,
@@ -62,6 +104,12 @@ export const PatchTransactions = ({
           transaction.status = status ?? transaction.status;
 
           await entities.transaction(async (manager) => {
+            await ProcessPayee({
+              manager,
+              user,
+              transaction,
+            })(payee);
+
             await manager.save(Transaction, transaction);
 
             if (allocations) {

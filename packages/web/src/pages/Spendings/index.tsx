@@ -14,7 +14,7 @@ export const SpendingsPage = () => {
   return (
     <MainLayout leftPanel={<LeftPanel mainButton={AddTransactionButton} />}>
       <MainPanel>
-        <Box className="grid grid-cols-[auto_auto_auto_auto_40px] items-center px-8 py-5">
+        <Box className="grid grid-cols-[auto_auto_auto_auto_auto_40px] items-center px-8 py-5">
           {transactions.map((transaction, index) => {
             const isLast = index === transactions.length - 1;
             return (
