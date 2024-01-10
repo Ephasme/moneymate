@@ -8,7 +8,7 @@ export const useDeleteTransactions = ({
 }: {
   onSuccess?: () => void;
   onError?: (error: unknown) => void;
-}) => {
+} = {}) => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (list: string[]) => {

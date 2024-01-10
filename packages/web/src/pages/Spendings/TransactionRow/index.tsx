@@ -7,19 +7,25 @@ import { AmountSpan } from "../../Common";
 import * as dateFns from "date-fns";
 import classNames from "classnames";
 import { useState } from "react";
+import { useDeleteTransactions } from "../../../hooks/queries";
 
 export const TransactionRow = ({
   transaction,
+  isLastTransaction,
 }: {
   transaction: TransactionView;
+  isLastTransaction: boolean;
 }) => {
+  const { mutate: deleteTransactions } = useDeleteTransactions();
   const [isTransactionHovered, setIsTransactionHovered] = useState(false);
   const commonProps = (className: string = "") => ({
     className: classNames(
       ["cursor-pointer", "flex", "items-center", "py-4", "h-full"],
       {
-        "border-b border-[#D7D9DF]": transaction.allocations.length <= 1,
+        "border-b border-[#D7D9DF]":
+          !isLastTransaction && transaction.allocations.length <= 1,
         "bg-[#EAE8F2]": isTransactionHovered,
+        "pb-2": transaction.allocations.length > 1,
       }
     ).concat(` ${className}`),
     onMouseEnter: () => setIsTransactionHovered(true),
@@ -33,12 +39,38 @@ export const TransactionRow = ({
         {transaction.accountName}
       </Box>
       <Box {...commonProps("text-sm")}>
-        {transaction.allocations.length > 1 ? (
-          <Box className="italic">Dépense divisée</Box>
-        ) : transaction.allocations.length === 1 ? (
-          <Box>{transaction.allocations[0].envelopeName}</Box>
+        {transaction.allocations.length === 1 ? (
+          <AssignEnvelope
+            trigger={({ onClick }) => (
+              <Box onClick={onClick}>
+                {transaction.allocations[0].envelopeName}
+              </Box>
+            )}
+            transaction={transaction}
+          />
+        ) : transaction.allocations.length > 1 ? (
+          <AssignEnvelope
+            trigger={({ onClick }) => (
+              <Box onClick={onClick} className="italic">
+                Dépense divisée
+              </Box>
+            )}
+            transaction={transaction}
+          />
         ) : (
-          <AssignEnvelope />
+          <AssignEnvelope
+            transaction={transaction}
+            trigger={({ onClick }) => {
+              return (
+                <Box
+                  onClick={onClick}
+                  className="text-[#ED4800] font-bold underline underline-offset-2"
+                >
+                  Assigner une enveloppe
+                </Box>
+              );
+            }}
+          />
         )}
       </Box>
       <Box {...commonProps()}>
@@ -52,7 +84,12 @@ export const TransactionRow = ({
       </Box>
       <Box {...commonProps("flex justify-center")}>
         {isTransactionHovered ? (
-          <IconButton size="small">
+          <IconButton
+            onClick={() => {
+              deleteTransactions([transaction.id]);
+            }}
+            size="small"
+          >
             <TrashIcon />
           </IconButton>
         ) : (

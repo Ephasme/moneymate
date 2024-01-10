@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { TransactionStatuses } from "../../model/index.js";
 import { RecurrenceViewSchema } from "../../views/RecurrenceViewSchema.js";
-import { AllocationPostedSchema } from "./AllocationPosted.js";
+import { AllocationBodySchema } from "./AllocationBody.js";
 
 export const TransactionPostedSchema = z.object({
   id: z.string().uuid().optional(),
@@ -16,7 +16,7 @@ export const TransactionPostedSchema = z.object({
     .datetime()
     .transform((x) => new Date(x)),
   status: z.enum(TransactionStatuses).default("pending"),
-  allocations: AllocationPostedSchema.array().default([]),
+  allocations: AllocationBodySchema.array().default([]),
 });
 
 export type TransactionPosted = z.infer<typeof TransactionPostedSchema>;

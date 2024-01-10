@@ -18,7 +18,7 @@ export const TransactionSplit = ({
     className: classNames(
       ["cursor-pointer", "flex", "items-center", "py-1", "h-full"],
       {
-        "border-b border-[#D7D9DF] pb-4": isLastSplit,
+        "border-b border-[#D7D9DF] pb-5": isLastSplit,
         "bg-[#EAE8F2]": isTransactionHovered,
       }
     ),

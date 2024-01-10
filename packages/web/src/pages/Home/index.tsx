@@ -4,5 +4,5 @@ import { useStore } from "../../store";
 export const Home = () => {
   const budgetId = useStore((state) => state.budgetId);
   if (!budgetId) return <Navigate to="/welcome" />;
-  return <Navigate to={`/${budgetId}/budget`} />;
+  return <Navigate to={`/${budgetId}/envelopes`} />;
 };

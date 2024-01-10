@@ -43,17 +43,6 @@ export const PostTransactions = ({
             return reply.status(404).send({ message: "Budget not found" });
           }
 
-          const allocatedAmount = _(allocations).reduce(
-            (acc, x) => acc + x.amount,
-            0n
-          );
-
-          if (allocatedAmount > amount) {
-            return reply.status(400).send({
-              message: `Allocated amount ${allocatedAmount} is bigger than transaction amount ${amount}`,
-            });
-          }
-
           let newPayee: Payee | null = null;
           if (payee) {
             newPayee = await entities.findOneBy(Payee, {
@@ -104,16 +93,13 @@ export const PostTransactions = ({
             );
             await Promise.all(
               allocations.map(async (allocation) => {
-                const [newAllocation] = await getOrNew(
-                  manager,
-                  user,
-                  Allocation,
-                  allocation.id
-                );
+                const newAllocation = new Allocation();
+                newAllocation.id = randomUUID();
+                newAllocation.userId = user.id;
                 newAllocation.amount = allocation.amount.toString();
                 newAllocation.envelopeId = allocation.envelopeId;
                 newAllocation.transactionId = transactionId;
-                newAllocation.date = allocation.date ?? transaction.date;
+                newAllocation.date = transaction.date;
                 newAllocation.budgetId = budgetId;
                 await manager.save(Allocation, newAllocation);
               })

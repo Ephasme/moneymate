@@ -1,4 +1,4 @@
-export * from "./AllocationPosted.js";
+export * from "./AllocationBody.js";
 export * from "./AllocationPatched.js";
 export * from "./AllocationPatchedActive.js";
 export * from "./AllocationPatchedDeleted.js";

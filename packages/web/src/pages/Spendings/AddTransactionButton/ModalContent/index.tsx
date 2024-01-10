@@ -9,10 +9,10 @@ import { usePostTransactions } from "../../../../hooks/queries/usePostTransactio
 import { useStore } from "../../../../store";
 import { CreditDebitSwitch } from "../CreditDebitSwitch";
 import {
-  EnvelopeSelection,
-  EnvelopeSelector,
-  keepNotNull,
-} from "./EnvelopeSelector";
+  PartialAllocationItems,
+  TransactionAllocator,
+  keepValid,
+} from "../../TransactionAllocator";
 
 export const ModalContent = ({ onClose }: { onClose: () => void }) => {
   const budgetId = useStore((state) => state.budgetId);
@@ -37,9 +37,9 @@ export const ModalContent = ({ onClose }: { onClose: () => void }) => {
           const toPost = {
             accountId: values.account.id,
             allocations: values.envelopes
-              .filter(keepNotNull)
-              .map(({ envelope, amount }) => ({
-                envelopeId: envelope.id,
+              .filter(keepValid)
+              .map(({ envelopeId, amount }) => ({
+                envelopeId: envelopeId,
                 amount: amount.toString(),
               })),
             payee: values.payee,
@@ -52,7 +52,7 @@ export const ModalContent = ({ onClose }: { onClose: () => void }) => {
         }}
         initialValues={{
           type: "credit" as "credit" | "debit",
-          envelopes: [] as EnvelopeSelection,
+          envelopes: [] as PartialAllocationItems,
           account: null as AccountView | null,
           date: new Date(),
           payee: "",
@@ -102,7 +102,7 @@ export const ModalContent = ({ onClose }: { onClose: () => void }) => {
               </Box>
             </Box>
             <Box className="flex flex-col px-5 gap-2">
-              <EnvelopeSelector
+              <TransactionAllocator
                 totalAmount={values.amount}
                 onChange={(selection) => {
                   setFieldValue("envelopes", selection);

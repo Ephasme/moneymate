@@ -44,7 +44,7 @@ export class Transaction {
   amount!: string;
 
   @Column({ type: "varchar", nullable: true })
-  description?: string;
+  description?: string | null;
 
   @ManyToOne(() => Payee, { nullable: true })
   payee?: Relation<Payee>;
