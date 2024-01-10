@@ -5,7 +5,7 @@ import {
   useFloating,
   useInteractions,
 } from "@floating-ui/react";
-import { Box, ButtonBase } from "@mui/material";
+import { Box, Button } from "@mui/joy";
 import { useState } from "react";
 import { SmallArrowDownIcon } from "../../icons/SmallArrowDownIcon";
 import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
@@ -57,23 +57,23 @@ export const MonthSelector = () => {
             {...getFloatingProps()}
           >
             <Box className="flex gap-1 justify-center items-center w-full border-b-[0.5px] pb-5 mb-4 border-b-[#999EAD]">
-              <ButtonBase
+              <Button
                 onClick={() => {
                   setCurrentMonth(fns.subYears(currentMonth, 1));
                 }}
                 style={{ borderRadius: "999rem" }}
               >
                 <ArrowLeftIcon />
-              </ButtonBase>
+              </Button>
               <Box className="font-bold">{fns.getYear(currentMonth)}</Box>
-              <ButtonBase
+              <Button
                 onClick={() => {
                   setCurrentMonth(fns.addYears(currentMonth, 1));
                 }}
                 style={{ borderRadius: "999rem" }}
               >
                 <ArrowRightIcon />
-              </ButtonBase>
+              </Button>
             </Box>
             <Box
               className={`grid items-center justify-start grid-cols-3 gap-x-4 gap-y-2`}

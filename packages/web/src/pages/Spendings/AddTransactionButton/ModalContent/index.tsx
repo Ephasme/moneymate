@@ -1,5 +1,5 @@
 import { AccountView } from "@moneymate/shared";
-import { Autocomplete, Box, Button, TextField } from "@mui/material";
+import { Autocomplete, Box, Button, Input } from "@mui/joy";
 import { DatePicker } from "@mui/x-date-pickers";
 import { Formik } from "formik";
 import { NumericFormat } from "react-number-format";
@@ -79,12 +79,11 @@ export const ModalContent = ({ onClose }: { onClose: () => void }) => {
               </Box>
               <Box className="py-5">
                 <NumericFormat
-                  customInput={TextField}
+                  customInput={Input}
                   decimalScale={2}
                   fixedDecimalScale
                   suffix=" €"
                   decimalSeparator=","
-                  variant="standard"
                   value={mil.divToNumber(values.amount)}
                   onValueChange={({ value }) => {
                     setFieldValue("amount", mil.mult(value));
@@ -109,7 +108,7 @@ export const ModalContent = ({ onClose }: { onClose: () => void }) => {
                 }}
               />
               <Autocomplete
-                size="small"
+                size="sm"
                 freeSolo
                 onChange={(_, value) => {
                   setFieldValue("payee", value);
@@ -120,12 +119,9 @@ export const ModalContent = ({ onClose }: { onClose: () => void }) => {
                     borderRadius: "999rem",
                   },
                 }}
-                renderInput={(params) => (
-                  <TextField {...params} placeholder="Acheté chez..." />
-                )}
               />
               <Autocomplete
-                size="small"
+                size="sm"
                 options={accounts}
                 isOptionEqualToValue={(option, value) => option.id === value.id}
                 getOptionLabel={(option) => option.name}
@@ -138,9 +134,6 @@ export const ModalContent = ({ onClose }: { onClose: () => void }) => {
                     borderRadius: "999rem",
                   },
                 }}
-                renderInput={(params) => (
-                  <TextField {...params} placeholder="Dans le compte..." />
-                )}
               />
               <DatePicker
                 sx={{
@@ -165,12 +158,12 @@ export const ModalContent = ({ onClose }: { onClose: () => void }) => {
                   resetForm();
                   onClose();
                 }}
-                size="small"
+                size="sm"
                 variant="outlined"
               >
                 Annuler
               </Button>
-              <Button onClick={submitForm} size="small" variant="outlined">
+              <Button onClick={submitForm} size="sm" variant="outlined">
                 Valider
               </Button>
             </Box>

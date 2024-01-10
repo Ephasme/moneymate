@@ -1,5 +1,5 @@
 import { MAIN_ENVELOPE_ID } from "@moneymate/shared";
-import { Box, Skeleton } from "@mui/material";
+import { Box, Skeleton } from "@mui/joy";
 import { useEnvelope } from "../../hooks/queries";
 import { AmountSpan } from "./AmountSpan";
 

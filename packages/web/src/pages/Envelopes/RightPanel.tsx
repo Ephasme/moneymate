@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box } from "@mui/joy";
 import { useEffect } from "react";
 import { useEnvelope } from "../../hooks/queries";
 import { useStore } from "../../store";

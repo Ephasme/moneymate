@@ -1,6 +1,6 @@
 import { makePatch } from "@moneymate/shared";
-import { Autocomplete, Box, ClickAwayListener, TextField } from "@mui/material";
-import { useRef, useState } from "react";
+import { Autocomplete, Box } from "@mui/joy";
+import { useState } from "react";
 import { usePatchTransactions } from "../../../../hooks/queries";
 import { usePayees } from "../../../../hooks/queries/usePayees";
 import { useTransactionContext } from "../useTransactionContext";
@@ -8,53 +8,47 @@ import { useTransactionContext } from "../useTransactionContext";
 export const PayeeCell = () => {
   const transaction = useTransactionContext();
   const [edit, setEdit] = useState(false);
-  const ref = useRef<HTMLInputElement>(null);
   const { mutate: patchTransactions } = usePatchTransactions();
   const { data: payees = [] } = usePayees();
 
   if (edit) {
     return (
-      <ClickAwayListener
-        onClickAway={() => {
-          setEdit(false);
-        }}
-      >
-        <Box className="flex-grow pr-3">
-          <Autocomplete
-            size="small"
-            fullWidth
-            ref={ref}
-            freeSolo
-            onBlur={() => {
-              setEdit(false);
-            }}
-            value={transaction.payee ?? null}
-            onChange={(_, value) => {
-              const payee =
-                typeof value === "string" ? value : value ? value.name : null;
-              patchTransactions([
-                { id: transaction.id, payee: makePatch(payee) },
-              ]);
-              setEdit(false);
-            }}
-            getOptionLabel={(option) => {
-              if (typeof option === "string") {
-                return option;
-              }
-              return option.name;
-            }}
-            options={payees}
-            sx={{
-              ".MuiInputBase-root": {
-                borderRadius: "999rem",
-              },
-            }}
-            renderInput={(params) => (
-              <TextField autoFocus {...params} placeholder="Acheté chez..." />
-            )}
-          />
-        </Box>
-      </ClickAwayListener>
+      // <ClickAwayListener
+      //   onClickAway={() => {
+      //     setEdit(false);
+      //   }}
+      // >
+      <Box className="flex-grow pr-3">
+        <Autocomplete
+          size="sm"
+          freeSolo
+          onBlur={() => {
+            setEdit(false);
+          }}
+          value={transaction.payee ?? null}
+          onChange={(_, value) => {
+            const payee =
+              typeof value === "string" ? value : value ? value.name : null;
+            patchTransactions([
+              { id: transaction.id, payee: makePatch(payee) },
+            ]);
+            setEdit(false);
+          }}
+          getOptionLabel={(option) => {
+            if (typeof option === "string") {
+              return option;
+            }
+            return option.name;
+          }}
+          options={payees}
+          sx={{
+            ".MuiInputBase-root": {
+              borderRadius: "999rem",
+            },
+          }}
+        />
+      </Box>
+      // </ClickAwayListener>
     );
   }
 

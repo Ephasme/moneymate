@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box } from "@mui/joy";
 import { useTransactions } from "../../hooks/queries";
 import { useStore } from "../../store";
 import { LeftPanel } from "../Common";

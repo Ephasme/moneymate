@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box } from "@mui/joy";
 import { FireIcon } from "../../icons/FireIcon";
 
 export const PriorityIcon = ({ level }: { level: 1 | 2 | 3 }) => {

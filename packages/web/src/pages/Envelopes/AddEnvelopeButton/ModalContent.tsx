@@ -5,7 +5,7 @@ import {
   useClick,
   useInteractions,
 } from "@floating-ui/react";
-import { Box, Button } from "@mui/material";
+import { Box, Button } from "@mui/joy";
 import EmojiPicker from "emoji-picker-react";
 import { Formik } from "formik";
 import { useState } from "react";

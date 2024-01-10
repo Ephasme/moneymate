@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box } from "@mui/joy";
 import { useEffect, useState } from "react";
 
 export const CreditDebitSwitch = ({

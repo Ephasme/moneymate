@@ -1,5 +1,5 @@
 import { EnvelopeView } from "@moneymate/shared";
-import { Box, ClickAwayListener } from "@mui/material";
+import { Box } from "@mui/joy";
 import { useEffect, useRef, useState } from "react";
 import { usePatchEnvelopes } from "../../hooks/queries/usePatchEnvelopes";
 
@@ -22,26 +22,26 @@ export const EnvelopeName = ({ envelope }: { envelope: EnvelopeView }) => {
 
   if (isEdit) {
     return (
-      <ClickAwayListener
-        onClickAway={() => {
-          setEdit(false);
+      // <ClickAwayListener
+      //   onClickAway={() => {
+      //     setEdit(false);
+      //   }}
+      // >
+      <input
+        value={name}
+        ref={inputRef}
+        onChange={(ev) => {
+          setName(ev.target.value);
         }}
-      >
-        <input
-          value={name}
-          ref={inputRef}
-          onChange={(ev) => {
-            setName(ev.target.value);
-          }}
-          onKeyDown={(ev) => {
-            if (ev.key === "Enter") {
-              ev.preventDefault();
-              patchEnvelopes([{ id: envelope.id, name }]);
-            }
-          }}
-          className="font-bold flex-grow leading-5 outline-none bg-transparent border-b-2 border-b-black"
-        />
-      </ClickAwayListener>
+        onKeyDown={(ev) => {
+          if (ev.key === "Enter") {
+            ev.preventDefault();
+            patchEnvelopes([{ id: envelope.id, name }]);
+          }
+        }}
+        className="font-bold flex-grow leading-5 outline-none bg-transparent border-b-2 border-b-black"
+      />
+      // </ClickAwayListener>
     );
   }
   return (

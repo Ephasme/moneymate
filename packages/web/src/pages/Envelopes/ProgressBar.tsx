@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box } from "@mui/joy";
 import ProgressBarImage from "../../assets/ProgressBar.png";
 
 export const ProgressBar = () => {

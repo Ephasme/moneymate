@@ -1,12 +1,6 @@
 import { EnvelopeView, bim } from "@moneymate/shared";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
-import {
-  Autocomplete,
-  Box,
-  ButtonBase,
-  IconButton,
-  TextField,
-} from "@mui/material";
+import { Autocomplete, Box, Button, Input, IconButton } from "@mui/joy";
 import { produce } from "immer";
 import _ from "lodash";
 import { useEffect, useState } from "react";
@@ -53,7 +47,7 @@ const ActionsMenu = ({
     <Menu
       placement="right"
       trigger={({ onOpen }) => (
-        <IconButton onClick={onOpen} size="small">
+        <IconButton onClick={onOpen} size="sm">
           <DotsVerticalIcon />
         </IconButton>
       )}
@@ -280,7 +274,7 @@ export const TransactionAllocator = ({
             <Box className="contents" key={index}>
               <Box>
                 <Autocomplete
-                  size="small"
+                  size="sm"
                   sx={{
                     ".MuiInputBase-root": {
                       borderRadius: "999rem",
@@ -300,7 +294,6 @@ export const TransactionAllocator = ({
                   }
                   getOptionLabel={(envelope) => envelope.name}
                   getOptionKey={(envelope) => envelope.id}
-                  renderInput={(params) => <TextField {...params} />}
                 />
               </Box>
               {match({
@@ -310,18 +303,17 @@ export const TransactionAllocator = ({
                       <NumericFormat
                         decimalScale={2}
                         decimalSeparator=","
-                        customInput={TextField}
+                        customInput={Input}
                         fixedDecimalScale
                         suffix=" €"
                         fullWidth
-                        variant="standard"
                         sx={{
                           input: {
                             textAlign: "right",
                           },
                         }}
                         thousandSeparator=" "
-                        size="small"
+                        size="sm"
                         value={mil.divToNumber(amount)}
                         onValueChange={({ value }) => {
                           if (value !== "" && value !== "-") {
@@ -336,7 +328,7 @@ export const TransactionAllocator = ({
                     </Box>
                     <Box className="justify-self-center">
                       <IconButton
-                        size="small"
+                        size="sm"
                         onClick={() => {
                           setAllocationItems(
                             produce((selection) => {
@@ -356,8 +348,7 @@ export const TransactionAllocator = ({
           .value()}
 
         <Box className="ml-5 mb-3 text-[#0039F2]">
-          <ButtonBase
-            disableRipple
+          <Button
             onClick={() => {
               setAllocationItems(
                 produce((selection) => {
@@ -377,7 +368,7 @@ export const TransactionAllocator = ({
                   : "Ajouter une enveloppe"}
               </Box>
             </Box>
-          </ButtonBase>
+          </Button>
         </Box>
       </Box>
       <Box className="flex flex-col pb-4">

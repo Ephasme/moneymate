@@ -8,7 +8,7 @@ import {
   useFloating,
 } from "@floating-ui/react";
 import { MAIN_ENVELOPE_ID } from "@moneymate/shared";
-import { Box, ClickAwayListener, TextField } from "@mui/material";
+import { Box, Input } from "@mui/joy";
 import { Formik } from "formik";
 import { useRef, useState } from "react";
 import { NumericFormat } from "react-number-format";
@@ -35,105 +35,113 @@ export const AllocationField = ({ envelopeId }: { envelopeId: string }) => {
 
   if (isEdit) {
     return (
-      <ClickAwayListener
-        onClickAway={() => {
-          setEdit(false);
-        }}
-      >
-        <Box className="contents">
-          <Formik
-            initialValues={{
-              targetAmount: envelope.allocated,
-              fromEnvelope: defaultEnvelope,
-            }}
-            onSubmit={({ targetAmount, fromEnvelope }) => {
-              postTransfers([
-                {
-                  amount: (targetAmount - envelope.allocated).toString(),
-                  fromEnvelopeId: fromEnvelope.id,
-                  toEnvelopeId: envelope.id,
-                  budgetId,
-                  date: new Date().toISOString(),
-                  id: uuid(),
-                },
-              ]);
-            }}
-          >
-            {({
-              values: { targetAmount, fromEnvelope },
-              setFieldValue,
-              resetForm,
-              submitForm,
-            }) => (
-              <>
-                <NumericFormat
-                  decimalScale={2}
-                  decimalSeparator=","
-                  customInput={TextField}
-                  fullWidth
-                  variant="standard"
-                  sx={{
-                    "&.MuiTextField-root": {
-                      minWidth: "5rem",
-                      marginLeft: "0.5rem",
-                      marginRight: "1rem",
-                      width: "100%",
-                      "& input": {
-                        fontWeight: "bold",
-                        textAlign: "right",
-                      },
+      // <ClickAwayListener
+      //   onClickAway={() => {
+      //     setEdit(false);
+      //   }}
+      // >
+      <Box className="contents">
+        <Formik
+          initialValues={{
+            targetAmount: envelope.allocated,
+            fromEnvelope: defaultEnvelope,
+          }}
+          onSubmit={({ targetAmount, fromEnvelope }) => {
+            postTransfers([
+              {
+                amount: (targetAmount - envelope.allocated).toString(),
+                fromEnvelopeId: fromEnvelope.id,
+                toEnvelopeId: envelope.id,
+                budgetId,
+                date: new Date().toISOString(),
+                id: uuid(),
+              },
+            ]);
+          }}
+        >
+          {({
+            values: { targetAmount, fromEnvelope },
+            setFieldValue,
+            resetForm,
+            submitForm,
+          }) => (
+            <>
+              <NumericFormat
+                decimalScale={2}
+                decimalSeparator=","
+                customInput={Input}
+                sx={{
+                  "&.MuiTextField-root": {
+                    minWidth: "5rem",
+                    marginLeft: "0.5rem",
+                    marginRight: "1rem",
+                    width: "100%",
+                    "& input": {
+                      fontWeight: "bold",
+                      textAlign: "right",
                     },
-                  }}
-                  thousandSeparator=" "
-                  value={mil.divToNumber(targetAmount)}
-                  getInputRef={refs.setReference}
-                  onValueChange={({ value }) => {
-                    if (value) {
-                      setFieldValue("targetAmount", mil.mult(value));
-                    }
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      e.preventDefault();
-                      submitForm();
-                      resetForm();
-                      setEdit(false);
-                    }
-                  }}
-                />
+                  },
+                }}
+                thousandSeparator=" "
+                value={mil.divToNumber(targetAmount)}
+                getInputRef={refs.setReference}
+                onValueChange={({ value }) => {
+                  if (value) {
+                    setFieldValue("targetAmount", mil.mult(value));
+                  }
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    submitForm();
+                    resetForm();
+                    setEdit(false);
+                  }
+                }}
+              />
 
-                <FloatingPortal>
-                  <Box
-                    ref={refs.setFloating}
-                    style={floatingStyles}
-                    className="bg-white rounded-lg shadow-xl py-2 px-5"
-                  >
-                    <FloatingArrow
-                      fill="white"
-                      ref={arrowRef}
-                      context={context}
+              <FloatingPortal>
+                <Box
+                  ref={refs.setFloating}
+                  style={floatingStyles}
+                  className="bg-white rounded-lg shadow-xl py-2 px-5"
+                >
+                  <FloatingArrow
+                    fill="white"
+                    ref={arrowRef}
+                    context={context}
+                  />
+                  <Box className="flex gap-2 items-baseline">
+                    <NumericFormat
+                      decimalScale={2}
+                      decimalSeparator=","
+                      thousandSeparator=" "
+                      value={mil.divToNumber(targetAmount - envelope.allocated)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          submitForm();
+                          resetForm();
+                          setEdit(false);
+                        }
+                      }}
+                      onValueChange={({ value }) => {
+                        if (value) {
+                          setFieldValue(
+                            "targetAmount",
+                            envelope.allocated + mil.mult(value)
+                          );
+                        }
+                      }}
+                      customInput={Input}
                     />
-                    <Box className="flex gap-2 items-baseline">
-                      <NumericFormat
-                        fullWidth
-                        decimalScale={2}
-                        decimalSeparator=","
-                        thousandSeparator=" "
-                        InputProps={{
-                          sx: {
-                            "& input": {
-                              color:
-                                targetAmount - envelope.allocated >= 0
-                                  ? "green"
-                                  : "red",
-                              fontWeight: "bold",
-                              textAlign: "right",
-                            },
-                          },
+                    <Box>depuis</Box>
+                    <Box className="flex-grow min-w-[15rem]">
+                      <EnvelopeSelector
+                        value={fromEnvelope ?? defaultEnvelope}
+                        onChange={(newFromEnvelope) => {
+                          setFieldValue("fromEnvelope", newFromEnvelope);
                         }}
-                        value={mil.divToNumber(
-                          targetAmount - envelope.allocated
-                        )}
                         onKeyDown={(e) => {
                           if (e.key === "Enter") {
                             e.preventDefault();
@@ -142,48 +150,16 @@ export const AllocationField = ({ envelopeId }: { envelopeId: string }) => {
                             setEdit(false);
                           }
                         }}
-                        onValueChange={({ value }) => {
-                          if (value) {
-                            setFieldValue(
-                              "targetAmount",
-                              envelope.allocated + mil.mult(value)
-                            );
-                          }
-                        }}
-                        inputProps={{
-                          style: {
-                            textAlign: "right",
-                          },
-                        }}
-                        customInput={TextField}
-                        variant="standard"
                       />
-                      <Box>depuis</Box>
-                      <Box className="flex-grow min-w-[15rem]">
-                        <EnvelopeSelector
-                          fullWidth
-                          value={fromEnvelope ?? defaultEnvelope}
-                          onChange={(newFromEnvelope) => {
-                            setFieldValue("fromEnvelope", newFromEnvelope);
-                          }}
-                          onKeyDown={(e) => {
-                            if (e.key === "Enter") {
-                              e.preventDefault();
-                              submitForm();
-                              resetForm();
-                              setEdit(false);
-                            }
-                          }}
-                        />
-                      </Box>
                     </Box>
                   </Box>
-                </FloatingPortal>
-              </>
-            )}
-          </Formik>
-        </Box>
-      </ClickAwayListener>
+                </Box>
+              </FloatingPortal>
+            </>
+          )}
+        </Formik>
+      </Box>
+      // </ClickAwayListener>
     );
   }
 

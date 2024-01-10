@@ -1,4 +1,4 @@
-import { Box, ButtonBase } from "@mui/material";
+import { Box, Button } from "@mui/joy";
 import { BigPlusIcon } from "../../icons/BigPlusIcon";
 import React, { useState } from "react";
 import {
@@ -31,7 +31,7 @@ export const MainButton = ({
   const { getFloatingProps, getReferenceProps } = useInteractions([dismiss]);
   return (
     <>
-      <ButtonBase
+      <Button
         onClick={() => setIsOpened(true)}
         ref={refs.setReference}
         sx={{
@@ -56,7 +56,7 @@ export const MainButton = ({
       >
         <BigPlusIcon />
         {!collapsed && <Box className="font-semibold">{text}</Box>}
-      </ButtonBase>
+      </Button>
       <FloatingPortal>
         {isOpen && (
           <FloatingOverlay

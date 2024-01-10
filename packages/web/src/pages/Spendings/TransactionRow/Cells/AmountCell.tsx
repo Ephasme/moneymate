@@ -1,4 +1,4 @@
-import { Box, ClickAwayListener, TextField } from "@mui/material";
+import { Box, TextField } from "@mui/joy";
 import { AmountSpan } from "../../../Common";
 import { useTransactionContext } from "../useTransactionContext";
 import { useState } from "react";
@@ -11,22 +11,21 @@ export const AmountCell = () => {
   const [edit, setEdit] = useState(false);
   if (edit) {
     return (
-      <ClickAwayListener onClickAway={() => setEdit(false)}>
-        <Box className="flex w-full">
-          <NumericFormat
-            customInput={TextField}
-            decimalScale={2}
-            fixedDecimalScale
-            fullWidth
-            suffix=" €"
-            decimalSeparator=","
-            value={mil.divToNumber(currentAmount)}
-            onValueChange={({ value }) => {
-              setCurrentAmount(mil.mult(value));
-            }}
-          />
-        </Box>
-      </ClickAwayListener>
+      // <ClickAwayListener onClickAway={() => setEdit(false)}>
+      <Box className="flex w-full">
+        <NumericFormat
+          customInput={TextField}
+          decimalScale={2}
+          fixedDecimalScale
+          suffix=" €"
+          decimalSeparator=","
+          value={mil.divToNumber(currentAmount)}
+          onValueChange={({ value }) => {
+            setCurrentAmount(mil.mult(value));
+          }}
+        />
+      </Box>
+      // </ClickAwayListener>
     );
   }
   return (

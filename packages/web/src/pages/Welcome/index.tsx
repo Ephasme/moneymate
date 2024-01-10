@@ -1,4 +1,4 @@
-import { Box, Button, TextField } from "@mui/material";
+import { Box, Button, Input } from "@mui/joy";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Form, Formik } from "formik";
 import { useNavigate } from "react-router-dom";
@@ -33,7 +33,7 @@ export const WelcomeCreateBudget = () => {
         >
           {({ getFieldProps }) => (
             <Form>
-              <TextField type="text" {...getFieldProps("name")} />
+              <Input type="text" {...getFieldProps("name")} />
               <Button type="submit">Create</Button>
             </Form>
           )}

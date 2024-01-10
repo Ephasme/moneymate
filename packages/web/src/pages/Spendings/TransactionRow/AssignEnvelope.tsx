@@ -8,7 +8,7 @@ import {
   useInteractions,
 } from "@floating-ui/react";
 import { TransactionView } from "@moneymate/shared";
-import { Box, Button } from "@mui/material";
+import { Box, Button } from "@mui/joy";
 import { useState } from "react";
 import { usePatchTransactions } from "../../../hooks/queries";
 import { TransactionAllocator } from "../TransactionAllocator";
@@ -113,11 +113,7 @@ export const AssignEnvelope = ({
                   >
                     Annuler
                   </Button>
-                  <Button
-                    onClick={onSubmit}
-                    disabled={errors.length > 0}
-                    variant="contained"
-                  >
+                  <Button onClick={onSubmit} disabled={errors.length > 0}>
                     Valider
                   </Button>
                 </Box>

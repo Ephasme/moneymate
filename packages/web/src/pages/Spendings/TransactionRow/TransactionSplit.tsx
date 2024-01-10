@@ -1,5 +1,5 @@
 import { AllocationView } from "@moneymate/shared";
-import { Box } from "@mui/material";
+import { Box } from "@mui/joy";
 import classNames from "classnames";
 import { AmountSpan } from "../../Common";
 

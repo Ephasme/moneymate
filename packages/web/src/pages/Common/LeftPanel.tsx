@@ -1,4 +1,4 @@
-import { Box, ButtonBase } from "@mui/material";
+import { Box } from "@mui/joy";
 import _ from "lodash";
 import { useLayoutEffect, useRef, useState } from "react";
 import { useMatches, useNavigate } from "react-router-dom";
@@ -63,45 +63,42 @@ const LeftPanelCollapsed = ({
             menuName === "envelopes" ? "font-bold" : ""
           }`}
         >
-          <ButtonBase
+          <Box
             onClick={() => {
               navigate(`/${budgetId}/envelopes`);
             }}
-            disableRipple
           >
             <FolderOpenIcon
               strokeWidth={menuName === "envelopes" ? 1.7 : 0.8}
             />
-          </ButtonBase>
+          </Box>
         </Box>
         <Box className="flex gap-3 items-center">
-          <ButtonBase
+          <Box
             onClick={() => {
               navigate(`/${budgetId}/accounts`);
             }}
-            disableRipple
           >
             <CreditCardIcon strokeWidth={menuName === "accounts" ? 1.7 : 0.8} />
-          </ButtonBase>
+          </Box>
         </Box>
         <Box
           className={`flex gap-3 items-center ${
             menuName === "spendings" ? "font-bold" : ""
           }`}
         >
-          <ButtonBase
+          <Box
             onClick={() => {
               navigate(`/${budgetId}/spendings`);
             }}
-            disableRipple
           >
             <CashIcon strokeWidth={menuName === "spendings" ? 1.7 : 0.8} />
-          </ButtonBase>
+          </Box>
         </Box>
         <Box className="flex gap-3 items-center">
-          <ButtonBase disableRipple>
+          <Box>
             <CogIcon strokeWidth={0.8} />
-          </ButtonBase>
+          </Box>
         </Box>
       </Box>
 
@@ -159,14 +156,13 @@ const LeftPanelExpanded = ({
           }`}
         >
           <FolderOpenIcon strokeWidth={menuName === "envelopes" ? 1.7 : 0.8} />
-          <ButtonBase
+          <Box
             onClick={() => {
               navigate(`/${budgetId}/envelopes`);
             }}
-            disableRipple
           >
             Enveloppes
-          </ButtonBase>
+          </Box>
         </Box>
         <Box
           className={`flex gap-3 items-center ${
@@ -174,14 +170,13 @@ const LeftPanelExpanded = ({
           }`}
         >
           <CreditCardIcon strokeWidth={menuName === "accounts" ? 1.7 : 0.8} />
-          <ButtonBase
+          <Box
             onClick={() => {
               navigate(`/${budgetId}/accounts`);
             }}
-            disableRipple
           >
             Comptes
-          </ButtonBase>
+          </Box>
         </Box>
         <Box
           className={`flex gap-3 items-center ${
@@ -189,18 +184,17 @@ const LeftPanelExpanded = ({
           }`}
         >
           <CashIcon strokeWidth={menuName === "spendings" ? 1.7 : 0.8} />
-          <ButtonBase
+          <Box
             onClick={() => {
               navigate(`/${budgetId}/spendings`);
             }}
-            disableRipple
           >
             Dépenses
-          </ButtonBase>
+          </Box>
         </Box>
         <Box className="flex gap-3 items-center">
           <CogIcon strokeWidth={0.8} />
-          <ButtonBase disableRipple>Réglages</ButtonBase>
+          <Box>Réglages</Box>
         </Box>
       </Box>
       <Box className="ml-8 mb-20">{mainButton}</Box>

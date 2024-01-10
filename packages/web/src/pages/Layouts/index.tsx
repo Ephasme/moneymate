@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box } from "@mui/joy";
 import { TopBar } from "../Common";
 
 export const MainLayout = ({

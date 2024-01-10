@@ -1,4 +1,4 @@
-import { ThemeProvider, CssBaseline, createTheme } from "@mui/material";
+import { CssVarsProvider, CssBaseline, extendTheme } from "@mui/joy";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { SignIn, SignUp, Home, Envelopes, Welcome } from "./pages";
@@ -43,14 +43,10 @@ const router = createBrowserRouter([
     ],
   },
 ]);
-const theme = createTheme({
-  typography: {
-    fontFamily: ["Satoshi", "sans-serif"].join(","),
-  },
-  palette: {
-    primary: {
-      main: "#212121",
-    },
+const theme = extendTheme({
+  fontFamily: {
+    display: ["Satoshi", "sans-serif"].join(","),
+    body: ["Satoshi", "sans-serif"].join(","),
   },
 });
 
@@ -59,11 +55,11 @@ function App() {
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <QueryClientProvider client={queryClient}>
         <ReactQueryDevtools initialIsOpen={false} />
-        <ThemeProvider theme={theme}>
+        <CssVarsProvider theme={theme}>
           <CssBaseline>
             <RouterProvider router={router} />
           </CssBaseline>
-        </ThemeProvider>
+        </CssVarsProvider>
       </QueryClientProvider>
     </LocalizationProvider>
   );

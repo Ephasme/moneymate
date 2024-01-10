@@ -1,5 +1,5 @@
 import { MAIN_ENVELOPE_ID } from "@moneymate/shared";
-import { Avatar, Box } from "@mui/material";
+import { Avatar, Box } from "@mui/joy";
 import { formatCurrency } from "../../helpers/formatCurrency";
 import { useEnvelope } from "../../hooks/queries";
 import { DotsVerticalIcon } from "../../icons/DotsVerticalIcon";

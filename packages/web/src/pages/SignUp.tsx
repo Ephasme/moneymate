@@ -1,4 +1,4 @@
-import { Box, Typography, TextField, Button } from "@mui/material";
+import { Box, Input, Button } from "@mui/joy";
 import { useMutation } from "@tanstack/react-query";
 import { Formik } from "formik";
 import { api } from "../api";
@@ -17,7 +17,7 @@ export const SignUp = () => {
   });
   return (
     <Box>
-      <Typography variant="h1">Sign Up</Typography>
+      Sign Up
       <Formik
         initialValues={{
           email: "loup.peluso@gmail.com",
@@ -31,9 +31,9 @@ export const SignUp = () => {
         {({ getFieldProps, handleSubmit }) => {
           return (
             <>
-              <TextField {...getFieldProps("email")} />
-              <TextField {...getFieldProps("password")} />
-              <TextField {...getFieldProps("passwordConfirmation")} />
+              <Input {...getFieldProps("email")} />
+              <Input {...getFieldProps("password")} />
+              <Input {...getFieldProps("passwordConfirmation")} />
               <Button
                 onClick={() => {
                   handleSubmit();
@@ -46,7 +46,6 @@ export const SignUp = () => {
         }}
       </Formik>
       <Button
-        variant="text"
         onClick={() => {
           navigate("/sign-in");
         }}

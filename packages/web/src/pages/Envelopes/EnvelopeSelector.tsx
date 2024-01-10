@@ -1,5 +1,5 @@
 import { EnvelopeView } from "@moneymate/shared";
-import { Autocomplete, AutocompleteProps, TextField } from "@mui/material";
+import { Autocomplete, AutocompleteProps } from "@mui/joy";
 import { formatCurrency } from "../../helpers/formatCurrency";
 import { useEnvelopes } from "../../hooks/queries";
 
@@ -44,9 +44,6 @@ export const EnvelopeSelector = ({
       getOptionLabel={(option) => option.name}
       disableClearable
       value={value}
-      renderInput={(props) => (
-        <TextField {...props} size="small" variant="standard" />
-      )}
       renderOption={(props, option) => {
         return (
           <li {...props}>

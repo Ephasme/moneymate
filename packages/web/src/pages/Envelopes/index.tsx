@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box } from "@mui/joy";
 import { useEnvelopes } from "../../hooks/queries/useEnvelopes";
 import { MainLayout } from "../Layouts";
 import { Checkbox } from "./Checkbox";

@@ -1,4 +1,4 @@
-import { Box, Skeleton } from "@mui/material";
+import { Box, Skeleton } from "@mui/joy";
 import { useEnvelope } from "../../hooks/queries/useEnvelope";
 import { useStore } from "../../store";
 import { AllocationField } from "./AllocationField";
@@ -26,9 +26,11 @@ export const EnvelopeRow = ({ envelopeId }: { envelopeId: string }) => {
       >
         <Checkbox
           checked={isSelected}
-          onChange={(_, checked) => {
+          onChange={(ev) => {
             if (envelope) {
-              setSelectedEnvelopes([{ envelopeId: envelope.id, checked }]);
+              setSelectedEnvelopes([
+                { envelopeId: envelope.id, checked: ev.target.checked },
+              ]);
             }
           }}
         />

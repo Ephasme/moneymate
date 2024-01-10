@@ -1,5 +1,5 @@
 import { EnvelopeView, MAIN_ENVELOPE_ID } from "@moneymate/shared";
-import { Box } from "@mui/material";
+import { Box } from "@mui/joy";
 import { formatCurrency } from "../../helpers/formatCurrency";
 import { useEnvelope, useEnvelopes } from "../../hooks/queries";
 

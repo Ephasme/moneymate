@@ -1,5 +1,5 @@
 import { TransactionView } from "@moneymate/shared";
-import { Box, IconButton } from "@mui/material";
+import { Box, IconButton } from "@mui/joy";
 import classNames from "classnames";
 import { useState } from "react";
 import { useDeleteTransactions } from "../../../hooks/queries";
@@ -58,7 +58,7 @@ export const TransactionRow = ({
               onClick={() => {
                 deleteTransactions([transaction.id]);
               }}
-              size="small"
+              size="sm"
             >
               <TrashIcon />
             </IconButton>
