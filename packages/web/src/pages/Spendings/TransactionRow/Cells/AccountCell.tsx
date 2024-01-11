@@ -4,12 +4,13 @@ import { useAccounts, usePatchTransactions } from "../../../../hooks/queries";
 import { useTransactionContext } from "../useTransactionContext";
 
 export const AccountCell = () => {
-  const transaction = useTransactionContext();
+  const { transaction, setIsHovered } = useTransactionContext();
   const [edit, setEdit] = useState(false);
   const { data: accounts } = useAccounts();
   const { mutate: patchTransactions } = usePatchTransactions({
     onSuccess: () => {
       setEdit(false);
+      setIsHovered(false);
     },
   });
 

@@ -1,7 +1,11 @@
 import { TransactionView } from "@moneymate/shared";
 import { createContext, useContext } from "react";
 
-export const TransactionContext = createContext<TransactionView>(null!);
+export const TransactionContext = createContext<{
+  transaction: TransactionView;
+  isHovered: boolean;
+  setIsHovered: (state: boolean) => void;
+}>(null!);
 
 export const useTransactionContext = () => {
   const context = useContext(TransactionContext);

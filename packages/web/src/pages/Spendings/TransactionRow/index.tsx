@@ -35,7 +35,13 @@ export const TransactionRow = ({
     onMouseLeave: () => setIsTransactionHovered(false),
   });
   return (
-    <TransactionContext.Provider value={transaction}>
+    <TransactionContext.Provider
+      value={{
+        transaction,
+        isHovered: isTransactionHovered,
+        setIsHovered: (state) => setIsTransactionHovered(state),
+      }}
+    >
       <Box className="contents">
         <Box {...commonProps("pl-3")}>
           <PayeeCell />

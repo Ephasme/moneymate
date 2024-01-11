@@ -3,7 +3,7 @@ import { AssignEnvelope } from "../AssignEnvelope";
 import { useTransactionContext } from "../useTransactionContext";
 
 export const EnvelopeCell = () => {
-  const transaction = useTransactionContext();
+  const { transaction, setIsHovered } = useTransactionContext();
   return (
     <AssignEnvelope
       trigger={({ onClick }) => {
@@ -21,6 +21,11 @@ export const EnvelopeCell = () => {
             Assigner une enveloppe
           </Box>
         );
+      }}
+      onOpenChange={(value) => {
+        if (!value) {
+          setIsHovered(false);
+        }
       }}
       transaction={transaction}
     />

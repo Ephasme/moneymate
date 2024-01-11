@@ -9,6 +9,8 @@ export const usePostTransactions = (props: { onSuccess: () => void }) => {
     onSuccess() {
       queryClient.invalidateQueries({ queryKey: queries.transactions._def });
       queryClient.invalidateQueries({ queryKey: queries.accounts._def });
+      queryClient.invalidateQueries({ queryKey: queries.payees._def });
+      queryClient.invalidateQueries({ queryKey: queries.envelopes._def });
       props.onSuccess();
     },
   });

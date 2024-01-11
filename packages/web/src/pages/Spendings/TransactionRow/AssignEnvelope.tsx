@@ -15,9 +15,11 @@ import { TransactionAllocator } from "../TransactionAllocator";
 
 export const AssignEnvelope = ({
   trigger: Trigger,
+  onOpenChange: _onOpenChange = () => {},
   transaction,
 }: {
   trigger: (props: { onClick: () => void }) => React.ReactNode;
+  onOpenChange: (value: boolean) => void;
   transaction: TransactionView;
 }) => {
   const { mutate: patchTransactions } = usePatchTransactions();
@@ -29,6 +31,11 @@ export const AssignEnvelope = ({
       };
     })
   );
+
+  const onOpenChange = (value: boolean) => {
+    _onOpenChange(value);
+    setIsDialogOpen(value);
+  };
 
   const onSubmit = () => {
     console.log({ allocationItems });
@@ -46,7 +53,7 @@ export const AssignEnvelope = ({
       ],
       {
         onSuccess: () => {
-          setIsDialogOpen(false);
+          onOpenChange(false);
         },
       }
     );
@@ -56,7 +63,7 @@ export const AssignEnvelope = ({
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { refs, context } = useFloating({
     open: isDialogOpen,
-    onOpenChange: setIsDialogOpen,
+    onOpenChange,
   });
   const click = useClick(context);
   const dismiss = useDismiss(context);
@@ -69,13 +76,13 @@ export const AssignEnvelope = ({
       <Box
         ref={refs.setReference}
         onClick={() => {
-          setIsDialogOpen(true);
+          onOpenChange(true);
         }}
         {...getReferenceProps()}
       >
         <Trigger
           onClick={() => {
-            setIsDialogOpen(true);
+            onOpenChange(true);
           }}
         />
       </Box>
@@ -107,7 +114,7 @@ export const AssignEnvelope = ({
                 <Box className="flex justify-end gap-2">
                   <Button
                     onClick={() => {
-                      setIsDialogOpen(false);
+                      onOpenChange(false);
                     }}
                     variant="outlined"
                   >

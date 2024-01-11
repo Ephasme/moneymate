@@ -8,7 +8,7 @@ import { Formik } from "formik";
 import { usePatchTransactions } from "../../../../hooks/queries";
 
 export const AmountCell = () => {
-  const transaction = useTransactionContext();
+  const { transaction } = useTransactionContext();
   const { mutate: patchTransactions } = usePatchTransactions({
     onSuccess: () => setEdit(false),
   });

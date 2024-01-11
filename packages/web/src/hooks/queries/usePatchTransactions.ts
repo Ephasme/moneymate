@@ -20,6 +20,7 @@ export const usePatchTransactions = ({
       queryClient.invalidateQueries({ queryKey: queries.transactions._def });
       queryClient.invalidateQueries({ queryKey: queries.accounts._def });
       queryClient.invalidateQueries({ queryKey: queries.payees._def });
+      queryClient.invalidateQueries({ queryKey: queries.envelopes._def });
     },
     onError: (error) => {
       onError(error);

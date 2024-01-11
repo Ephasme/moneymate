@@ -34,7 +34,7 @@ export const TransactionSplit = ({
         <Box className="">{allocation.envelopeName}</Box>
       </Box>
       <Box {...commonProps()}>
-        <Box className="w-full text-right">
+        <Box className="w-full text-right pr-[14px]">
           <AmountSpan amount={allocation.amount} creditColor explicitPositive />
         </Box>
       </Box>

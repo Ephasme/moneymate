@@ -110,6 +110,11 @@ export const PatchTransactions = ({
               transaction,
             })(payee);
 
+            if (amount && transaction.allocations.length === 1) {
+              transaction.allocations[0].amount = amount.toString();
+              manager.save(transaction.allocations[0]);
+            }
+
             await manager.save(Transaction, transaction);
 
             if (allocations) {

@@ -6,7 +6,7 @@ import { usePayees } from "../../../../hooks/queries/usePayees";
 import { useTransactionContext } from "../useTransactionContext";
 
 export const PayeeCell = () => {
-  const transaction = useTransactionContext();
+  const { transaction, setIsHovered } = useTransactionContext();
   const [edit, setEdit] = useState(false);
   const ref = useRef<HTMLInputElement>(null);
   const { mutate: patchTransactions } = usePatchTransactions();
@@ -36,6 +36,7 @@ export const PayeeCell = () => {
                 { id: transaction.id, payee: makePatch(payee) },
               ]);
               setEdit(false);
+              setIsHovered(false);
             }}
             getOptionLabel={(option) => {
               if (typeof option === "string") {

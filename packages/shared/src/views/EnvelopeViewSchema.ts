@@ -6,8 +6,8 @@ export const EnvelopeViewSchema = z.object({
   name: z.string(),
   isHidden: z.boolean(),
   isDefault: z.boolean(),
-  emoji: z.string(),
-  description: z.string(),
+  emoji: z.string().nullish(),
+  description: z.string().nullish(),
   allocations: z
     .object({
       id: z.string().uuid(),
