@@ -22,28 +22,31 @@ const TopBarReadyToAssign = () => {
   );
 };
 
-export const TopBar = () => {
+export const TopBar = ({ leftPart }: { leftPart?: React.ReactNode } = {}) => {
   return (
-    <Box className="flex items-center justify-end min-h-[4.7rem] pr-8">
-      <TopBarReadyToAssign />
-      <Box className="flex mr-[1.5rem]">
-        <MagnifierIcon />
-      </Box>
-      <MonthSelector />
-      <Box className="mr-[1.5rem]">
-        <DottedBarsIcon />
-      </Box>
-      <Box className="mr-[1.5rem]">
-        <DotsVerticalIcon />
-      </Box>
-      <Box className="flex items-center">
-        <Avatar sx={{ height: "2.5rem", width: "2.5rem" }} />
-        <Box className="flex flex-col leading-4 ml-3 w-[6rem]">
-          <Box className="text-ellipsis overflow-hidden font-bold">
-            Cassandra
-          </Box>
-          <Box className="text-ellipsis overflow-hidden">
-            cassandra.de.carvalho@gmail.com
+    <Box className="flex flex-grow items-center justify-between">
+      <Box>{leftPart}</Box>
+      <Box className="flex items-center justify-end min-h-[4.7rem] pr-8">
+        <TopBarReadyToAssign />
+        <Box className="flex mr-[1.5rem]">
+          <MagnifierIcon />
+        </Box>
+        <MonthSelector />
+        <Box className="mr-[1.5rem]">
+          <DottedBarsIcon />
+        </Box>
+        <Box className="mr-[1.5rem]">
+          <DotsVerticalIcon />
+        </Box>
+        <Box className="flex items-center">
+          <Avatar sx={{ height: "2.5rem", width: "2.5rem" }} />
+          <Box className="flex flex-col leading-4 ml-3 w-[6rem]">
+            <Box className="text-ellipsis overflow-hidden font-bold">
+              Cassandra
+            </Box>
+            <Box className="text-ellipsis overflow-hidden">
+              cassandra.de.carvalho@gmail.com
+            </Box>
           </Box>
         </Box>
       </Box>

@@ -23,7 +23,7 @@ export const TransactionRow = ({
   const [isTransactionHovered, setIsTransactionHovered] = useState(false);
   const commonProps = (className: string = "") => ({
     className: classNames(
-      ["cursor-pointer", "flex", "items-center", "py-4", "h-full"],
+      ["cursor-pointer", "flex", "items-center", "py-2", "h-full"],
       {
         "border-b border-[#D7D9DF]":
           !isLastTransaction && transaction.allocations.length <= 1,
