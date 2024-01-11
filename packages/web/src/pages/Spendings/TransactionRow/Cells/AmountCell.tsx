@@ -37,6 +37,7 @@ export const AmountCell = () => {
                 decimalScale={2}
                 size="small"
                 fixedDecimalScale
+                variant="standard"
                 InputProps={{
                   sx: {
                     "& input": {
@@ -77,7 +78,7 @@ export const AmountCell = () => {
       }}
       className="flex justify-end w-full"
     >
-      <Box className="font-bold text-right pr-[14px]">
+      <Box className="font-bold text-right">
         <AmountSpan amount={transaction.amount} creditColor explicitPositive />
       </Box>
     </Box>

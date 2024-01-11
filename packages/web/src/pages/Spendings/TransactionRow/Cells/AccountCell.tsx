@@ -24,11 +24,6 @@ export const AccountCell = () => {
         <Box className="flex items-center gap-2 h-full w-full mr-2">
           <Box className="flex-grow">
             <Autocomplete
-              sx={{
-                ".MuiInputBase-root": {
-                  borderRadius: "999rem",
-                },
-              }}
               size="small"
               options={accounts ?? []}
               value={
@@ -46,7 +41,9 @@ export const AccountCell = () => {
               }}
               getOptionLabel={(option) => option.name}
               isOptionEqualToValue={(option, value) => option.id === value.id}
-              renderInput={(params) => <TextField autoFocus {...params} />}
+              renderInput={(params) => (
+                <TextField variant="standard" autoFocus {...params} />
+              )}
             />
           </Box>
         </Box>
@@ -61,7 +58,7 @@ export const AccountCell = () => {
       }}
       className="h-full w-full"
     >
-      <Box className="py-[8px] pl-[14px]">{transaction.accountName}</Box>
+      <Box className="py-[8px]">{transaction.accountName}</Box>
     </Box>
   );
 };

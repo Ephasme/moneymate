@@ -10,15 +10,19 @@ export const TransactionSplits = ({
   onHovered: (value: boolean) => void;
 }) => {
   if (transaction.allocations.length <= 1) return null;
-  return transaction.allocations.map((allocation, index) => {
-    const isLastSplit = index === transaction.allocations.length - 1;
-    return (
-      <TransactionSplit
-        key={allocation.id}
-        allocation={allocation}
-        isLastSplit={isLastSplit}
-        {...props}
-      />
-    );
-  });
+  return (
+    <>
+      {transaction.allocations.map((allocation, index) => {
+        const isLastSplit = index === transaction.allocations.length - 1;
+        return (
+          <TransactionSplit
+            key={allocation.id}
+            allocation={allocation}
+            bottomBorder={isLastSplit}
+            {...props}
+          />
+        );
+      })}
+    </>
+  );
 };
