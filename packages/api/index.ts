@@ -32,6 +32,7 @@ import {
   getTransaction,
   getTransactions,
   patchTransactions,
+  putTransactions,
 } from "./src/Transaction/index.js";
 import { TransferActions, postTransfers } from "./src/Transfer/index.js";
 
@@ -97,6 +98,7 @@ export const makeApi = (getToken: TokenProvider): Api => ({
   getTransactions: getTransactions(getToken),
   patchEnvelopes: patchEnvelopes(getToken),
   patchTransactions: patchTransactions(getToken),
+  putTransactions: putTransactions(getToken),
   postAccounts: postAccounts(getToken),
   postEnvelopes: postEnvelopes(getToken),
   postTransfers: postTransfers(getToken),

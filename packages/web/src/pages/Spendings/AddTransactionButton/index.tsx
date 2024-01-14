@@ -1,5 +1,6 @@
+import { Dialog } from "../../Common/Dialog";
 import { MainButton } from "../../Common/MainButton";
-import { ModalContent } from "./ModalContent";
+import { ModalContent } from "../EditTransactionModal/ModalContent";
 
 export const AddTransactionButton = ({
   collapsed,
@@ -7,10 +8,16 @@ export const AddTransactionButton = ({
   collapsed?: boolean;
 }) => {
   return (
-    <MainButton
-      collapsed={collapsed}
-      text={"Transaction"}
-      modal={ModalContent}
-    />
+    <Dialog
+      Trigger={({ onOpen }) => (
+        <MainButton
+          text="Transaction"
+          setIsOpened={onOpen}
+          collapsed={collapsed}
+        />
+      )}
+    >
+      {({ onClose }) => <ModalContent onClose={onClose} />}
+    </Dialog>
   );
 };

@@ -1,23 +1,23 @@
 import {
-  PostTransactionsRequestSchema,
-  PostTransactionsResponse,
+  PutTransactionsRequestSchema,
+  PutTransactionsResponse,
 } from "@moneymate/shared";
 import { FastifyPluginCallback } from "fastify";
 import { EntityManager } from "typeorm";
-import { SaveTransaction } from "../actions/SaveTransaction.js";
 import { isKnownError } from "../helpers/isKnownError.js";
+import { SaveTransaction } from "../actions/SaveTransaction.js";
 
-export const PostTransactions = ({
+export const PutTransactions = ({
   entities,
 }: {
   entities: EntityManager;
 }): FastifyPluginCallback => {
   return (server, _ignored, done) => {
-    server.post(
+    server.put(
       "/api/transaction",
-      async (request, reply): Promise<PostTransactionsResponse> => {
+      async (request, reply): Promise<PutTransactionsResponse> => {
         const user = await request.user();
-        const list = PostTransactionsRequestSchema.parse(request.body);
+        const list = PutTransactionsRequestSchema.parse(request.body);
         try {
           return await SaveTransaction({ entities })({ user, list });
         } catch (error) {

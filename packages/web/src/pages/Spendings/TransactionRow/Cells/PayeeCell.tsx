@@ -1,72 +1,48 @@
-import { makePatch } from "@moneymate/shared";
-import { Autocomplete, Box, ClickAwayListener, TextField } from "@mui/material";
-import { useRef, useState } from "react";
-import { usePatchTransactions } from "../../../../hooks/queries";
+import { Autocomplete, Box, TextField } from "@mui/material";
+import { useTransactionRowContext } from "../useTransactionContext";
 import { usePayees } from "../../../../hooks/queries/usePayees";
-import { useTransactionContext } from "../useTransactionContext";
+import { produce } from "immer";
 
 export const PayeeCell = () => {
-  const { transaction, setIsHovered } = useTransactionContext();
-  const [edit, setEdit] = useState(false);
-  const ref = useRef<HTMLInputElement>(null);
-  const { mutate: patchTransactions } = usePatchTransactions();
-  const { data: payees = [] } = usePayees();
+  const { transaction, isEditing, setIsEditing, setTransaction } =
+    useTransactionRowContext();
+  const { data: payees } = usePayees();
+  if (!payees) return <div>Loading payees...</div>;
 
-  if (edit) {
-    return (
-      <ClickAwayListener
-        onClickAway={() => {
-          setEdit(false);
-        }}
-      >
-        <Box className="flex-grow pr-3">
-          <Autocomplete
-            size="small"
-            fullWidth
-            ref={ref}
-            freeSolo
-            onBlur={() => {
-              setEdit(false);
-            }}
-            value={transaction.payee ?? null}
-            onChange={(_, value) => {
-              const payee =
-                typeof value === "string" ? value : value ? value.name : null;
-              patchTransactions([
-                { id: transaction.id, payee: makePatch(payee) },
-              ]);
-              setEdit(false);
-              setIsHovered(false);
-            }}
-            getOptionLabel={(option) => {
-              if (typeof option === "string") {
-                return option;
-              }
-              return option.name;
-            }}
-            options={payees}
-            sx={{
-              ".MuiInputBase-root": {
-                borderRadius: "999rem",
-              },
-            }}
-            renderInput={(params) => (
-              <TextField autoFocus {...params} placeholder="Acheté chez..." />
-            )}
-          />
-        </Box>
-      </ClickAwayListener>
-    );
+  function findPayee(payeeName: string | null) {
+    if (!payeeName) return null;
+    return payees?.find((payee) => payee.name === payeeName) ?? null;
   }
 
+  if (isEditing) {
+    return (
+      <Box className="flex items-center w-full h-full pr-3">
+        <Autocomplete
+          options={payees}
+          fullWidth
+          value={findPayee(transaction.payeeName)}
+          getOptionLabel={(option) => option.name}
+          isOptionEqualToValue={(option, value) => option.id === value.id}
+          renderInput={(props) => <TextField variant="standard" {...props} />}
+          onChange={(_, value) => {
+            setTransaction(
+              produce((transaction) => {
+                transaction.payeeName = value?.name ?? null;
+              })
+            );
+          }}
+        />
+      </Box>
+    );
+  }
   return (
     <Box
-      className="flex items-center w-full h-full"
       onClick={() => {
-        setEdit(true);
+        setIsEditing(true);
       }}
+      className="flex items-center w-full h-full"
     >
-      <Box className="py-[8px] pl-[14px]">{transaction.payee ?? "-"}</Box>
+      <Box>{transaction.payeeName ?? "-"}</Box>
     </Box>
   );
 };

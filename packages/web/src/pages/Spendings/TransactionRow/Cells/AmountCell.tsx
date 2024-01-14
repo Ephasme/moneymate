@@ -1,80 +1,50 @@
-import { Box, ClickAwayListener, TextField } from "@mui/material";
+import { Box, TextField } from "@mui/material";
 import { AmountSpan } from "../../../Common";
-import { useTransactionContext } from "../useTransactionContext";
-import { useState } from "react";
+import { useTransactionRowContext } from "../useTransactionContext";
 import { NumericFormat } from "react-number-format";
 import * as mil from "../../../../helpers/mil";
-import { Formik } from "formik";
-import { usePatchTransactions } from "../../../../hooks/queries";
+import { produce } from "immer";
 
 export const AmountCell = () => {
-  const { transaction } = useTransactionContext();
-  const { mutate: patchTransactions } = usePatchTransactions({
-    onSuccess: () => setEdit(false),
-  });
-  const [edit, setEdit] = useState(false);
-  if (edit) {
+  const { transaction, isEditing, setTransaction, setIsEditing } =
+    useTransactionRowContext();
+
+  if (isEditing) {
     return (
-      <ClickAwayListener onClickAway={() => setEdit(false)}>
-        <Box className="flex w-full">
-          <Formik
-            onSubmit={(values) => {
-              console.log(values);
-              patchTransactions([
-                {
-                  id: transaction.id,
-                  amount: values.amount.toString(),
-                },
-              ]);
+      <Box className="flex justify-end pl-2 w-full">
+        <Box className="font-bold text-right">
+          <NumericFormat
+            decimalScale={2}
+            fixedDecimalScale
+            suffix=" €"
+            decimalSeparator=","
+            variant="standard"
+            value={mil.divToNumber(transaction.amount)}
+            customInput={TextField}
+            sx={{
+              "& input": {
+                textAlign: "right",
+              },
             }}
-            initialValues={{
-              amount: transaction.amount,
+            onValueChange={({ value }) => {
+              if (value) {
+                setTransaction(
+                  produce((transaction) => {
+                    transaction.amount = mil.mult(value);
+                  })
+                );
+              }
             }}
-          >
-            {({ setFieldValue, submitForm, resetForm, values }) => (
-              <NumericFormat
-                customInput={TextField}
-                decimalScale={2}
-                size="small"
-                fixedDecimalScale
-                variant="standard"
-                InputProps={{
-                  sx: {
-                    "& input": {
-                      color: transaction.amount >= 0 ? "#37B692" : "black",
-                      fontWeight: "bold",
-                      textAlign: "right",
-                    },
-                  },
-                }}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    e.preventDefault();
-                    submitForm();
-                    resetForm();
-                    setEdit(false);
-                  }
-                }}
-                onValueChange={({ value }) => {
-                  if (value) {
-                    setFieldValue("amount", mil.mult(value));
-                  }
-                }}
-                fullWidth
-                suffix=" €"
-                decimalSeparator=","
-                value={mil.divToNumber(values.amount)}
-              />
-            )}
-          </Formik>
+          />
         </Box>
-      </ClickAwayListener>
+      </Box>
     );
   }
+
   return (
     <Box
       onClick={() => {
-        setEdit(true);
+        setIsEditing(true);
       }}
       className="flex justify-end w-full"
     >

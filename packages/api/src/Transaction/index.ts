@@ -11,6 +11,9 @@ import {
   GetTransactionsResponseSchema,
   PatchTransactionsRequestInput,
   PatchTransactionsResponse,
+  PutTransactionsRequestInput,
+  PutTransactionsResponse,
+  PutTransactionsResponseSchema,
 } from "@moneymate/shared";
 import { TokenProvider } from "../types/index.js";
 
@@ -27,6 +30,9 @@ export type TransactionActions = {
   postTransactions(
     props: PostTransactionsRequestInput
   ): Promise<PostTransactionsResponse>;
+  putTransactions(
+    props: PutTransactionsRequestInput
+  ): Promise<PutTransactionsResponse>;
   deleteTransactions(
     props: DeleteTransactionsRequest
   ): Promise<DeleteTransactionsResponse>;
@@ -53,6 +59,31 @@ export const patchTransactions =
       }
     } catch (error) {
       console.error("Failed to patch transaction", { error });
+      throw error;
+    }
+  };
+
+export const putTransactions =
+  (getToken: TokenProvider): TransactionActions["putTransactions"] =>
+  async (props) => {
+    try {
+      const reply = await fetch(`http://localhost:3000/api/transaction`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${await getToken()}`,
+        },
+        body: JSON.stringify(props),
+      });
+      if (!reply.ok) {
+        console.error(await reply.text());
+        throw new Error("Failed to put transaction");
+      } else {
+        const result = await reply.json();
+        return PutTransactionsResponseSchema.parse(result);
+      }
+    } catch (error) {
+      console.error("Failed to put transaction", { error });
       throw error;
     }
   };

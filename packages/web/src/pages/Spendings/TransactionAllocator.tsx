@@ -117,21 +117,19 @@ const ActionsMenu = ({
 
 export const TransactionAllocator = ({
   totalAmount,
-  allocationItems: _allocationItems,
+  value,
   onChange,
   onErrors = () => {},
 }: {
   totalAmount: bigint;
-  allocationItems?: AllocationItems;
+  value?: PartialAllocationItems;
   onChange: (selection: AllocationItems) => void;
   onErrors?: (errors: string[]) => void;
 }) => {
   const [errors, setErrors] = useState<string[]>([]);
   const [allocationItems, setAllocationItems] =
     useState<PartialAllocationItems>(
-      _allocationItems && _allocationItems.length > 0
-        ? _allocationItems
-        : [{ envelopeId: null, amount: 0n }]
+      value && value.length > 0 ? value : [{ envelopeId: null, amount: 0n }]
     );
   const [envelopesById, setEnvelopesById] = useState<
     Record<string, EnvelopeView>

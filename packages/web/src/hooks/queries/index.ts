@@ -10,6 +10,7 @@ export * from "./useEnvelopeGroup";
 export * from "./useEnvelopeGroups";
 export * from "./useEnvelopes";
 export * from "./usePatchTransactions";
+export * from "./usePutTransactions";
 export * from "./usePostAccounts";
 export * from "./usePostEnvelopes";
 export * from "./usePostTransfers";

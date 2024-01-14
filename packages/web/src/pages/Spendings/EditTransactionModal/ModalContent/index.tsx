@@ -4,19 +4,31 @@ import { DatePicker } from "@mui/x-date-pickers";
 import { Formik } from "formik";
 import { NumericFormat } from "react-number-format";
 import * as mil from "../../../../helpers/mil";
-import { useAccounts } from "../../../../hooks/queries";
+import { useAccounts, usePutTransactions } from "../../../../hooks/queries";
 import { usePostTransactions } from "../../../../hooks/queries/usePostTransactions";
 import { useStore } from "../../../../store";
-import { CreditDebitSwitch } from "../CreditDebitSwitch";
 import {
   PartialAllocationItems,
   TransactionAllocator,
   keepValid,
 } from "../../TransactionAllocator";
+import { TransactionEdit } from "../../../TransactionEdit";
+import { CreditDebitSwitch } from "../CreditDebitSwitch";
 
-export const ModalContent = ({ onClose }: { onClose: () => void }) => {
+export const ModalContent = ({
+  transaction,
+  onClose,
+}: {
+  transaction?: TransactionEdit;
+  onClose: () => void;
+}) => {
   const budgetId = useStore((state) => state.budgetId);
   const { mutate: postTransactions } = usePostTransactions({
+    onSuccess: () => {
+      onClose();
+    },
+  });
+  const { mutate: putTransactions } = usePutTransactions({
     onSuccess: () => {
       onClose();
     },
@@ -26,14 +38,26 @@ export const ModalContent = ({ onClose }: { onClose: () => void }) => {
 
   if (!accounts) return <Box>Loading...</Box>;
 
+  const initialValues = {
+    type: "credit" as "credit" | "debit",
+    envelopes: (transaction?.allocations.map((x) => ({
+      envelopeId: x.envelopeId,
+      amount: x.amount,
+    })) ?? []) as PartialAllocationItems,
+    account: transaction
+      ? accounts.find((x) => x.id === transaction.accountId) ?? null
+      : (null as AccountView | null),
+    date: transaction?.date ? new Date(transaction.date) : new Date(),
+    payee: transaction?.payeeName ?? "",
+    amount: transaction?.amount ?? 0n,
+  };
+
   return (
     <Box className="flex flex-col gap-4">
       <Formik
-        onReset={() => {}}
         onSubmit={(values) => {
           if (!values.account) return;
           if (!values.envelopes) return;
-          console.log({ selection: values.envelopes });
           const toPost = {
             accountId: values.account.id,
             allocations: values.envelopes
@@ -47,17 +71,11 @@ export const ModalContent = ({ onClose }: { onClose: () => void }) => {
             amount: values.amount.toString(),
             budgetId,
           };
-          console.log({ toPost });
-          postTransactions([toPost]);
+          if (transaction?.id)
+            putTransactions([{ ...toPost, id: transaction.id }]);
+          else postTransactions([toPost]);
         }}
-        initialValues={{
-          type: "credit" as "credit" | "debit",
-          envelopes: [] as PartialAllocationItems,
-          account: null as AccountView | null,
-          date: new Date(),
-          payee: "",
-          amount: 0n,
-        }}
+        initialValues={initialValues}
       >
         {({ values, setFieldValue, resetForm, submitForm }) => (
           <>
@@ -104,6 +122,7 @@ export const ModalContent = ({ onClose }: { onClose: () => void }) => {
             <Box className="flex flex-col px-5 gap-2">
               <TransactionAllocator
                 totalAmount={values.amount}
+                value={values.envelopes}
                 onChange={(selection) => {
                   setFieldValue("envelopes", selection);
                 }}
@@ -111,6 +130,7 @@ export const ModalContent = ({ onClose }: { onClose: () => void }) => {
               <Autocomplete
                 size="small"
                 freeSolo
+                value={values.payee}
                 onChange={(_, value) => {
                   setFieldValue("payee", value);
                 }}
@@ -127,6 +147,7 @@ export const ModalContent = ({ onClose }: { onClose: () => void }) => {
               <Autocomplete
                 size="small"
                 options={accounts}
+                value={values.account}
                 isOptionEqualToValue={(option, value) => option.id === value.id}
                 getOptionLabel={(option) => option.name}
                 getOptionKey={(option) => option.id}

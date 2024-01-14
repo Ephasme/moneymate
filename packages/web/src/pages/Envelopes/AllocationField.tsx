@@ -17,7 +17,7 @@ import { formatCurrency } from "../../helpers/formatCurrency";
 import * as mil from "../../helpers/mil";
 import { useEnvelope, usePostTransfers } from "../../hooks/queries";
 import { useStore } from "../../store";
-import { EnvelopeSelector } from "./EnvelopeSelector";
+import { EnvelopeSelector } from "../Common/EnvelopeSelector";
 
 export const AllocationField = ({ envelopeId }: { envelopeId: string }) => {
   const budgetId = useStore((state) => state.budgetId);

@@ -1,7 +1,7 @@
 import { EnvelopeView } from "@moneymate/shared";
 import { Autocomplete, AutocompleteProps, TextField } from "@mui/material";
 import { formatCurrency } from "../../helpers/formatCurrency";
-import { useEnvelopes } from "../../hooks/queries";
+import { useEnvelope, useEnvelopes } from "../../hooks/queries";
 
 export type EnvelopeSelectorProps = Omit<
   AutocompleteProps<EnvelopeView, false, true, false>,
@@ -12,9 +12,10 @@ export type EnvelopeSelectorProps = Omit<
   | "getOptionLabel"
   | "value"
 > & {
-  value: EnvelopeView;
+  value: EnvelopeView | string | null;
   onChange?: (value: EnvelopeView | null) => void;
   notDefault?: boolean;
+  showBalances?: boolean;
   notIn?: string[];
 };
 
@@ -22,11 +23,16 @@ export const EnvelopeSelector = ({
   value,
   onChange = () => {},
   notDefault = false,
+  showBalances = true,
   notIn = [],
   ...props
 }: EnvelopeSelectorProps) => {
   const { data: envelopes = [] } = useEnvelopes();
+  const { data: envelope } = useEnvelope(
+    typeof value === "string" ? value : value?.id
+  );
   if (!envelopes) return <div>Loading envelopes...</div>;
+  if (!envelope) return <div>Loading envelope...</div>;
   if (envelopes.length === 0) return <div>No envelopes</div>;
 
   return (
@@ -43,7 +49,7 @@ export const EnvelopeSelector = ({
       isOptionEqualToValue={(option, value) => option.id === value.id}
       getOptionLabel={(option) => option.name}
       disableClearable
-      value={value}
+      value={envelope}
       renderInput={(props) => (
         <TextField {...props} size="small" variant="standard" />
       )}
@@ -54,7 +60,7 @@ export const EnvelopeSelector = ({
               <div className="flex-grow whitespace-nowrap overflow-x-hidden text-ellipsis">
                 {option.name}
               </div>
-              <div>{formatCurrency(option.balance)}</div>
+              {showBalances && <div>{formatCurrency(option.balance)}</div>}
             </div>
           </li>
         );
