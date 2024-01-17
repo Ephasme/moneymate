@@ -4,7 +4,6 @@ import { useLayoutEffect, useRef, useState } from "react";
 import { useMatches, useNavigate } from "react-router-dom";
 import { z } from "zod";
 import imageEnveloppe from "../../assets/ImageEnveloppe.png";
-import { CashIcon, CogIcon, CreditCardIcon, FolderOpenIcon } from "../../icons";
 import { useStore } from "../../store";
 import { Logo } from "./Logo";
 import { ReadyToAssign } from "./ReadyToAssign";
@@ -68,11 +67,7 @@ const LeftPanelCollapsed = ({
               navigate(`/${budgetId}/envelopes`);
             }}
             disableRipple
-          >
-            <FolderOpenIcon
-              strokeWidth={menuName === "envelopes" ? 1.7 : 0.8}
-            />
-          </ButtonBase>
+          ></ButtonBase>
         </Box>
         <Box className="flex gap-3 items-center">
           <ButtonBase
@@ -80,9 +75,7 @@ const LeftPanelCollapsed = ({
               navigate(`/${budgetId}/accounts`);
             }}
             disableRipple
-          >
-            <CreditCardIcon strokeWidth={menuName === "accounts" ? 1.7 : 0.8} />
-          </ButtonBase>
+          ></ButtonBase>
         </Box>
         <Box
           className={`flex gap-3 items-center ${
@@ -94,14 +87,10 @@ const LeftPanelCollapsed = ({
               navigate(`/${budgetId}/spendings`);
             }}
             disableRipple
-          >
-            <CashIcon strokeWidth={menuName === "spendings" ? 1.7 : 0.8} />
-          </ButtonBase>
+          ></ButtonBase>
         </Box>
         <Box className="flex gap-3 items-center">
-          <ButtonBase disableRipple>
-            <CogIcon strokeWidth={0.8} />
-          </ButtonBase>
+          <ButtonBase disableRipple></ButtonBase>
         </Box>
       </Box>
 
@@ -158,7 +147,6 @@ const LeftPanelExpanded = ({
             menuName === "envelopes" ? "font-bold" : ""
           }`}
         >
-          <FolderOpenIcon strokeWidth={menuName === "envelopes" ? 1.7 : 0.8} />
           <ButtonBase
             onClick={() => {
               navigate(`/${budgetId}/envelopes`);
@@ -173,7 +161,6 @@ const LeftPanelExpanded = ({
             menuName === "accounts" ? "font-bold" : ""
           }`}
         >
-          <CreditCardIcon strokeWidth={menuName === "accounts" ? 1.7 : 0.8} />
           <ButtonBase
             onClick={() => {
               navigate(`/${budgetId}/accounts`);
@@ -188,7 +175,6 @@ const LeftPanelExpanded = ({
             menuName === "spendings" ? "font-bold" : ""
           }`}
         >
-          <CashIcon strokeWidth={menuName === "spendings" ? 1.7 : 0.8} />
           <ButtonBase
             onClick={() => {
               navigate(`/${budgetId}/spendings`);
@@ -199,7 +185,6 @@ const LeftPanelExpanded = ({
           </ButtonBase>
         </Box>
         <Box className="flex gap-3 items-center">
-          <CogIcon strokeWidth={0.8} />
           <ButtonBase disableRipple>Réglages</ButtonBase>
         </Box>
       </Box>

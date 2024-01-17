@@ -15,7 +15,8 @@ export const transactionView = (x: Transaction): TransactionViewInput => {
     description: x.description,
     status: x.status,
     date: x.date.toISOString(),
-    payee: x.payee?.name,
+    payeeName: x.payee?.name,
+    payeeId: x.payee?.id,
     allocations,
     recurrence: !x.recurrence
       ? undefined

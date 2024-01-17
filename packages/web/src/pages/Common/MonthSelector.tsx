@@ -7,9 +7,9 @@ import {
 } from "@floating-ui/react";
 import { Box, ButtonBase } from "@mui/material";
 import { useState } from "react";
-import { SmallArrowDownIcon } from "../../icons/SmallArrowDownIcon";
 import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { useStore } from "../../store";
 import * as fns from "date-fns";
 import { fr } from "date-fns/locale";
@@ -41,7 +41,7 @@ export const MonthSelector = () => {
           {_.capitalize(fns.format(currentMonth, "MMM yyyy", { locale: fr }))}
         </Box>
         <Box>
-          <SmallArrowDownIcon />
+          <ArrowDropDownIcon />
         </Box>
       </Box>
       <FloatingPortal>

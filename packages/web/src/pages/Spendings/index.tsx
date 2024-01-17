@@ -6,6 +6,9 @@ import { MainPanel } from "../Common/MainPanel";
 import { MainLayout } from "../Layouts";
 import { AddTransactionButton } from "./AddTransactionButton";
 import { TransactionRow } from "./TransactionRow";
+import { TransactionHeaders } from "./TransactionRow/TransactionHeaders";
+import "./index.less";
+import _ from "lodash";
 
 export const SpendingsPage = () => {
   const budgetId = useStore((state) => state.budgetId);
@@ -25,12 +28,23 @@ export const SpendingsPage = () => {
       leftPanel={<LeftPanel mainButton={AddTransactionButton} />}
     >
       <MainPanel>
-        <Box className="grid grid-cols-[1fr_140px_1fr_1fr_150px_40px] items-center px-8 py-5">
-          {transactions.map((transaction) => {
-            return (
-              <TransactionRow key={transaction.id} transaction={transaction} />
-            );
-          })}
+        <Box
+          className="grid p-8"
+          sx={{
+            gridTemplateColumns:
+              "40px minmax(0, 1fr) 120px minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) 40px",
+          }}
+        >
+          <TransactionHeaders />
+          {_(transactions)
+            .sortBy((transaction) => transaction.date)
+            .reverse()
+            .map((transaction) => {
+              return (
+                <TransactionRow key={transaction.id} id={transaction.id} />
+              );
+            })
+            .value()}
         </Box>
       </MainPanel>
     </MainLayout>

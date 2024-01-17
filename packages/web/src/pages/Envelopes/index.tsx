@@ -1,7 +1,7 @@
 import { Box } from "@mui/material";
 import { useEnvelopes } from "../../hooks/queries/useEnvelopes";
 import { MainLayout } from "../Layouts";
-import { Checkbox } from "./Checkbox";
+import { Checkbox } from "../Common/Checkbox";
 import { EnvelopeRow } from "./EnvelopeRow";
 import { useStore } from "../../store";
 import { LeftPanel } from "../Common";

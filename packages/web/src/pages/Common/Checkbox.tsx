@@ -1,4 +1,28 @@
-export const CheckboxCheckedIcon = () => {
+import { CheckboxProps, Checkbox as MuiCheckbox } from "@mui/material";
+
+const CheckboxUncheckedIcon = () => {
+  return (
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 16 16"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <rect
+        x="0.75"
+        y="0.75"
+        width="14.5"
+        height="14.5"
+        rx="2.25"
+        stroke="#CDD0E1"
+        strokeWidth="1.5"
+      />
+    </svg>
+  );
+};
+
+const CheckboxCheckedIcon = () => {
   return (
     <svg
       width="16"
@@ -15,5 +39,16 @@ export const CheckboxCheckedIcon = () => {
         fill="white"
       />
     </svg>
+  );
+};
+
+export const Checkbox = (props: CheckboxProps) => {
+  return (
+    <MuiCheckbox
+      icon={<CheckboxUncheckedIcon />}
+      checkedIcon={<CheckboxCheckedIcon />}
+      size="small"
+      {...props}
+    />
   );
 };

@@ -1,4 +1,6 @@
 export * from "./AmountSpan";
+export * from "./Dialog";
+export * from "./EnvelopeSelector";
 export * from "./LeftPanel";
 export * from "./Logo";
 export * from "./MainButton";
@@ -7,5 +9,4 @@ export * from "./Menu";
 export * from "./MenuItem";
 export * from "./MonthSelector";
 export * from "./ReadyToAssign";
-export * from "./TextField";
 export * from "./TopBar";

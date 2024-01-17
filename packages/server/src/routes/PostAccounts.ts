@@ -19,11 +19,17 @@ export const PostAccounts = ({
         const user = await request.user();
         const list = PostAccountsRequestSchema.parse(request.body);
 
-        console.log("test2");
-
         for (const { budgetId, name, id } of list) {
+          const count = await entities.countBy(Account, {
+            userId: user.id,
+            budgetId: budgetId,
+          });
+
           const envelope = new Account();
 
+          if (count === 0) {
+            envelope.isDefault = true;
+          }
           envelope.id = randomUUID() ?? id;
           envelope.userId = user.id;
           envelope.budgetId = budgetId;

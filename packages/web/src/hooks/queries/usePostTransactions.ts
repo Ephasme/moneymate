@@ -2,7 +2,15 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "../../api";
 import { queries } from "./queries";
 
-export const usePostTransactions = (props: { onSuccess: () => void }) => {
+export const usePostTransactions = (
+  {
+    onSuccess = () => {},
+  }: {
+    onSuccess?: () => void;
+  } = {
+    onSuccess: () => {},
+  }
+) => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: api.postTransactions,
@@ -11,7 +19,7 @@ export const usePostTransactions = (props: { onSuccess: () => void }) => {
       queryClient.invalidateQueries({ queryKey: queries.accounts._def });
       queryClient.invalidateQueries({ queryKey: queries.payees._def });
       queryClient.invalidateQueries({ queryKey: queries.envelopes._def });
-      props.onSuccess();
+      onSuccess();
     },
   });
 };

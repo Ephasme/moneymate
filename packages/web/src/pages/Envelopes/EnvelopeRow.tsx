@@ -3,7 +3,7 @@ import { useEnvelope } from "../../hooks/queries/useEnvelope";
 import { useStore } from "../../store";
 import { AllocationField } from "./AllocationField";
 import { BalanceField } from "./BalanceField";
-import { Checkbox } from "./Checkbox";
+import { Checkbox } from "../Common/Checkbox";
 import { EnvelopeName } from "./EnvelopeName";
 import { PriorityTag } from "./PriorityTag";
 import { ProgressBar } from "./ProgressBar";

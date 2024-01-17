@@ -11,21 +11,6 @@ import { Transaction } from "./Transaction.js";
 import { User } from "./User.js";
 
 @Entity()
-export class Goal {
-  @PrimaryGeneratedColumn("uuid")
-  id!: string;
-
-  @Column({ type: "varchar" })
-  name!: string;
-
-  @Column({ type: "varchar" })
-  amount!: string;
-
-  @Column({ type: "varchar" })
-  budgetId!: string;
-}
-
-@Entity()
 export class Account {
   @PrimaryGeneratedColumn("uuid")
   id!: string;
@@ -47,4 +32,7 @@ export class Account {
 
   @Column({ type: "varchar" })
   userId!: string;
+
+  @Column({ type: "bool", default: false })
+  isDefault!: boolean;
 }

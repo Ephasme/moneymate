@@ -2,11 +2,11 @@ import { MAIN_ENVELOPE_ID } from "@moneymate/shared";
 import { Avatar, Box } from "@mui/material";
 import { formatCurrency } from "../../helpers/formatCurrency";
 import { useEnvelope } from "../../hooks/queries";
-import { DotsVerticalIcon } from "../../icons/DotsVerticalIcon";
-import { DottedBarsIcon } from "../../icons/DottedBarsIcon";
-import { MagnifierIcon } from "../../icons/MagnifierIcon";
 import { MonthSelector } from "./MonthSelector";
 import { useStore } from "../../store";
+import SearchIcon from "@mui/icons-material/Search";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import TuneIcon from "@mui/icons-material/Tune";
 
 const TopBarReadyToAssign = () => {
   const isCollapsed = useStore((state) => state.leftPanelCollapsed);
@@ -29,14 +29,14 @@ export const TopBar = ({ leftPart }: { leftPart?: React.ReactNode } = {}) => {
       <Box className="flex items-center justify-end min-h-[4.7rem] pr-8">
         <TopBarReadyToAssign />
         <Box className="flex mr-[1.5rem]">
-          <MagnifierIcon />
+          <SearchIcon />
         </Box>
         <MonthSelector />
         <Box className="mr-[1.5rem]">
-          <DottedBarsIcon />
+          <TuneIcon />
         </Box>
         <Box className="mr-[1.5rem]">
-          <DotsVerticalIcon />
+          <MoreVertIcon />
         </Box>
         <Box className="flex items-center">
           <Avatar sx={{ height: "2.5rem", width: "2.5rem" }} />

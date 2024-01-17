@@ -1,18 +1,17 @@
 import { Box, ButtonBase } from "@mui/material";
-import { BigPlusIcon } from "../../icons/BigPlusIcon";
 
 export const MainButton = ({
   text,
-  setIsOpened,
+  onClick = () => {},
   collapsed,
 }: {
   text: string;
-  setIsOpened: (value: boolean) => void;
+  onClick?: () => void;
   collapsed?: boolean;
 }) => {
   return (
     <ButtonBase
-      onClick={() => setIsOpened(true)}
+      onClick={() => onClick()}
       sx={{
         "&.MuiButtonBase-root": {
           display: "flex",
@@ -32,7 +31,6 @@ export const MainButton = ({
         },
       }}
     >
-      <BigPlusIcon />
       {!collapsed && <Box className="font-semibold">{text}</Box>}
     </ButtonBase>
   );

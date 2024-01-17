@@ -5,11 +5,11 @@ import { AllocationBodySchema } from "./AllocationBody.js";
 
 export const TransactionCommonSchema = z.object({
   budgetId: z.string().uuid(),
-  accountId: z.string().uuid(),
-  description: z.string().optional(),
+  accountId: z.string().uuid().nullish(),
+  description: z.string().nullish(),
   amount: z.string().transform(BigInt),
   payee: z.string().nullish(),
-  recurrence: RecurrenceViewSchema.optional(),
+  recurrence: RecurrenceViewSchema.nullish(),
   date: z
     .string()
     .datetime()

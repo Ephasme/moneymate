@@ -15,6 +15,9 @@ export default {
       backgroundImage: {
         "main-panel": "linear-gradient(113deg, #F3E9EA 0%, #F2F4F8 100%)",
       },
+      boxShadow: {
+        main: "0px 0px 16px 0px rgba(0, 0, 0, 0.10), 0px 0px 8px 0px rgba(0, 0, 0, 0.10)",
+      },
     },
   },
   plugins: [],

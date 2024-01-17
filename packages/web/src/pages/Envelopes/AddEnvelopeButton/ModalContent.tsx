@@ -5,11 +5,10 @@ import {
   useClick,
   useInteractions,
 } from "@floating-ui/react";
-import { Box, Button } from "@mui/material";
+import { Box, Button, TextField } from "@mui/material";
 import EmojiPicker from "emoji-picker-react";
 import { Formik } from "formik";
 import { useState } from "react";
-import { TextField } from "../../Common/TextField";
 import { usePostEnvelopes } from "../../../hooks/queries";
 import { useStore } from "../../../store";
 import { v4 as uuid } from "uuid";

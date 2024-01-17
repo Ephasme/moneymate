@@ -1,23 +1,30 @@
-import { Dialog } from "../../Common/Dialog";
+import { usePostTransactions } from "../../../hooks/queries/usePostTransactions";
+import { useStore } from "../../../store";
 import { MainButton } from "../../Common/MainButton";
-import { ModalContent } from "../EditTransactionModal/ModalContent";
 
 export const AddTransactionButton = ({
   collapsed,
 }: {
   collapsed?: boolean;
 }) => {
+  const budgetId = useStore((state) => state.budgetId);
+  const { mutate: postTransaction } = usePostTransactions();
+
   return (
-    <Dialog
-      Trigger={({ onOpen }) => (
-        <MainButton
-          text="Transaction"
-          setIsOpened={onOpen}
-          collapsed={collapsed}
-        />
-      )}
-    >
-      {({ onClose }) => <ModalContent onClose={onClose} />}
-    </Dialog>
+    <MainButton
+      text="Transaction"
+      collapsed={collapsed}
+      onClick={() => {
+        postTransaction([
+          {
+            amount: "0",
+            budgetId,
+            date: new Date().toISOString(),
+            allocations: [],
+            description: "",
+          },
+        ]);
+      }}
+    />
   );
 };

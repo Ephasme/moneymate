@@ -1,4 +1,5 @@
 import {
+  AccountView,
   PostTransactionsRequest,
   PutTransactionsRequest,
 } from "@moneymate/shared";
@@ -18,9 +19,14 @@ export const SaveTransaction =
   async ({
     user,
     list,
+    getTransaction,
   }: {
     user: User;
     list: PutTransactionsRequest | PostTransactionsRequest;
+    getTransaction: (props: {
+      entities: EntityManager;
+      id?: string;
+    }) => Promise<Transaction | null>;
   }) => {
     await entities.transaction(async (manager) => {
       for (const {
@@ -35,13 +41,25 @@ export const SaveTransaction =
         allocations,
         status,
       } of list) {
-        const account = await entities.findOneBy(Account, {
-          id: accountId,
-          budgetId: budgetId,
-          userId: user.id,
-        });
-        if (!account) {
-          throw { message: "Account not found", status: 404 };
+        let account: Account | null;
+        if (accountId) {
+          account = await entities.findOneBy(Account, {
+            id: accountId,
+            budgetId: budgetId,
+            userId: user.id,
+          });
+          if (!account) {
+            throw { message: "Account not found", status: 404 };
+          }
+        } else {
+          account = await entities.findOneBy(Account, {
+            isDefault: true,
+            budgetId: budgetId,
+            userId: user.id,
+          });
+          if (!account) {
+            throw { message: "No default account", status: 404 };
+          }
         }
 
         let newPayee: Payee | null = null;
@@ -68,19 +86,11 @@ export const SaveTransaction =
           newRecurrence.currentDate = recurrence.currentDate;
         }
 
-        let transaction: Transaction | null;
-        if (transactionId) {
-          transaction = await entities.findOne(Transaction, {
-            where: {
-              id: transactionId,
-              userId: user.id,
-            },
-            relations: ["allocations"],
-          });
-        } else {
-          transaction = new Transaction();
-          transaction.id = randomUUID() ?? transactionId;
-        }
+        const transaction = await getTransaction({
+          entities: manager,
+          id: transactionId,
+        });
+
         if (!transaction) {
           throw { message: "Transaction not found", status: 404 };
         }

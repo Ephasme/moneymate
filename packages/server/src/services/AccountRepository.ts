@@ -30,11 +30,12 @@ export class AccountRepository {
   async findMany(userId: string) {
     const accounts = await this.getAccountQuery({
       userId,
-    }).getRawMany<GetAccountResponseInput>();
+    }).getRawMany();
 
     return accounts.map((account) => ({
       id: account.id,
       name: account.name,
+      isDefault: Boolean(account.isDefault),
       reconciledBalance: account.reconciledBalance,
       clearedBalance: account.clearedBalance,
       pendingBalance: account.pendingBalance,
@@ -44,7 +45,7 @@ export class AccountRepository {
   async findOne(id: string, userId: string) {
     const account = await this.getAccountQuery({ userId })
       .where("a.id = :accountId", { accountId: id })
-      .getRawOne<GetAccountResponseInput>();
+      .getRawOne();
 
     if (!account) {
       return null;
@@ -53,6 +54,7 @@ export class AccountRepository {
     return {
       id: account.id,
       name: account.name,
+      isDefault: Boolean(account.isDefault),
       reconciledBalance: account.reconciledBalance,
       clearedBalance: account.clearedBalance,
       pendingBalance: account.pendingBalance,
