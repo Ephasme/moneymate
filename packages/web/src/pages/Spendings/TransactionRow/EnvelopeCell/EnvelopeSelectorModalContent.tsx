@@ -1,19 +1,28 @@
 import CloseIcon from "@mui/icons-material/Close";
 import { Box, Button, Checkbox } from "@mui/material";
 import { formatCurrency } from "../../../../helpers/formatCurrency";
+import { useEnvelopes } from "../../../../hooks/queries";
 import { EnvelopeName } from "../../../Common/EnvelopeName";
-import { useMultiEnvelopeSelectorContext } from "./MultiEnvelopeSelectorContext";
+import { NullableSelectionItem } from "./SelectionItem";
+import { makeSelectionActions } from "../makeSelectionActions";
 
-export const EnvelopeSelectorPage = () => {
-  const {
-    updateFloating,
-    envelopes,
-    selection,
-    toggleEnvelope,
-    closeSelf,
-    submit,
-    setStep,
-  } = useMultiEnvelopeSelectorContext();
+export const EnvelopeSelectorModalContent = ({
+  selection = [],
+  onChange = () => {},
+  onCancel = () => {},
+  onNext = () => {},
+  onSubmit = () => {},
+}: {
+  selection?: NullableSelectionItem[];
+  onChange?: (selection: NullableSelectionItem[]) => void;
+  onCancel?: () => void;
+  onNext?: () => void;
+  onSubmit?: () => void;
+}) => {
+  const { data: envelopes = [] } = useEnvelopes();
+
+  const actions = makeSelectionActions((update) => onChange(update(selection)));
+
   return (
     <>
       <Box className="flex gap-2 px-2 py-3 border-b border-[#0000001f]">
@@ -22,7 +31,7 @@ export const EnvelopeSelectorPage = () => {
         </Box>
         <Box>{selection.length} enveloppes sélectionnées</Box>
       </Box>
-      <Box className="max-h-[300px] overflow-auto">
+      <Box className="max-h-[20vh] overflow-auto">
         {envelopes.map((envelope) => (
           <Box className="flex pr-2 hover:bg-slate-50">
             <Checkbox
@@ -31,12 +40,12 @@ export const EnvelopeSelectorPage = () => {
                 undefined
               }
               onClick={() => {
-                toggleEnvelope(envelope.id);
+                actions.toggleEnvelope(envelope.id);
               }}
             />
             <Box
               onClick={() => {
-                toggleEnvelope(envelope.id);
+                actions.toggleEnvelope(envelope.id);
               }}
               className="flex flex-grow items-center gap-1 cursor-pointer"
             >
@@ -62,7 +71,7 @@ export const EnvelopeSelectorPage = () => {
           <Button
             variant="outlined"
             onClick={() => {
-              closeSelf();
+              onCancel();
             }}
           >
             Cancel
@@ -71,11 +80,9 @@ export const EnvelopeSelectorPage = () => {
             variant="outlined"
             onClick={() => {
               if (selection.length > 1) {
-                setStep(1);
-                updateFloating();
+                onNext();
               } else {
-                closeSelf();
-                submit();
+                onSubmit();
               }
             }}
           >

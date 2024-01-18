@@ -1,10 +1,16 @@
-import { FloatingPortal, autoUpdate, useFloating } from "@floating-ui/react";
+import {
+  FloatingPortal,
+  autoUpdate,
+  useFloating,
+  flip,
+} from "@floating-ui/react";
 import { EnvelopeView } from "@moneymate/shared";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { Box, ClickAwayListener } from "@mui/material";
 import { useState } from "react";
 import { useEnvelopes } from "../../../../hooks/queries";
 import { EnvelopeName } from "../../../Common/EnvelopeName";
+import { formatCurrency } from "../../../../helpers/formatCurrency";
 
 export const SingleEnvelopeSelector = ({
   value,
@@ -24,6 +30,7 @@ export const SingleEnvelopeSelector = ({
       });
       return cleanup;
     },
+    middleware: [flip()],
   });
 
   return (
@@ -54,18 +61,26 @@ export const SingleEnvelopeSelector = ({
             >
               <Box>
                 <input className="border mx-3 my-2 px-2 py-2 rounded-md" />
-                {envelopes.map((envelope) => (
-                  <Box
-                    key={envelope.id}
-                    className="cursor-pointer px-3 py-2 hover:bg-slate-50"
-                    onClick={() => {
-                      onChange(envelope);
-                      setOpen(false);
-                    }}
-                  >
-                    <EnvelopeName id={envelope.id} />
-                  </Box>
-                ))}
+                <Box
+                  className="overflow-auto"
+                  sx={{
+                    maxHeight: "20vh",
+                  }}
+                >
+                  {envelopes.map((envelope) => (
+                    <Box
+                      key={envelope.id}
+                      className="flex items-center justify-between cursor-pointer px-3 py-2 hover:bg-slate-50"
+                      onClick={() => {
+                        onChange(envelope);
+                        setOpen(false);
+                      }}
+                    >
+                      <EnvelopeName id={envelope.id} />
+                      <Box>{formatCurrency(envelope.balance)}</Box>
+                    </Box>
+                  ))}
+                </Box>
               </Box>
             </Box>
           )}

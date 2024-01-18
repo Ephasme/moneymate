@@ -1,7 +1,7 @@
 import { Box } from "@mui/material";
 import classNames from "classnames";
 import { useState } from "react";
-import { useTransaction } from "../../../hooks/queries";
+import { usePatchTransactions, useTransaction } from "../../../hooks/queries";
 import { AccountCell } from "./AccountCell";
 import { CheckboxCell } from "./CheckboxCell";
 import { DateCell } from "./DateCell";
@@ -12,17 +12,29 @@ import { TransactionRowContext } from "./TransactionRowContext";
 import { AmountCell } from "./AmountCell";
 import { StatusCell } from "./StatusCell";
 import { TransactionSplitRows } from "./TransactionSplitRows";
+import { TransactionView } from "@moneymate/shared";
 
 export const TransactionRow = ({ id }: { id?: string }) => {
   const { data: transaction } = useTransaction(id);
+  const { mutate: patchTransactions } = usePatchTransactions();
   const [isHovered, setIsHovered] = useState(false);
 
   if (!transaction) return <Box>Loading...</Box>;
   const hasSplits = transaction.allocations.length > 1;
 
+  function onTransactionChange(value: TransactionView) {
+    patchTransactions([{ id: value.id, amount: value.amount.toString() }]);
+  }
+
   return (
     <TransactionRowContext.Provider
-      value={{ transaction, isHovered, setIsHovered, hasSplits }}
+      value={{
+        transaction,
+        onTransactionChange,
+        isHovered,
+        setIsHovered,
+        hasSplits,
+      }}
     >
       <Box className="contents row">
         <Box
