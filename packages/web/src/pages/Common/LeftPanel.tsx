@@ -21,7 +21,7 @@ const IMatchSchema = z.object({
 export const LeftPanel = ({
   mainButton: MainButton,
 }: {
-  mainButton: ({ collapsed }: { collapsed?: boolean }) => React.ReactElement;
+  mainButton?: ({ collapsed }: { collapsed?: boolean }) => React.ReactElement;
 }) => {
   const leftPanelCollapsed = useStore((state) => state.leftPanelCollapsed);
 
@@ -32,7 +32,9 @@ export const LeftPanel = ({
     .filter((x) => x !== undefined)
     .first();
 
-  const mainButton = <MainButton collapsed={leftPanelCollapsed} />;
+  const mainButton = MainButton ? (
+    <MainButton collapsed={leftPanelCollapsed} />
+  ) : null;
 
   return leftPanelCollapsed ? (
     <LeftPanelCollapsed mainButton={mainButton} menuName={menuName} />
@@ -46,7 +48,7 @@ const LeftPanelCollapsed = ({
   mainButton,
 }: {
   menuName: string | undefined;
-  mainButton: React.ReactElement;
+  mainButton?: React.ReactElement | null;
 }) => {
   const budgetId = useStore((state) => state.budgetId);
   const navigate = useNavigate();
@@ -94,7 +96,11 @@ const LeftPanelCollapsed = ({
         </Box>
       </Box>
 
-      <Box className="flex items-center justify-center mb-20">{mainButton}</Box>
+      {mainButton && (
+        <Box className="flex items-center justify-center mb-20">
+          {mainButton}
+        </Box>
+      )}
     </Box>
   );
 };
@@ -103,7 +109,7 @@ const LeftPanelExpanded = ({
   mainButton,
   menuName,
 }: {
-  mainButton: React.ReactElement;
+  mainButton?: React.ReactElement | null;
   menuName: string | undefined;
 }) => {
   const budgetId = useStore((state) => state.budgetId);
@@ -188,7 +194,7 @@ const LeftPanelExpanded = ({
           <ButtonBase disableRipple>Réglages</ButtonBase>
         </Box>
       </Box>
-      <Box className="ml-8 mb-20">{mainButton}</Box>
+      <Box className="ml-8 mb-20">{mainButton ?? null}</Box>
 
       <ReadyToAssign />
       <Box className="border-[0.5px] border-black w-[4.5rem] ml-8 mt-5 mb-4"></Box>

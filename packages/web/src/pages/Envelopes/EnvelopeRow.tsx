@@ -1,88 +1,42 @@
-import { Box, Skeleton } from "@mui/material";
-import { useEnvelope } from "../../hooks/queries/useEnvelope";
-import { useStore } from "../../store";
-import { AllocationField } from "./AllocationField";
-import { BalanceField } from "./BalanceField";
+import { EnvelopeView } from "@moneymate/shared";
+import { Box } from "@mui/material";
+import { createContext, useContext } from "react";
+import { AmountSpan } from "../Common";
 import { Checkbox } from "../Common/Checkbox";
-import { EnvelopeName } from "./EnvelopeName";
-import { PriorityTag } from "./PriorityTag";
+import { EnvelopeName } from "../Common/EnvelopeName";
 import { ProgressBar } from "./ProgressBar";
 
-export const EnvelopeRow = ({ envelopeId }: { envelopeId: string }) => {
-  const { data: envelope } = useEnvelope(envelopeId);
-  const selectedEnvelopes = useStore((state) => state.selectedEnvelopes);
-  const setSelectedEnvelopes = useStore((state) => state.setSelectedEnvelopes);
+export const EnvelopeRowContext = createContext<{
+  envelope: EnvelopeView;
+}>(null!);
 
-  const isSelected =
-    (envelope && selectedEnvelopes.includes(envelope.id)) ?? false;
+export const useEnvelopeRowContext = () => {
+  return useContext(EnvelopeRowContext);
+};
+
+export const EnvelopeRow = () => {
+  const { envelope } = useEnvelopeRowContext();
 
   return (
-    <>
-      <Box className={`h-full ${isSelected ? "bg-[#EAE8F2]" : ""}`}></Box>
-      <Box
-        className={`flex items-center justify-center py-5 ${
-          isSelected ? "bg-[#EAE8F2]" : ""
-        }`}
-      >
-        <Checkbox
-          checked={isSelected}
-          onChange={(_, checked) => {
-            if (envelope) {
-              setSelectedEnvelopes([{ envelopeId: envelope.id, checked }]);
-            }
-          }}
-        />
+    <Box key={envelope.id} className="contents row">
+      <Box></Box>
+      <Box>
+        <Checkbox />
       </Box>
-      <Box
-        className={`flex items-center justify-center h-full px-4 ${
-          isSelected ? "bg-[#EAE8F2]" : ""
-        }`}
-      >
-        {envelope ? (
-          <Box
-            className={
-              "relative rounded-lg bg-white border-[0.5px] " +
-              "border-[#D7D9DF] h-12 w-12"
-            }
-            sx={{
-              boxShadow:
-                "0px 0px 8px 0px rgba(0, 0, 0, 0.08), 0px 0.5px 0px 0px rgba(0, 0, 0, 0.12)",
-            }}
-          >
-            <Box className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[2rem]">
-              {envelope.emoji}
-            </Box>
-          </Box>
-        ) : (
-          <Skeleton variant="rectangular" height={48} width={48} />
-        )}
+      <Box>
+        <EnvelopeName id={envelope.id} />
       </Box>
-      <Box
-        className={`flex flex-grow h-full flex-col justify-around py-3 px-3  ${
-          isSelected ? "bg-[#EAE8F2]" : ""
-        }`}
-      >
-        <Box className="flex min-w-full justify-between gap-3">
-          {envelope ? <EnvelopeName envelope={envelope} /> : <Skeleton />}
-          <PriorityTag level={1} />
-        </Box>
+      <Box>
         <ProgressBar />
       </Box>
-      <Box
-        className={`flex items-center justify-end h-full ${
-          isSelected ? "bg-[#EAE8F2]" : ""
-        }`}
-      >
-        <AllocationField envelopeId={envelopeId} />
+      <Box></Box>
+      <Box className="flex justify-end font-bold">
+        <AmountSpan amount={envelope.allocated} />
       </Box>
-      <Box
-        className={`flex items-center justify-end h-full ${
-          isSelected ? "bg-[#EAE8F2]" : ""
-        }`}
-      >
-        {envelope ? <BalanceField envelope={envelope} /> : <Skeleton />}
+      <Box className="flex justify-end">
+        <AmountSpan amount={envelope.balance} />
       </Box>
-      <Box className={`h-full ${isSelected ? "bg-[#EAE8F2]" : ""}`}></Box>
-    </>
+      <Box></Box>
+    </Box>
   );
 };

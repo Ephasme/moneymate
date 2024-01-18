@@ -7,7 +7,6 @@ import { MainLayout } from "../Layouts";
 import { AddTransactionButton } from "./AddTransactionButton";
 import { TransactionRow } from "./TransactionRow";
 import { TransactionHeaders } from "./TransactionRow/TransactionHeaders";
-import "./index.less";
 import _ from "lodash";
 
 export const SpendingsPage = () => {

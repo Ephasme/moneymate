@@ -3,7 +3,7 @@ import ProgressBarImage from "../../assets/ProgressBar.png";
 
 export const ProgressBar = () => {
   return (
-    <Box className="relative">
+    <Box className="relative w-full">
       <Box
         className="rounded-full h-[0.375rem]"
         sx={{ backgroundColor: "#37B6AE" }}

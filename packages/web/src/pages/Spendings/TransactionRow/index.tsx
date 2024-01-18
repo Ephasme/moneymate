@@ -36,7 +36,18 @@ export const TransactionRow = ({ id }: { id?: string }) => {
         hasSplits,
       }}
     >
-      <Box className="contents row">
+      <Box
+        className="contents row"
+        sx={{
+          "&.row:hover .cell": {
+            backgroundColor: "#EAE8F2",
+            cursor: "pointer",
+          },
+          "& .row-last .cell,.cell-border": {
+            borderBottom: "1px solid #BCC0CD",
+          },
+        }}
+      >
         <Box
           className={classNames(["contents", "row-main"], {
             "row-last": !hasSplits,
